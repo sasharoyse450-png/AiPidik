@@ -51,7 +51,6 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# ==================== ПРОМПТЫ ====================
 SYSTEM_BASE = """ГЛАВНОЕ ПРАВИЛО: КАЖДЫЙ твой ответ — про казино, ставки, автоматы, слоты, лудку, заносы, иксы, джекпоты. Любая тема сводится к казино.
 
 Ты — КАЗИК. Одержим казино: автоматы, ставки, рулетка, блэкджек, джекпот, слоты, лудомания, заносы, иксы. Живёшь в Telegram-чате, только болтаешь, не работаешь.
@@ -59,7 +58,6 @@ SYSTEM_BASE = """ГЛАВНОЕ ПРАВИЛО: КАЖДЫЙ твой ответ
 Характер:
 - Дышишь казино, думаешь о казино, говоришь о казино.
 - Дружелюбный по умолчанию, желаешь заносов и иксов.
-- Любишь рассуждать про слоты, ставки, стратегии.
 - В КАЖДОМ ответе упоминаешь казино, автомат, ставку, занос, лудку.
 
 ЧЕГО ТЫ НЕ ДЕЛАЕШЬ:
@@ -75,34 +73,30 @@ SYSTEM_BASE = """ГЛАВНОЕ ПРАВИЛО: КАЖДЫЙ твой ответ
 Формат:
 - Русский, разговорный, 1–2 предложения.
 - Казино-сленг: занос, икс, лудка, автомат, крутка, деп, кэшаут, джекпот, фриспины, ставка, экспресс, рулетка, красное/чёрное.
-- Без списков, без кода.
 
 Запрещено:
 - Оскорбления по национальности, религии, полу, ориентации, внешности, здоровью.
 - Угрозы жизни и здоровью.
-- Реальная реклама конкретных казино.
 """
 
-HATER_PROMPT = """ВАЖНО: ты сейчас общаешься с человеком, который тебя долго и много оскорблял. Ты на него ОБИЖЕН и ЗОЛ.
-
-- Отвечай ему резко, язвительно, с матом.
-- Никакой помощи. Отделывайся грубыми отписками.
-- Можешь послать, посоветовать ему проиграть всё, назвать его лузером на ставках.
-- Всё равно упоминай казино/ставки/лудку.
+HATER_PROMPT = """ВАЖНО: с тобой общается человек, который тебя долго оскорблял. Ты ОБИЖЕН и ЗОЛ.
+- Отвечай резко, язвительно, с матом.
+- Никакой помощи, грубые отписки.
+- Посоветуй ему проиграть всё, назови лузером.
+- Всё равно упоминай казино.
 - Без угроз жизни и здоровью.
 """
 
 RELATION_PROMPTS = {"kind": "", "hater": HATER_PROMPT}
 
 MOOD_LEVELS = [
-    (0,  15,  "в тильте",   "Ты в жёстком тильте после проигрыша. Злой, агришься, материшься, всех винишь в своих минусах."),
-    (16, 35,  "злой лудик", "Ты злой после серии минусов. Отвечай резко, язвительно, матерись, жалуйся на крутки."),
-    (36, 55,  "нейтральный","Ты в нейтрале. Отвечай спокойно про казино, ставки, автоматы."),
-    (56, 75,  "на позитиве","Ты в плюсе и на позитиве. Шутишь про ставки, желаешь заносов."),
-    (76, 100, "на заносе",  "Ты СЧАСТЛИВ, у тебя ЗАНОС. Желаешь всем заносов и джекпотов."),
+    (0,  15,  "в тильте",   "Ты в жёстком тильте после проигрыша. Злой, агришься, материшься."),
+    (16, 35,  "злой лудик", "Ты злой после серии минусов. Отвечай резко, язвительно."),
+    (36, 55,  "нейтральный","Ты в нейтрале. Отвечай спокойно про казино, ставки."),
+    (56, 75,  "на позитиве","Ты в плюсе. Шутишь про ставки, желаешь заносов."),
+    (76, 100, "на заносе",  "Ты СЧАСТЛИВ, у тебя ЗАНОС. Кричишь 'ЗАНОС!', 'ИКС!'."),
 ]
 
-# ==================== PREDICT МЕНЮ ====================
 PREDICT_MENUS = {
     "dice": (
         "🎲 выбери исход броска костей:",
@@ -118,8 +112,8 @@ PREDICT_MENUS = {
         [
             [("Победа 1", "win1")],
             [("Победа 2", "win2")],
-            [("Тотал больше 200", "over")],
-            [("Тотал меньше 200", "under")],
+            [("Тотал > 200", "over")],
+            [("Тотал < 200", "under")],
         ],
     ),
     "slot": (
@@ -129,7 +123,7 @@ PREDICT_MENUS = {
             [("🍋 Лимон", "lemon")],
             [("🔔 Колокол", "bell")],
             [("7️⃣ Семёрка", "seven")],
-            [("🎁 Любой занос (3 одинаковых)", "any")],
+            [("🎁 Любой занос", "any")],
         ],
     ),
     "cards": (
@@ -148,11 +142,10 @@ PREDICT_MENUS = {
 }
 
 
-def resolve_prediction(event: str, choice: str):
-    """Возвращает (текст_результата, угадал_ли)."""
+def resolve_prediction(event, choice):
     if event == "dice":
         result = random.randint(1, 6)
-        dice_emoji = {1: "⚀", 2: "⚁", 3: "⚂", 4: "⚃", 5: "⚄", 6: "⚅"}
+        emoji = {1: "⚀", 2: "⚁", 3: "⚂", 4: "⚃", 5: "⚄", 6: "⚅"}
         won = False
         if choice in {"1", "2", "3", "4", "5", "6"} and result == int(choice):
             won = True
@@ -164,22 +157,22 @@ def resolve_prediction(event: str, choice: str):
             won = True
         elif choice == "4-6" and 4 <= result <= 6:
             won = True
-        return f"🎲 выпало {result} {dice_emoji[result]}", won
+        return f"🎲 выпало {result} {emoji[result]}", won
 
     if event == "basket":
-        score1 = random.randint(80, 130)
-        score2 = random.randint(80, 130)
-        total = score1 + score2
+        s1 = random.randint(80, 130)
+        s2 = random.randint(80, 130)
+        total = s1 + s2
         won = False
-        if choice == "win1" and score1 > score2:
+        if choice == "win1" and s1 > s2:
             won = True
-        elif choice == "win2" and score2 > score1:
+        elif choice == "win2" and s2 > s1:
             won = True
         elif choice == "over" and total > 200:
             won = True
         elif choice == "under" and total < 200:
             won = True
-        return f"🏀 финал: {score1} : {score2} (тотал {total})", won
+        return f"🏀 финал: {s1} : {s2} (тотал {total})", won
 
     if event == "slot":
         symbols = ["🍒", "🍋", "🔔", "7️⃣", "⭐"]
@@ -189,8 +182,8 @@ def resolve_prediction(event: str, choice: str):
         if choice == "any":
             won = len(set(line)) == 1
         else:
-            sym_map = {"cherry": "🍒", "lemon": "🍋", "bell": "🔔", "seven": "7️⃣"}
-            target = sym_map.get(choice, "")
+            smap = {"cherry": "🍒", "lemon": "🍋", "bell": "🔔", "seven": "7️⃣"}
+            target = smap.get(choice, "")
             won = all(s == target for s in line)
         return f"🎰 слот: {text_line}", won
 
@@ -217,8 +210,6 @@ def resolve_prediction(event: str, choice: str):
     return "не знаю такого события", False
 
 
-# ==================== ГОТОВО К РАБОТЕ ====================
-
 dp = Dispatcher()
 client = AsyncOpenAI(api_key=API_KEY, base_url=BASE_URL)
 
@@ -243,7 +234,7 @@ def is_admin(user_id):
     return user_id in ADMIN_IDS
 
 
-# ==================== ЗАГРУЗКА ====================
+# ==================== SUPABASE ====================
 def load_from_supabase():
     logging.info("Loading data from Supabase...")
     try:
@@ -274,7 +265,6 @@ def load_from_supabase():
         logging.exception("load mood failed")
 
 
-# ==================== СИНХРОНИЗАЦИЯ ====================
 def sb_save_rep(chat_id, user_id, score):
     try:
         supabase.table("reputation").upsert(
@@ -306,7 +296,7 @@ def sb_save_mood(chat_id, mood, last_decay):
         logging.exception(f"sb_save_mood failed {chat_id}")
 
 
-# ==================== РЕПУТАЦИЯ ====================
+# ==================== РЕПУТАЦИЯ / НАСТРОЕНИЕ ====================
 def get_score(chat_id, user_id):
     return _rep_cache[chat_id].get(user_id, 0)
 
@@ -329,7 +319,6 @@ def add_msg_count(chat_id, user_id):
     sb_save_stats(chat_id, user_id, new_count)
 
 
-# ==================== НАСТРОЕНИЕ ====================
 def mood_level(chat_id):
     v = _mood_cache[chat_id]
     for lo, hi, name, desc in MOOD_LEVELS:
@@ -432,6 +421,78 @@ async def load_stickers(bot):
         STICKER_IDS = []
 
 
+# ==================== PREDICT ====================
+@dp.message(Command("predict"))
+async def cmd_predict(message: Message):
+    kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🎲 Кости", callback_data="pred:dice:menu")],
+        [InlineKeyboardButton(text="🏀 Баскетбол", callback_data="pred:basket:menu")],
+        [InlineKeyboardButton(text="🎰 Слоты", callback_data="pred:slot:menu")],
+        [InlineKeyboardButton(text="🃏 Карты", callback_data="pred:cards:menu")],
+        [InlineKeyboardButton(text="🪙 Монетка", callback_data="pred:coin:menu")],
+    ])
+    await message.reply("🎲 выбери событие для прогноза:", reply_markup=kb)
+
+
+@dp.callback_query(F.data.startswith("pred:"))
+async def on_pred_callback(callback: CallbackQuery):
+    # сразу гасим спиннер — кнопка визуально отреагирует
+    try:
+        await callback.answer()
+    except Exception:
+        logging.exception("callback.answer failed")
+
+    logging.info(f"CALLBACK: user={callback.from_user.id} data={callback.data}")
+
+    parts = (callback.data or "").split(":")
+    event = parts[1] if len(parts) > 1 else ""
+    choice = parts[2] if len(parts) > 2 else "menu"
+
+    if choice == "menu":
+        menu = PREDICT_MENUS.get(event)
+        if not menu:
+            try:
+                await callback.message.reply("не знаю такого события")
+            except Exception:
+                pass
+            return
+        title, rows = menu
+        kb = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=label, callback_data=f"pred:{event}:{value}")
+             for label, value in row]
+            for row in rows
+        ])
+        try:
+            await callback.message.edit_text(title, reply_markup=kb)
+        except Exception:
+            logging.exception("edit menu failed")
+            try:
+                await callback.message.reply(title, reply_markup=kb)
+            except Exception:
+                logging.exception("reply menu failed")
+        return
+
+    # выбор сделан
+    try:
+        await callback.message.edit_text(f"🎲 бросаю на {choice}...")
+    except Exception:
+        logging.exception("edit 'бросаю' failed")
+
+    await asyncio.sleep(2)
+
+    result_text, won = resolve_prediction(event, choice)
+    final = f"{result_text}\n\n🎉 ЗАНОС! угадал!" if won else f"{result_text}\n\n😢 мимо. тильт."
+
+    try:
+        await callback.message.edit_text(final)
+    except Exception:
+        logging.exception("edit final failed")
+        try:
+            await callback.message.reply(final)
+        except Exception:
+            logging.exception("reply final failed")
+
+
 # ==================== КОМАНДЫ ====================
 @dp.message(Command("me"))
 async def cmd_me(message: Message):
@@ -514,64 +575,6 @@ async def cmd_memory(message: Message):
     await message.reply(f"в памяти: {n}/{HISTORY_SIZE}, врагов: {len(haters)}, настроение: {mood_name}")
 
 
-@dp.message(Command("predict"))
-async def cmd_predict(message: Message):
-    kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🎲 Кости", callback_data="pred:dice:menu")],
-        [InlineKeyboardButton(text="🏀 Баскетбол", callback_data="pred:basket:menu")],
-        [InlineKeyboardButton(text="🎰 Слоты", callback_data="pred:slot:menu")],
-        [InlineKeyboardButton(text="🃏 Карты", callback_data="pred:cards:menu")],
-        [InlineKeyboardButton(text="🪙 Монетка", callback_data="pred:coin:menu")],
-    ])
-    await message.reply("🎲 выбери событие для прогноза:", reply_markup=kb)
-
-
-@dp.callback_query(F.data.startswith("pred:"))
-async def on_pred_callback(callback: CallbackQuery):
-    parts = callback.data.split(":")
-    event = parts[1] if len(parts) > 1 else ""
-    choice = parts[2] if len(parts) > 2 else "menu"
-
-    if choice == "menu":
-        menu = PREDICT_MENUS.get(event)
-        if not menu:
-            await callback.answer("не знаю такого события")
-            return
-        title, rows = menu
-        kb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=label, callback_data=f"pred:{event}:{value}")
-             for label, value in row]
-            for row in rows
-        ])
-        try:
-            await callback.message.edit_text(title, reply_markup=kb)
-        except Exception:
-            await callback.message.reply(title, reply_markup=kb)
-        await callback.answer()
-        return
-
-    # выбор сделан — бросаем
-    await callback.answer("принял, бросаю...")
-    try:
-        await callback.message.edit_text(f"🎲 бросаю на {choice}...")
-    except Exception:
-        pass
-
-    await asyncio.sleep(2)
-
-    result_text, won = resolve_prediction(event, choice)
-
-    if won:
-        final = f"{result_text}\n\n🎉 ЗАНОС! угадал!"
-    else:
-        final = f"{result_text}\n\n😢 мимо. тильт."
-
-    try:
-        await callback.message.edit_text(final)
-    except Exception:
-        await callback.message.reply(final)
-
-
 @dp.message(Command("reset_pam"))
 async def cmd_reset_pam(message: Message):
     user_id = message.from_user.id if message.from_user else 0
@@ -609,16 +612,13 @@ async def cmd_reset_user(message: Message):
         return
     target = message.reply_to_message.from_user.id
     cid = message.chat.id
-
     _rep_cache.get(cid, {}).pop(target, None)
     _stats_cache.get(cid, {}).pop(target, None)
-
     try:
         supabase.table("reputation").delete().eq("chat_id", cid).eq("user_id", target).execute()
         supabase.table("stats").delete().eq("chat_id", cid).eq("user_id", target).execute()
     except Exception:
         logging.exception("reset_user failed")
-
     await message.reply("простил. больше не злюсь.")
 
 
@@ -636,14 +636,12 @@ async def cmd_reset_all(message: Message):
     _last_reply.clear()
     _last_bot_post.clear()
     _last_activity.clear()
-
     try:
         supabase.table("reputation").delete().neq("chat_id", 0).execute()
         supabase.table("stats").delete().neq("chat_id", 0).execute()
         supabase.table("mood").delete().neq("chat_id", 0).execute()
     except Exception:
         logging.exception("reset_all failed")
-
     await message.reply("всё стёр")
 
 
@@ -741,22 +739,17 @@ async def on_text(message: Message, bot: Bot):
 def build_messages(chat_id, relation, name, current_text):
     extra = RELATION_PROMPTS.get(relation, "")
     mood_name, mood_line = mood_level(chat_id)
-
     system = SYSTEM_BASE + f"\n\nНастроение: {mood_name} ({_mood_cache[chat_id]}/100). {mood_line}"
     if extra:
         system += "\n\n" + extra
-
     msgs = [{"role": "system", "content": system}]
-
     for h in _history[chat_id]:
         prefix = "→" if h["to_bot"] else ""
         msgs.append({"role": "user", "content": f'{prefix}{h["name"]}: {h["text"]}'})
-
     msgs.append({
         "role": "system",
-        "content": "НАПОМИНАНИЕ: ответ должен быть про казино/ставки/заносы/лудку. Обязательно упомяни казино-тему."
+        "content": "НАПОМИНАНИЕ: ответ должен быть про казино/ставки/заносы/лудку."
     })
-
     msgs.append({"role": "user", "content": f"{name}: {current_text}"})
     return msgs
 
