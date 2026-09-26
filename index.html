@@ -16,20 +16,23 @@
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
-  body{
-    font-family:-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;
-    background:var(--bg);color:var(--text);
-    padding:14px 14px 30px;min-height:100vh;
-  }
+  body{font-family:-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);color:var(--text);padding:14px 14px 30px;min-height:100vh;}
   .wrap{max-width:480px;margin:0 auto;}
-  .pet-card{background:linear-gradient(160deg,#1c2733,#131c26);border-radius:22px;padding:20px 16px 18px;margin-bottom:12px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.05);}
-  .pet-card::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(400px 200px at 50% 0%,rgba(122,92,255,.18),transparent 70%);}
+  .card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;
+    border:1px solid rgba(255,255,255,.04);}
+  .pet-card{background:linear-gradient(160deg,#1c2733,#131c26);border-radius:22px;
+    padding:20px 16px 18px;margin-bottom:12px;position:relative;overflow:hidden;
+    border:1px solid rgba(255,255,255,.05);}
+  .pet-card::before{content:'';position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(400px 200px at 50% 0%,rgba(122,92,255,.18),transparent 70%);}
   .pet-stage{width:200px;height:200px;margin:0 auto;position:relative;}
   .ring{position:absolute;inset:0;transform:rotate(-90deg);}
   .ring circle{fill:none;stroke-linecap:round;}
   .ring .bg{stroke:rgba(255,255,255,.07);stroke-width:8;}
   .ring .fg{stroke:url(#ringGrad);stroke-width:8;transition:stroke-dashoffset .6s ease;}
-  .pet{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:96px;line-height:1;user-select:none;cursor:pointer;transition:transform .25s;}
+  .pet{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:96px;line-height:1;user-select:none;cursor:pointer;transition:transform .25s;}
   .pet.pulse{transform:scale(1.14) rotate(-4deg);}
   .pet.mega{animation:mega .7s;}
   @keyframes mega{0%,100%{transform:scale(1)}30%{transform:scale(1.3) rotate(6deg)}60%{transform:scale(.9) rotate(-6deg)}}
@@ -39,19 +42,22 @@
   .pet-sub{color:var(--hint);font-size:13px;margin-top:4px;}
   .pet-mood{font-size:14px;margin-top:8px;min-height:20px;}
   .xp-text{text-align:center;font-size:12px;color:var(--hint);margin-top:6px;font-variant-numeric:tabular-nums;}
-  .daily{display:flex;background:linear-gradient(90deg,#ff9f43,#ffcc48);color:#1a1000;font-weight:700;border-radius:14px;padding:12px 16px;margin-bottom:12px;cursor:pointer;justify-content:space-between;align-items:center;box-shadow:0 6px 20px rgba(255,159,67,.35);}
+  .daily{display:flex;background:linear-gradient(90deg,#ff9f43,#ffcc48);color:#1a1000;
+    font-weight:700;border-radius:14px;padding:12px 16px;margin-bottom:12px;cursor:pointer;
+    justify-content:space-between;align-items:center;box-shadow:0 6px 20px rgba(255,159,67,.35);}
   .daily.hidden{display:none;}
-  .bank-card{background:linear-gradient(135deg,#1a2a3a,#0f1a26);border:1px solid rgba(255,215,0,.18);border-radius:18px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden;}
-  .bank-card::before{content:'🏦';position:absolute;right:-10px;top:-20px;font-size:110px;opacity:.06;pointer-events:none;}
+  .bank-card{background:linear-gradient(135deg,#1a2a3a,#0f1a26);border:1px solid rgba(255,215,0,.18);
+    border-radius:18px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden;}
+  .bank-card::before{content:'🏦';position:absolute;right:-10px;top:-20px;font-size:110px;opacity:.06;}
   .bank-title{font-size:13px;color:var(--hint);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
   .bank-balance{font-size:30px;font-weight:800;color:#ffd23f;line-height:1.1;}
   .bank-balance small{font-size:14px;color:var(--hint);font-weight:600;margin-left:4px;}
   .owner-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
-  .owner-actions button{padding:13px 10px;border:0;border-radius:12px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .1s;}
+  .owner-actions button{padding:13px 10px;border:0;border-radius:12px;font-family:inherit;
+    font-size:13px;font-weight:700;cursor:pointer;transition:transform .1s;}
   .owner-actions button:active{transform:scale(.96);}
   .btn-topup{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
   .btn-salary{background:linear-gradient(135deg,#7a5cff,#00d4ff);color:#fff;}
-  .card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;border:1px solid rgba(255,255,255,.04);}
   .stat{margin:10px 0;}
   .stat-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;color:var(--hint);}
   .stat-head b{color:var(--text);font-weight:600;}
@@ -63,63 +69,95 @@
   .b-clean{background:linear-gradient(90deg,#00b8d4,#48dbfb);}
   .b-health{background:linear-gradient(90deg,#ff3b5c,#ee5253);}
   .actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .action{background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:14px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;overflow:hidden;transition:transform .12s;color:var(--text);font-family:inherit;}
+  .action{background:var(--card);border:1px solid rgba(255,255,255,.05);
+    border-radius:16px;padding:14px 10px;cursor:pointer;display:flex;flex-direction:column;
+    align-items:center;gap:6px;position:relative;overflow:hidden;transition:transform .12s;
+    color:var(--text);font-family:inherit;}
   .action:active:not(:disabled){transform:scale(.96);}
   .action:disabled{opacity:.55;cursor:not-allowed;}
   .action .ic{font-size:26px;}
   .action .lbl{font-size:13px;font-weight:600;}
-  .action .cd{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;backdrop-filter:blur(2px);}
+  .action .cd{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;
+    align-items:center;justify-content:center;font-size:15px;font-weight:700;
+    font-variant-numeric:tabular-nums;backdrop-filter:blur(2px);}
   .action .cd:empty{display:none;}
   .action.wide{grid-column:span 2;flex-direction:row;justify-content:center;gap:8px;padding:13px;}
   .action.heal{background:linear-gradient(135deg,#ff3b5c,#ee5253);color:#fff;border:0;}
   .score-line{text-align:center;color:var(--hint);font-size:13px;margin-top:12px;}
   .score-line b{color:var(--text);}
-  .streak-badge{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:10px;background:rgba(255,120,60,.15);color:#ff8a3c;font-weight:700;}
-  .events-title{font-size:15px;font-weight:700;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
-  .event{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(127,127,127,.1);font-size:13px;}
-  .event:last-child{border:0;}
-  .event .av{width:30px;height:30px;border-radius:50%;flex:0 0 30px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;}
-  .event .txt{flex:1;min-width:0;}
-  .event .txt b{font-weight:600;}
-  .event .time{color:var(--hint);font-size:11px;white-space:nowrap;}
-  .empty{text-align:center;color:var(--hint);font-size:13px;padding:16px 0;}
+  .streak-badge{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:10px;
+    background:rgba(255,120,60,.15);color:#ff8a3c;font-weight:700;}
   h2{font-size:15px;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
-  .lb{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(127,127,127,.1);}
-  .lb:last-child{border:0;}
-  .lb .rank{width:22px;text-align:center;font-weight:700;font-size:13px;color:var(--hint);}
-  .lb .rank.g{color:#ffd23f;}.lb .rank.s{color:#c0c8d0;}.lb .rank.b{color:#cd7f32;}
-  .lb .av{width:32px;height:32px;border-radius:50%;flex:0 0 32px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;}
-  .lb .name{flex:1;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .lb .name.me{color:#48dbfb;font-weight:700;}
-  .lb .pts{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;}
-  .lb .badges{display:flex;gap:3px;font-size:14px;}
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);background:rgba(0,0,0,.9);color:#fff;padding:10px 18px;border-radius:12px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:100;max-width:82%;text-align:center;font-weight:600;}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-  .toast.gold{background:linear-gradient(90deg,#ff9f43,#ffcc48);color:#1a1000;}
+  .quest{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(127,127,127,.1);}
+  .quest:last-child{border:0;}
+  .quest.done{opacity:.6;}
+  .quest .qi{font-size:22px;}
+  .quest .qt{flex:1;font-size:13px;}
+  .quest .qt small{display:block;color:var(--hint);font-size:11px;margin-top:2px;}
+  .quest button{padding:6px 12px;border:0;border-radius:8px;font-size:12px;font-weight:700;
+    cursor:pointer;background:rgba(127,127,127,.15);color:var(--text);}
+  .quest button.ready{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
+  .quest button.claimed{background:rgba(72,217,142,.2);color:#48d98e;}
+  .inv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .inv-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);
+    border-radius:12px;padding:10px 6px;text-align:center;position:relative;cursor:pointer;}
+  .inv-item .ie{font-size:24px;}
+  .inv-item .in{font-size:11px;color:var(--hint);margin-top:4px;font-weight:600;}
+  .inv-item .ic2{font-size:11px;color:#ffd23f;margin-top:2px;font-weight:700;}
+  .inv-item .badge{position:absolute;top:-6px;right:-6px;background:var(--accent);color:#fff;
+    font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+  .inv-item.owned{background:rgba(122,92,255,.12);border-color:rgba(122,92,255,.3);}
+  .mouse-btn{width:100%;padding:14px;border:0;border-radius:14px;font-family:inherit;
+    font-size:15px;font-weight:700;cursor:pointer;
+    background:linear-gradient(135deg,#48d98e,#00b8d4);color:#fff;
+    display:flex;align-items:center;justify-content:center;gap:8px;}
+  .mouse-btn:disabled{opacity:.5;cursor:not-allowed;background:rgba(127,127,127,.2);}
+  .mouse-area{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;
+    display:none;align-items:center;justify-content:center;padding:20px;}
+  .mouse-area.show{display:flex;}
+  .mouse-box{background:var(--card);border-radius:20px;padding:20px;width:100%;
+    max-width:400px;text-align:center;}
+  .mouse-board{height:280px;background:linear-gradient(135deg,#1a2a3a,#0f1a26);
+    border-radius:16px;position:relative;overflow:hidden;margin:12px 0;}
+  .mouse-target{position:absolute;font-size:48px;cursor:pointer;user-select:none;
+    transition:transform .1s;animation:pop .3s;}
+  .mouse-target:active{transform:scale(.85);}
+  @keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+  .mouse-timer{font-size:22px;font-weight:800;color:#ffd23f;margin-bottom:8px;}
   .loader{text-align:center;padding:40px;color:var(--hint);}
   .fatal{color:#ff6b6b;font-size:13px;padding:16px;line-height:1.5;word-break:break-word;}
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);
+    background:rgba(0,0,0,.9);color:#fff;padding:10px 18px;border-radius:12px;font-size:14px;
+    opacity:0;transition:.25s;pointer-events:none;z-index:400;max-width:82%;text-align:center;font-weight:600;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast.gold{background:linear-gradient(90deg,#ff9f43,#ffcc48);color:#1a1000;}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;
+    justify-content:center;z-index:200;padding:20px;}
   .modal.show{display:flex;}
   .modal-box{background:var(--card);border-radius:16px;padding:20px;width:100%;max-width:360px;}
   .modal-box h3{margin:0 0 4px;font-size:17px;}
   .modal-box .sub{color:var(--hint);font-size:12px;margin-bottom:14px;}
-  .modal-box label{display:block;font-size:12px;color:var(--hint);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px;}
-  .modal-box input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(127,127,127,.3);background:rgba(0,0,0,.2);color:var(--text);font-size:16px;font-family:inherit;margin-bottom:12px;}
+  .modal-box label{display:block;font-size:12px;color:var(--hint);margin-bottom:6px;
+    text-transform:uppercase;letter-spacing:.4px;}
+  .modal-box input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(127,127,127,.3);
+    background:rgba(0,0,0,.2);color:var(--text);font-size:16px;font-family:inherit;margin-bottom:12px;}
   .modal-box input:focus{outline:none;border-color:var(--accent);}
   .preset-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px;}
-  .preset-row button{padding:10px 0;border:1px solid rgba(127,127,127,.25);background:transparent;color:var(--text);border-radius:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+  .preset-row button{padding:10px 0;border:1px solid rgba(127,127,127,.25);background:transparent;
+    color:var(--text);border-radius:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;}
   .preset-row button.active{background:var(--accent);border-color:var(--accent);color:#fff;}
   .topn-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px;}
-  .topn-row button{padding:10px 0;border:1px solid rgba(127,127,127,.25);background:transparent;color:var(--text);border-radius:10px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;}
+  .topn-row button{padding:10px 0;border:1px solid rgba(127,127,127,.25);background:transparent;
+    color:var(--text);border-radius:10px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;}
   .topn-row button.active{background:var(--accent);border-color:var(--accent);color:#fff;}
   .modal-btns{display:flex;gap:8px;}
-  .modal-btns button{flex:1;padding:12px;border:0;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;}
+  .modal-btns button{flex:1;padding:12px;border:0;border-radius:10px;font-family:inherit;
+    font-size:14px;font-weight:600;cursor:pointer;}
   .modal-btns .cancel{background:rgba(127,127,127,.15);color:var(--text);}
   .modal-btns .ok{background:var(--accent);color:#fff;}
 </style>
 </head>
 <body>
-
 <svg width="0" height="0" style="position:absolute">
   <defs>
     <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
@@ -131,11 +169,10 @@
 
 <div class="wrap">
   <div class="loader" id="loader">Загружаем питомца…</div>
-
   <div id="app" style="display:none">
+
     <div class="daily hidden" id="dailyBtn">
-      <span>🎁 Ежедневный бонус</span>
-      <span id="dailyStreak"></span>
+      <span>🎁 Ежедневный бонус</span><span id="dailyStreak"></span>
     </div>
 
     <div class="pet-card">
@@ -148,6 +185,7 @@
       </div>
       <div class="pet-title">
         <h1>
+          <span id="hatEl"></span>
           <span id="nameEl">Пушистик</span>
           <button class="edit-btn" id="renameBtn" style="display:none">✏️</button>
         </h1>
@@ -160,8 +198,7 @@
     <div class="bank-card" id="bankCard" style="display:none">
       <div class="bank-title">🏦 Банк питомца</div>
       <div class="bank-balance">
-        <span id="bankBalance">0.00</span>
-        <small id="bankCurrency">USDT</small>
+        <span id="bankBalance">0.00</span><small id="bankCurrency">USDT</small>
       </div>
       <div class="owner-actions">
         <button class="btn-topup" id="topupBtn">💳 Пополнить</button>
@@ -188,8 +225,23 @@
     <div class="score-line" id="scoreEl">Твои очки: <b>0</b></div>
 
     <div class="card" style="margin-top:12px">
-      <div class="events-title">📜 Лента событий</div>
-      <div id="eventsEl"><div class="empty">Тут пока тихо…</div></div>
+      <h2>🐭 Мини-игра</h2>
+      <button class="mouse-btn" id="mouseBtn">🐭 Поймать мышь (+3 очка)</button>
+    </div>
+
+    <div class="card">
+      <h2>📋 Квесты на сегодня</h2>
+      <div id="questsEl"><div class="loader">Загрузка…</div></div>
+    </div>
+
+    <div class="card">
+      <h2>🎒 Инвентарь</h2>
+      <div class="inv-grid" id="invEl"></div>
+    </div>
+
+    <div class="card">
+      <h2>📜 Лента событий</h2>
+      <div id="eventsEl"><div class="loader">Тут пока тихо…</div></div>
     </div>
 
     <div class="card">
@@ -201,6 +253,7 @@
 
 <div class="toast" id="toastEl"></div>
 
+<!-- Модал переименования -->
 <div class="modal" id="renameModal">
   <div class="modal-box">
     <h3>Переименовать питомца</h3>
@@ -212,26 +265,25 @@
   </div>
 </div>
 
+<!-- Модал пополнения -->
 <div class="modal" id="topupModal">
   <div class="modal-box">
     <h3>💳 Пополнить банк</h3>
     <div class="sub">Выбери сумму или введи свою</div>
     <div class="preset-row" id="topupPresets">
-      <button data-val="0.5">0.5</button>
-      <button data-val="1" class="active">1</button>
-      <button data-val="2">2</button>
-      <button data-val="5">5</button>
-      <button data-val="10">10</button>
+      <button data-val="0.5">0.5</button><button data-val="1" class="active">1</button>
+      <button data-val="2">2</button><button data-val="5">5</button><button data-val="10">10</button>
     </div>
     <label>Своя сумма (USDT)</label>
     <input type="number" id="topupInput" min="0.01" step="0.01" placeholder="например 0.04" />
     <div class="modal-btns">
       <button class="cancel" id="topupCancel">Отмена</button>
-      <button class="ok" id="topupOk">Перейти к оплате</button>
+      <button class="ok" id="topupOk">К оплате</button>
     </div>
   </div>
 </div>
 
+<!-- Модал зарплаты -->
 <div class="modal" id="salaryModal">
   <div class="modal-box">
     <h3>💸 Зарплата</h3>
@@ -240,11 +292,8 @@
     <input type="number" id="salaryInput" min="0.01" step="0.01" placeholder="вся сумма" />
     <label>Сколько лучших получат</label>
     <div class="topn-row" id="topnRow">
-      <button data-n="1">Топ-1</button>
-      <button data-n="3" class="active">Топ-3</button>
-      <button data-n="5">Топ-5</button>
-      <button data-n="10">Топ-10</button>
-      <button data-n="0">Все</button>
+      <button data-n="1">Топ-1</button><button data-n="3" class="active">Топ-3</button>
+      <button data-n="5">Топ-5</button><button data-n="10">Топ-10</button><button data-n="0">Все</button>
     </div>
     <div class="modal-btns">
       <button class="cancel" id="salaryCancel">Отмена</button>
@@ -253,40 +302,40 @@
   </div>
 </div>
 
+<!-- Мини-игра -->
+<div class="mouse-area" id="mouseArea">
+  <div class="mouse-box">
+    <h3>🐭 Поймай мышь</h3>
+    <div class="mouse-timer" id="mouseTimer">10</div>
+    <div class="mouse-board" id="mouseBoard"></div>
+    <div class="modal-btns">
+      <button class="ok" id="mouseClose" style="background:var(--accent);color:#fff">Закрыть</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL = "https://ripjvcglkcqvyolnewaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_P5IC_YkWUcchuxcQM_THFQ_uOxhPv4Q";
 const BOT_USERNAME = "Aipidik_bot";
+const API_BASE = "https://твой-railway.up.railway.app"; // ← ЗАМЕНИ на URL Railway
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const tg = window.Telegram?.WebApp;
-tg?.ready();
-tg?.expand();
+tg?.ready(); tg?.expand();
 try { tg?.setHeaderColor?.("secondary_bg_color"); } catch(e){}
 try { tg?.setBackgroundColor?.("bg_color"); } catch(e){}
 
 const params = new URLSearchParams(location.search);
 const petId = params.get("pet");
-
 const init = tg?.initDataUnsafe || {};
 const user = init.user || { id: 0, first_name: "Гость" };
 const userId = user.id;
 const firstName = user.first_name || "Гость";
 const username = user.username || null;
 
-if (!petId) {
-  document.getElementById("loader").innerHTML =
-    "<div style='text-align:center;padding:40px;line-height:1.6'>" +
-    "<div style='font-size:64px'>🐾</div><b>Открой меня из бота</b><br><br>" +
-    "Зайди в бота, создай питомца<br>и нажми «Открыть питомца»</div>";
-  throw new Error("no pet");
-}
-if (!userId) {
-  document.getElementById("loader").innerHTML =
-    "<div style='text-align:center;padding:40px;line-height:1.6'>" +
-    "<div style='font-size:64px'>🔒</div><b>Открой через Telegram</b></div>";
-  throw new Error("no user");
-}
+if (!petId) { document.getElementById("loader").innerHTML = "<div style='text-align:center;padding:40px'>🐾<br><b>Открой из бота</b></div>"; throw 0; }
+if (!userId) { document.getElementById("loader").innerHTML = "<div style='text-align:center;padding:40px'>🔒<br><b>Только в Telegram</b></div>"; throw 0; }
 
 const STAGES      = ["🥚","🐣","🐥","🐓","🦅"];
 const STAGE_NAMES = ["Яйцо","Птенец","Юнец","Взрослый","Старейшина"];
@@ -295,490 +344,580 @@ const XP_PER_LEVEL = 50;
 const DAILY_BONUS = 20;
 const RING_CIRC   = 2 * Math.PI * 90;
 
+const ITEMS = {
+  food:     { emoji:"🍖", name:"Еда",     price: 5,  effect:"+30 сытости, +15 энергии" },
+  toy:      { emoji:"🎾", name:"Игрушка", price: 8,  effect:"+30 настроения" },
+  medicine: { emoji:"💊", name:"Аптечка", price: 15, effect:"+40 здоровья" },
+  hat:      { emoji:"🎩", name:"Шапка",   price: 30, effect:"Украшение" },
+};
+
+// ВАЖНО: feed даёт +10 энергии
 const ACTIONS = {
-  feed: { emoji:"🍖", label:"Покормить", cd: 5*60,  xp: 2, effects:{ hunger:+25 },           score:+1, msg:"+25 сытости" },
-  pet:  { emoji:"✋", label:"Погладить", cd: 60,    xp: 1, effects:{ mood:+10 },             score:+1, msg:"+10 настроения" },
-  play: { emoji:"🎾", label:"Играть",    cd: 10*60, xp: 5, effects:{ mood:+20, energy:-15 }, score:+2, msg:"+20 настроения, −15 энергии" },
-  wash: { emoji:"🧼", label:"Помыть",    cd: 15*60, xp: 2, effects:{ clean:+30 },            score:+1, msg:"+30 чистоты" },
-  heal: { emoji:"💊", label:"Лечить",    cd: 60*60, xp: 3, effects:{ health:+20 },           score:-30, cost:30, msg:"+20 здоровья" }
+  feed: { emoji:"🍖", label:"Покормить", cd: 5*60,  xp: 2, effects:{ hunger:+25, energy:+10 }, score:+1, msg:"+25 сытости, +10 энергии" },
+  pet:  { emoji:"✋", label:"Погладить", cd: 60,    xp: 1, effects:{ mood:+10 },               score:+1, msg:"+10 настроения" },
+  play: { emoji:"🎾", label:"Играть",    cd: 10*60, xp: 5, effects:{ mood:+20, energy:-15 },   score:+2, msg:"+20 настроения, −15 энергии" },
+  wash: { emoji:"🧼", label:"Помыть",    cd: 15*60, xp: 2, effects:{ clean:+30 },              score:+1, msg:"+30 чистоты" },
+  heal: { emoji:"💊", label:"Лечить",    cd: 60*60, xp: 3, effects:{ health:+20 },             score:-30, cost:30, msg:"+20 здоровья" }
 };
 
 const AVATAR_COLORS = ["#7a5cff","#00b8d4","#ff7a18","#ff3b5c","#48dbfb","#ffcc48","#48d98e","#c86dd7"];
-function avatarColor(id){ return AVATAR_COLORS[Math.abs(Number(id) || 0) % AVATAR_COLORS.length]; }
-function initial(name){ return (name || "?").trim().charAt(0).toUpperCase(); }
+const avColor = id => AVATAR_COLORS[Math.abs(Number(id)||0) % AVATAR_COLORS.length];
+const initial = n => (n||"?").trim().charAt(0).toUpperCase();
 
-const RANKS = [
-  { min: 0,   icon: "🐣" },
-  { min: 5,   icon: "🍼" },
-  { min: 30,  icon: "💪" },
-  { min: 100, icon: "👑" }
-];
-function badgesFor(m) {
-  const b = [];
-  const r = [...RANKS].reverse().find(r => (m.score || 0) >= r.min);
-  if (r) b.push(r.icon);
-  if ((m.streak || 0) >= 3) b.push("🔥");
-  if ((m.streak || 0) >= 7) b.push("⚡");
-  return b;
+const RANKS = [{min:0,icon:"🐣"},{min:5,icon:"🍼"},{min:30,icon:"💪"},{min:100,icon:"👑"}];
+function badgesFor(m){
+  const b=[]; const r=[...RANKS].reverse().find(x=>(m.score||0)>=x.min); if(r)b.push(r.icon);
+  if((m.streak||0)>=3)b.push("🔥"); if((m.streak||0)>=7)b.push("⚡"); return b;
 }
 
-let pet = null;
-let me  = null;
-let cooldowns = {};
-let myWriteAt = 0;
-let isOwner = false;
+let pet=null, me=null, cooldowns={}, myWriteAt=0, isOwner=false;
+let quests=[], inventory=[];
 
 const $ = id => document.getElementById(id);
-const clamp = (v,min=0,max=100) => Math.max(min, Math.min(max, Math.round(v)));
-const levelFromXp = xp => Math.min(MAX_LEVEL, Math.floor(xp / XP_PER_LEVEL) + 1);
-const xpForLevel  = lvl => (lvl - 1) * XP_PER_LEVEL;
-const stageFromLevel = lvl => lvl>=25?4 : lvl>=17?3 : lvl>=10?2 : lvl>=5?1 : 0;
-const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clamp = (v,mn=0,mx=100) => Math.max(mn, Math.min(mx, Math.round(v)));
+const levelFromXp = xp => Math.min(MAX_LEVEL, Math.floor(xp/XP_PER_LEVEL)+1);
+const xpForLevel = lvl => (lvl-1)*XP_PER_LEVEL;
+const stageFromLevel = l => l>=25?4 : l>=17?3 : l>=10?2 : l>=5?1 : 0;
+const esc = s => String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 function toast(msg, gold){
-  const el = $("toastEl");
-  el.textContent = msg;
-  el.classList.toggle("gold", !!gold);
-  el.classList.add("show");
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove("show"), 2000);
+  const el=$("toastEl"); el.textContent=msg; el.classList.toggle("gold",!!gold);
+  el.classList.add("show"); clearTimeout(el._t);
+  el._t=setTimeout(()=>el.classList.remove("show"),2000);
 }
+function haptic(t){ try{ if(t==="success")tg?.HapticFeedback?.notificationOccurred("success"); else tg?.HapticFeedback?.impactOccurred("light"); }catch(e){} }
+function fatal(t,e){ $("loader").style.display="block"; $("loader").innerHTML="<div class='fatal'><b>"+t+"</b><br>"+(e?.message||e)+"</div>"; $("app").style.display="none"; }
 
-function haptic(type){
-  try {
-    if (type === "success") tg?.HapticFeedback?.notificationOccurred("success");
-    else tg?.HapticFeedback?.impactOccurred("light");
-  } catch(e){}
+function moodText(p){
+  if(p.health<30)return"Мне плохо… 💔"; if(p.hunger<20)return"Я голоден! 🍖";
+  if(p.clean<20)return"Я грязный… 🧼"; if(p.energy<20)return"Я устал… 💤";
+  if(p.mood<20)return"Мне грустно… 😢";
+  if(p.hunger>70&&p.mood>70&&p.clean>70&&p.health>70)return"Я счастлив! ✨";
+  return"Мне хорошо 😊";
 }
-
-function showFatal(title, err){
-  $("loader").style.display = "block";
-  $("loader").innerHTML = "<div class='fatal'><b>" + title + "</b><br><br>" +
-    "message: " + (err?.message || err) + "</div>";
-  $("app").style.display = "none";
+function glow(p){
+  if(p.health<30)return"0 0 40px rgba(255,59,92,.55)";
+  if(p.mood<30)return"0 0 40px rgba(122,140,160,.4)";
+  if(p.energy<30)return"0 0 40px rgba(84,160,255,.4)";
+  if(p.mood>70&&p.health>70)return"0 0 50px rgba(255,204,72,.55)";
+  return"0 0 35px rgba(122,92,255,.35)";
 }
-
-function openBotLink(url){
-  try {
-    if (tg?.openTelegramLink) tg.openTelegramLink(url);
-    else window.open(url, "_blank");
-  } catch(e) { window.open(url, "_blank"); }
-}
-
-function petMoodText(p){
-  if (p.health < 30) return "Мне плохо… 💔";
-  if (p.hunger < 20) return "Я голоден! 🍖";
-  if (p.clean  < 20) return "Я грязный… 🧼";
-  if (p.energy < 20) return "Я устал… 💤";
-  if (p.mood   < 20) return "Мне грустно… 😢";
-  if (p.hunger > 70 && p.mood > 70 && p.clean > 70 && p.health > 70) return "Я счастлив! ✨";
-  return "Мне хорошо 😊";
-}
-
-function petGlow(p){
-  if (p.health < 30) return "0 0 40px rgba(255,59,92,.55)";
-  if (p.mood < 30)   return "0 0 40px rgba(122,140,160,.4)";
-  if (p.energy < 30) return "0 0 40px rgba(84,160,255,.4)";
-  if (p.mood > 70 && p.health > 70) return "0 0 50px rgba(255,204,72,.55)";
-  return "0 0 35px rgba(122,92,255,.35)";
-}
-
-function applyTick(p){
-  const now = Date.now();
-  const last = new Date(p.last_tick_at).getTime();
-  const min = (now - last) / 60000;
-  if (min < 1) return p;
-  const h = min / 60;
-  const c = { ...p };
-  c.hunger = clamp(c.hunger - 3 * h);
-  c.mood   = clamp(c.mood   - 3 * h);
-  c.energy = clamp(c.energy - 2 * h);
-  c.clean  = clamp(c.clean  - 2 * h);
-  if (c.hunger < 20 || c.clean < 20) c.health = clamp(c.health - 5 * h);
-  else if (c.hunger > 60 && c.mood > 60 && c.clean > 60) c.health = clamp(c.health + 2 * h);
-  c.last_tick_at = new Date().toISOString();
+function tick(p){
+  const now=Date.now(), last=new Date(p.last_tick_at).getTime(), min=(now-last)/60000;
+  if(min<1)return p;
+  const h=min/60, c={...p};
+  c.hunger=clamp(c.hunger-3*h); c.mood=clamp(c.mood-3*h);
+  c.energy=clamp(c.energy-2*h); c.clean=clamp(c.clean-2*h);
+  if(c.hunger<20||c.clean<20)c.health=clamp(c.health-5*h);
+  else if(c.hunger>60&&c.mood>60&&c.clean>60)c.health=clamp(c.health+2*h);
+  c.last_tick_at=new Date().toISOString();
   return c;
 }
+function setBar(k,v){ $("b-"+k).style.width=v+"%"; $("v-"+k).textContent=v+"%"; }
 
-function setBar(key, val){
-  $("b-" + key).style.width = val + "%";
-  $("v-" + key).textContent = val + "%";
+async function api(path, opts={}){
+  const r = await fetch(API_BASE + path, {
+    ...opts,
+    headers: {"Content-Type":"application/json", ...(opts.headers||{})}
+  });
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
 }
 
 function render(){
-  if (!pet) return;
+  if(!pet)return;
   const lvl = levelFromXp(pet.xp);
-  const stage = stageFromLevel(lvl);
-  $("petEl").textContent = STAGES[stage];
-  $("petEl").style.filter = "drop-shadow(" + petGlow(pet) + ")";
+  const st = stageFromLevel(lvl);
+  $("petEl").textContent = STAGES[st];
+  $("petEl").style.filter = "drop-shadow("+glow(pet)+")";
   $("nameEl").textContent = pet.name;
+  $("hatEl").textContent = (inventory.find(i=>i.item_type==="hat"&&i.count>0) ? "🎩 " : "");
 
   isOwner = Number(pet.owner_id) === Number(userId);
   $("renameBtn").style.display = isOwner ? "" : "none";
 
-  $("stageEl").textContent = STAGE_NAMES[stage] + " · Ур. " + lvl;
-  $("moodEl").textContent = petMoodText(pet);
+  $("stageEl").textContent = STAGE_NAMES[st]+" · Ур. "+lvl;
+  $("moodEl").textContent = moodText(pet);
 
-  setBar("hunger", pet.hunger);
-  setBar("mood",   pet.mood);
-  setBar("energy", pet.energy);
-  setBar("clean",  pet.clean);
-  setBar("health", pet.health);
+  setBar("hunger",pet.hunger); setBar("mood",pet.mood); setBar("energy",pet.energy);
+  setBar("clean",pet.clean); setBar("health",pet.health);
 
   const cur = pet.xp - xpForLevel(lvl);
-  const progress = lvl >= MAX_LEVEL ? 1 : cur / XP_PER_LEVEL;
+  const prog = lvl>=MAX_LEVEL ? 1 : cur/XP_PER_LEVEL;
   $("ringFg").style.strokeDasharray = RING_CIRC;
-  $("ringFg").style.strokeDashoffset = RING_CIRC * (1 - progress);
-  $("xpEl").textContent = lvl >= MAX_LEVEL ? "МАКС. УРОВЕНЬ" : ("XP: " + cur + " / " + XP_PER_LEVEL);
+  $("ringFg").style.strokeDashoffset = RING_CIRC*(1-prog);
+  $("xpEl").textContent = lvl>=MAX_LEVEL ? "МАКС" : ("XP: "+cur+" / "+XP_PER_LEVEL);
 
-  const bankCard = $("bankCard");
-  if (isOwner) {
-    bankCard.style.display = "";
-    $("bankBalance").textContent = Number(pet.bank_balance || 0).toFixed(2);
-    $("bankCurrency").textContent = pet.currency || "USDT";
-  } else bankCard.style.display = "none";
+  const bank = $("bankCard");
+  if(isOwner){
+    bank.style.display="";
+    $("bankBalance").textContent = Number(pet.bank_balance||0).toFixed(2);
+    $("bankCurrency").textContent = pet.currency||"USDT";
+  } else bank.style.display="none";
 
-  document.querySelectorAll(".action[data-act]").forEach(btn => {
-    const a = btn.dataset.act;
-    const cfg = ACTIONS[a];
-    const cd = btn.querySelector(".cd");
-    const until = cooldowns[a] || 0;
-    const left = Math.ceil((until - Date.now()) / 1000);
-    if (left > 0) {
+  document.querySelectorAll(".action[data-act]").forEach(btn=>{
+    const a = btn.dataset.act, cfg = ACTIONS[a], cd = btn.querySelector(".cd");
+    const until = cooldowns[a]||0, left = Math.ceil((until-Date.now())/1000);
+    if(left>0){
       btn.disabled = true;
-      const m = Math.floor(left / 60);
-      const s = left % 60;
-      cd.textContent = m + ":" + String(s).padStart(2,"0");
+      const m=Math.floor(left/60), s=left%60;
+      cd.textContent = m+":"+String(s).padStart(2,"0");
     } else {
-      btn.disabled = (cfg.cost && me && me.score < cfg.cost) ? true : false;
+      btn.disabled = (cfg.cost && me && me.score<cfg.cost);
       cd.textContent = "";
     }
   });
 
-  if (me) {
-    let extra = "";
-    if (me.streak >= 3) extra = " <span class='streak-badge'>🔥 " + me.streak + " дн.</span>";
-    $("scoreEl").innerHTML = "Твои очки: <b>" + me.score + "</b>" + extra;
+  if(me){
+    let extra = me.streak>=3 ? " <span class='streak-badge'>🔥 "+me.streak+" дн.</span>" : "";
+    $("scoreEl").innerHTML = "Твои очки: <b>"+me.score+"</b>"+extra;
   }
 
   checkDaily();
+  renderQuests();
+  renderInventory();
+  checkMouse();
 }
 
 function checkDaily(){
-  if (!me) return;
+  if(!me)return;
   const last = me.last_daily_at ? new Date(me.last_daily_at).getTime() : 0;
-  const canClaim = Date.now() - last > 24*60*60*1000;
-  const btn = $("dailyBtn");
-  if (canClaim) { btn.classList.remove("hidden"); $("dailyStreak").textContent = "+" + DAILY_BONUS; }
-  else btn.classList.add("hidden");
+  const can = Date.now()-last > 24*60*60*1000;
+  const b = $("dailyBtn");
+  if(can){ b.classList.remove("hidden"); $("dailyStreak").textContent="+"+DAILY_BONUS; }
+  else b.classList.add("hidden");
+}
+
+function checkMouse(){
+  if(!me)return;
+  const last = me.last_mouse_at ? new Date(me.last_mouse_at).getTime() : 0;
+  const left = 3600*1000 - (Date.now()-last);
+  const btn = $("mouseBtn");
+  if(left>0){
+    btn.disabled = true;
+    const m = Math.ceil(left/60000);
+    btn.textContent = "🐭 Доступно через "+m+" мин";
+  } else {
+    btn.disabled = false;
+    btn.textContent = "🐭 Поймать мышь (+3 очка)";
+  }
+}
+
+function renderQuests(){
+  const el = $("questsEl");
+  if(!quests.length){ el.innerHTML = "<div class='loader'>Загрузка…</div>"; return; }
+  const tmpl = {
+    feed_3:{emoji:"🍖",text:"Покормить 3 раза"},
+    pet_5:{emoji:"✋",text:"Погладить 5 раз"},
+    play_2:{emoji:"🎾",text:"Поиграть 2 раза"},
+    wash_1:{emoji:"🧼",text:"Помыть 1 раз"},
+    all_acts:{emoji:"🌟",text:"Сделать 4 разных дела"},
+  };
+  el.innerHTML = quests.map(q=>{
+    const t = tmpl[q.quest_type] || {emoji:"✨",text:q.quest_type};
+    const done = q.progress >= q.target;
+    const cls = q.claimed ? "done" : "";
+    let btn = "";
+    if(q.claimed) btn = "<button class='claimed'>✓ Забрано</button>";
+    else if(done) btn = "<button class='ready' data-claim='"+q.id+"'>Забрать</button>";
+    else btn = "<button disabled>"+q.progress+"/"+q.target+"</button>";
+    return "<div class='quest "+cls+"'>"+
+      "<div class='qi'>"+t.emoji+"</div>"+
+      "<div class='qt'>"+t.text+"<small>Прогресс: "+q.progress+" / "+q.target+"</small></div>"+
+      btn+"</div>";
+  }).join("");
+
+  el.querySelectorAll("button[data-claim]").forEach(b=>{
+    b.addEventListener("click", async ()=>{
+      try {
+        const r = await api("/api/quest/claim", {method:"POST", body: JSON.stringify({
+          pet_id: petId, user_id: userId, quest_id: parseInt(b.dataset.claim, 10)
+        })});
+        toast("🎁 +"+r.reward+" очков!", true);
+        if(me) me.score = (me.score||0) + r.reward;
+        await loadQuests();
+        render();
+      } catch(e){ toast("Ошибка"); }
+    });
+  });
+}
+
+function renderInventory(){
+  const el = $("invEl");
+  el.innerHTML = Object.entries(ITEMS).map(([k,it])=>{
+    const owned = inventory.find(i=>i.item_type===k);
+    const cnt = owned ? owned.count : 0;
+    const isHatOwned = k==="hat" && cnt>0;
+    const cls = cnt>0 ? "owned" : "";
+    const action = cnt>0 && k!=="hat" ? "use" : "buy";
+    const label = cnt>0 && k!=="hat" ? "Исп." : it.price;
+    return "<div class='inv-item "+cls+"' data-type='"+k+"'>"+
+      (cnt>0 ? "<span class='badge'>"+cnt+"</span>" : "")+
+      "<div class='ie'>"+it.emoji+"</div>"+
+      "<div class='in'>"+it.name+"</div>"+
+      "<div class='ic2'>"+label+" ⭐</div>"+
+      "</div>";
+  }).join("");
+
+  el.querySelectorAll(".inv-item").forEach(item=>{
+    item.addEventListener("click", async ()=>{
+      const type = item.dataset.type;
+      const owned = inventory.find(i=>i.item_type===type);
+      const cnt = owned ? owned.count : 0;
+      const isHatOwned = type==="hat" && cnt>0;
+      try {
+        if(cnt>0 && type!=="hat"){
+          const r = await api("/api/inventory/use", {method:"POST", body: JSON.stringify({
+            pet_id: petId, user_id: userId, item_type: type
+          })});
+          toast(ITEMS[type].emoji+" Использовано");
+          if(pet && r.effects){ Object.assign(pet, r.effects); }
+          await loadInventory();
+          render();
+        } else if(isHatOwned){
+          toast("Шапка уже надета");
+        } else {
+          const r = await api("/api/inventory/buy", {method:"POST", body: JSON.stringify({
+            pet_id: petId, user_id: userId, item_type: type
+          })});
+          toast("✅ Куплено за "+ITEMS[type].price+" ⭐");
+          if(me) me.score = r.new_score;
+          await loadInventory();
+          render();
+        }
+      } catch(e){
+        toast("Не хватает очков");
+      }
+    });
+  });
 }
 
 async function loadPet(){
-  const { data, error } = await sb.from("pets").select("*").eq("id", petId).maybeSingle();
-  if (error) { showFatal("Ошибка загрузки", error); return; }
-  if (!data) { showFatal("Питомец не найден", { message: "Ссылка устарела" }); return; }
+  const {data, error} = await sb.from("pets").select("*").eq("id", petId).maybeSingle();
+  if(error){ fatal("Ошибка загрузки", error); return; }
+  if(!data){ fatal("Питомец не найден", "Ссылка устарела"); return; }
   pet = data;
-  const ticked = applyTick(pet);
-  if (ticked.last_tick_at !== pet.last_tick_at) {
+  const t = tick(pet);
+  if(t.last_tick_at !== pet.last_tick_at){
     myWriteAt = Date.now();
     await sb.from("pets").update({
-      hunger: ticked.hunger, mood: ticked.mood, energy: ticked.energy,
-      clean: ticked.clean, health: ticked.health, last_tick_at: ticked.last_tick_at
+      hunger:t.hunger, mood:t.mood, energy:t.energy, clean:t.clean,
+      health:t.health, last_tick_at:t.last_tick_at
     }).eq("id", petId);
   }
-  pet = ticked;
+  pet = t;
   render();
 }
 
 async function loadMe(){
-  const { data, error } = await sb.from("members").select("*")
+  const {data} = await sb.from("members").select("*")
     .eq("pet_id", petId).eq("user_id", userId).maybeSingle();
-  if (error) { console.error(error); return; }
-  if (!data) {
-    const { data: created, error: e2 } = await sb.from("members").insert({
+  if(!data){
+    const {data:c, error} = await sb.from("members").insert({
       pet_id: petId, user_id: userId, username, first_name: firstName, score: 0
     }).select().single();
-    if (e2) { showFatal("Ошибка регистрации", e2); return; }
-    me = created;
+    if(error){ fatal("Ошибка регистрации", error); return; }
+    me = c;
   } else me = data;
-
-  for (const k of Object.keys(ACTIONS)) {
-    const t = me["last_" + k + "_at"];
-    if (t) cooldowns[k] = new Date(t).getTime() + ACTIONS[k].cd * 1000;
+  for(const k of Object.keys(ACTIONS)){
+    const t = me["last_"+k+"_at"];
+    if(t) cooldowns[k] = new Date(t).getTime() + ACTIONS[k].cd*1000;
   }
   render();
 }
 
-async function loadLeaderboard(){
-  const { data, error } = await sb.from("members")
-    .select("user_id,first_name,username,score,streak,today_score")
-    .eq("pet_id", petId).order("score", { ascending: false }).limit(10);
-  if (error) { console.error(error); return; }
-  const el = $("lbEl");
-  if (!data || !data.length) { el.innerHTML = "<div class='empty'>Пока никого</div>"; return; }
+async function loadQuests(){
+  try {
+    const r = await api("/api/quests?pet_id="+petId+"&user_id="+userId);
+    quests = r.quests || [];
+  } catch(e){ quests = []; }
+}
 
-  el.innerHTML = data.map((m, i) => {
-    const name = escapeHtml(m.first_name || m.username || ("#" + m.user_id));
-    const cls = m.user_id === userId ? "me" : "";
-    const rankCls = i===0?"g":i===1?"s":i===2?"b":"";
+async function loadInventory(){
+  try {
+    const r = await api("/api/inventory?pet_id="+petId+"&user_id="+userId);
+    inventory = r.items || [];
+  } catch(e){ inventory = []; }
+}
+
+async function loadLeaderboard(){
+  const {data} = await sb.from("members")
+    .select("user_id,first_name,username,score,streak,today_score")
+    .eq("pet_id", petId).order("score",{ascending:false}).limit(10);
+  const el = $("lbEl");
+  if(!data || !data.length){ el.innerHTML = "<div class='loader'>Пока никого</div>"; return; }
+  const medals = ["🥇","🥈","🥉","4.","5.","6.","7.","8.","9.","10."];
+  el.innerHTML = data.map((m,i)=>{
+    const name = esc(m.first_name || m.username || ("#"+m.user_id));
+    const cls = m.user_id===userId ? "me" : "";
     const badges = badgesFor(m).join("");
-    return "<div class='lb'>" +
-      "<div class='rank "+rankCls+"'>" + (i+1) + "</div>" +
-      "<div class='av' style='background:" + avatarColor(m.user_id) + "'>" + escapeHtml(initial(name)) + "</div>" +
-      "<div class='name "+cls+"'>" + name + "</div>" +
-      (badges ? "<div class='badges'>" + badges + "</div>" : "") +
-      "<div class='pts'>" + m.score + "</div>" +
-      "</div>";
+    return "<div class='lb'>"+
+      "<div class='rank "+(i<3?["g","s","b"][i]:"")+"'>"+(medals[i]||(i+1))+"</div>"+
+      "<div class='av' style='background:"+avColor(m.user_id)+"'>"+esc(initial(name))+"</div>"+
+      "<div class='name "+cls+"'>"+name+"</div>"+
+      (badges?"<div class='badges'>"+badges+"</div>":"")+
+      "<div class='pts'>"+m.score+"</div></div>";
   }).join("");
 }
 
 async function loadEvents(){
-  const { data, error } = await sb.from("events")
-    .select("*").eq("pet_id", petId).order("created_at", { ascending: false }).limit(8);
-  if (error) { console.error(error); return; }
+  const {data} = await sb.from("events").select("*").eq("pet_id", petId)
+    .order("created_at",{ascending:false}).limit(8);
   const el = $("eventsEl");
-  if (!data || !data.length) { el.innerHTML = "<div class='empty'>Тут пока тихо…</div>"; return; }
-  el.innerHTML = data.map(renderEvent).join("");
-}
-
-function renderEvent(e){
-  const t = new Date(e.created_at);
-  const diff = Math.floor((new Date() - t) / 1000);
-  let timeStr;
-  if (diff < 60) timeStr = "только что";
-  else if (diff < 3600) timeStr = Math.floor(diff/60) + " мин";
-  else if (diff < 86400) timeStr = Math.floor(diff/3600) + " ч";
-  else timeStr = Math.floor(diff/86400) + " дн";
-  const name = escapeHtml(e.first_name || "Кто-то");
-  const cfg = ACTIONS[e.action] || { emoji: "✨" };
-  return "<div class='event'>" +
-    "<div class='av' style='background:" + avatarColor(e.user_id) + "'>" + escapeHtml(initial(name)) + "</div>" +
-    "<div class='txt'><b>" + name + "</b> " + cfg.emoji + "</div>" +
-    "<div class='time'>" + timeStr + "</div>" +
-    "</div>";
+  if(!data || !data.length){ el.innerHTML = "<div class='loader'>Тут пока тихо…</div>"; return; }
+  el.innerHTML = data.map(e=>{
+    const diff = Math.floor((Date.now()-new Date(e.created_at))/1000);
+    let t; if(diff<60)t="только что"; else if(diff<3600)t=Math.floor(diff/60)+" мин";
+    else if(diff<86400)t=Math.floor(diff/3600)+" ч"; else t=Math.floor(diff/86400)+" дн";
+    const name = esc(e.first_name || "Кто-то");
+    const cfg = ACTIONS[e.action] || {emoji:"✨"};
+    return "<div class='event'>"+
+      "<div class='av' style='background:"+avColor(e.user_id)+"'>"+esc(initial(name))+"</div>"+
+      "<div class='txt'><b>"+name+"</b> "+cfg.emoji+"</div>"+
+      "<div class='time'>"+t+"</div></div>";
+  }).join("");
 }
 
 async function logEvent(action){
   try {
-    await sb.from("events").insert({
-      pet_id: petId, user_id: userId, first_name: firstName, action
-    });
-    const cutoff = new Date(Date.now() - 7*24*60*60*1000).toISOString();
+    await sb.from("events").insert({pet_id:petId, user_id:userId, first_name:firstName, action});
+    const cutoff = new Date(Date.now()-7*24*60*60*1000).toISOString();
     await sb.from("events").delete().eq("pet_id", petId).lt("created_at", cutoff);
   } catch(e){}
 }
 
 async function doAction(act){
-  if (!pet || !me) return;
-  const cfg = ACTIONS[act];
-  const now = Date.now();
-  if (cooldowns[act] && cooldowns[act] > now) { toast("Ещё рано ⌛"); return; }
-  if (cfg.cost && me.score < cfg.cost) { toast("Не хватает очков"); return; }
+  if(!pet || !me)return;
+  const cfg = ACTIONS[act], now = Date.now();
+  if(cooldowns[act] && cooldowns[act]>now){ toast("Ещё рано ⌛"); return; }
+  if(cfg.cost && me.score<cfg.cost){ toast("Не хватает очков"); return; }
 
-  const newPet = { ...pet };
-  for (const [k, v] of Object.entries(cfg.effects)) newPet[k] = clamp(newPet[k] + v);
-  newPet.xp = pet.xp + cfg.xp;
+  const np = {...pet};
+  for(const [k,v] of Object.entries(cfg.effects)) np[k] = clamp(np[k]+v);
+  np.xp = pet.xp + cfg.xp;
+  const oldSt = stageFromLevel(levelFromXp(pet.xp));
+  const newSt = stageFromLevel(levelFromXp(np.xp));
 
-  const oldStage = stageFromLevel(levelFromXp(pet.xp));
-  const newStage = stageFromLevel(levelFromXp(newPet.xp));
-
-  cooldowns[act] = now + cfg.cd * 1000;
+  cooldowns[act] = now + cfg.cd*1000;
   const iso = new Date(now).toISOString();
-
-  const petUpdate = {
-    hunger: newPet.hunger, mood: newPet.mood, energy: newPet.energy,
-    clean: newPet.clean, health: newPet.health, xp: newPet.xp
-  };
-
+  const petUpdate = {hunger:np.hunger, mood:np.mood, energy:np.energy, clean:np.clean, health:np.health, xp:np.xp};
   const today = new Date().toISOString().slice(0,10);
-  const memberUpdate = { score: me.score + cfg.score, ["last_" + act + "_at"]: iso };
-  if (me.today_date === today) memberUpdate.today_score = (me.today_score || 0) + Math.max(cfg.score, 0);
-  else { memberUpdate.today_score = Math.max(cfg.score, 0); memberUpdate.today_date = today; }
+  const mUpdate = {score: me.score + cfg.score, ["last_"+act+"_at"]: iso};
+  if(me.today_date === today) mUpdate.today_score = (me.today_score||0) + Math.max(cfg.score,0);
+  else { mUpdate.today_score = Math.max(cfg.score,0); mUpdate.today_date = today; }
 
   myWriteAt = Date.now();
-  const [{ error: e1 }, { error: e2 }] = await Promise.all([
+  const [{error:e1},{error:e2}] = await Promise.all([
     sb.from("pets").update(petUpdate).eq("id", petId),
-    sb.from("members").update(memberUpdate).eq("pet_id", petId).eq("user_id", userId)
+    sb.from("members").update(mUpdate).eq("pet_id", petId).eq("user_id", userId)
   ]);
-  if (e1 || e2) { console.error(e1 || e2); toast("Ошибка"); return; }
+  if(e1||e2){ toast("Ошибка"); return; }
 
-  pet = { ...pet, ...petUpdate };
-  me  = { ...me,  ...memberUpdate };
+  pet = {...pet, ...petUpdate};
+  me = {...me, ...mUpdate};
   $("petEl").classList.add("pulse");
-  setTimeout(() => $("petEl").classList.remove("pulse"), 250);
-
-  toast(cfg.emoji + " " + cfg.msg);
-  haptic(newStage > oldStage ? "success" : "light");
-
-  if (newStage > oldStage) {
+  setTimeout(()=>$("petEl").classList.remove("pulse"), 250);
+  toast(cfg.emoji+" "+cfg.msg);
+  haptic(newSt>oldSt ? "success" : "light");
+  if(newSt>oldSt){
     $("petEl").classList.add("mega");
-    setTimeout(() => $("petEl").classList.remove("mega"), 800);
-    setTimeout(() => toast("✨ Эволюция! Теперь это " + STAGE_NAMES[newStage], true), 600);
+    setTimeout(()=>$("petEl").classList.remove("mega"), 800);
+    setTimeout(()=>toast("✨ Эволюция! "+STAGE_NAMES[newSt], true), 600);
   }
-
   logEvent(act);
   render();
   loadLeaderboard();
   loadEvents();
+  // Обновить квесты через секунду, чтобы events успели записаться
+  setTimeout(loadQuests, 800);
 }
 
 async function claimDaily(){
-  if (!me) return;
+  if(!me)return;
   const last = me.last_daily_at ? new Date(me.last_daily_at).getTime() : 0;
-  if (Date.now() - last < 24*60*60*1000) { toast("Уже получен сегодня"); return; }
-
-  const yesterday = 24*60*60*1000;
-  const newStreak = (Date.now() - last < 2*yesterday) ? (me.streak || 0) + 1 : 1;
+  if(Date.now()-last < 24*60*60*1000){ toast("Уже получен"); return; }
+  const newStreak = (Date.now()-last < 2*24*60*60*1000) ? (me.streak||0)+1 : 1;
   const now = new Date().toISOString();
-  const newScore = me.score + DAILY_BONUS;
-
   myWriteAt = Date.now();
-  const { error } = await sb.from("members").update({
-    score: newScore, last_daily_at: now, streak: newStreak
+  const {error} = await sb.from("members").update({
+    score: me.score + DAILY_BONUS, last_daily_at: now, streak: newStreak
   }).eq("pet_id", petId).eq("user_id", userId);
-  if (error) { toast("Ошибка"); return; }
-
-  me = { ...me, score: newScore, last_daily_at: now, streak: newStreak };
-  toast("🎁 +" + DAILY_BONUS + " очков!", true);
-  haptic("success");
-  render();
-  loadLeaderboard();
+  if(error){ toast("Ошибка"); return; }
+  me = {...me, score: me.score+DAILY_BONUS, last_daily_at: now, streak: newStreak};
+  toast("🎁 +"+DAILY_BONUS+" очков!", true);
+  haptic("success"); render(); loadLeaderboard();
 }
 
 async function renamePet(newName){
-  if (!pet) return;
-  if (Number(pet.owner_id) !== Number(userId)) { toast("Только создатель может переименовать"); return; }
-  newName = newName.trim().slice(0, 20);
-  if (!newName) return;
+  if(!pet || Number(pet.owner_id)!==Number(userId)){ toast("Только создатель"); return; }
+  newName = newName.trim().slice(0,20); if(!newName)return;
   myWriteAt = Date.now();
-  const { error } = await sb.from("pets").update({ name: newName }).eq("id", petId);
-  if (error) { toast("Ошибка"); return; }
-  pet = { ...pet, name: newName };
-  render();
-  toast("📛 Имя изменено");
+  const {error} = await sb.from("pets").update({name:newName}).eq("id", petId);
+  if(error){ toast("Ошибка"); return; }
+  pet = {...pet, name:newName}; render(); toast("📛 Имя изменено");
 }
 
-function subscribe(){
-  sb.channel("pet-" + petId)
-    .on("postgres_changes", { event: "UPDATE", schema: "public", table: "pets", filter: "id=eq." + petId },
-      (payload) => {
-        if (Date.now() - myWriteAt < 1200) return;
-        if (!pet) return;
-        pet = { ...pet, ...payload.new };
-        render();
-      })
-    .on("postgres_changes", { event: "*", schema: "public", table: "members", filter: "pet_id=eq." + petId },
-      () => { loadLeaderboard(); if (Date.now() - myWriteAt > 1200) refreshMe(); })
-    .on("postgres_changes", { event: "INSERT", schema: "public", table: "events", filter: "pet_id=eq." + petId },
-      () => loadEvents())
-    .subscribe();
+// ===== МИНИ-ИГРА =====
+let mouseTimerInterval = null;
+let mouseCatches = 0;
+let mouseTimeLeft = 10;
+
+function startMouseGame(){
+  $("mouseArea").classList.add("show");
+  $("mouseBoard").innerHTML = "";
+  mouseCatches = 0;
+  mouseTimeLeft = 10;
+  $("mouseTimer").textContent = "10";
+  spawnMouse();
+  mouseTimerInterval = setInterval(()=>{
+    mouseTimeLeft--;
+    $("mouseTimer").textContent = mouseTimeLeft;
+    if(mouseTimeLeft<=0) finishMouseGame();
+  }, 1000);
 }
 
-async function refreshMe(){
-  const { data } = await sb.from("members").select("*").eq("pet_id", petId).eq("user_id", userId).maybeSingle();
-  if (data) { me = data; render(); }
+function spawnMouse(){
+  const board = $("mouseBoard");
+  board.innerHTML = "";
+  const el = document.createElement("div");
+  el.className = "mouse-target";
+  el.textContent = "🐭";
+  const maxX = board.clientWidth - 50;
+  const maxY = board.clientHeight - 50;
+  el.style.left = Math.max(10, Math.random()*maxX) + "px";
+  el.style.top = Math.max(10, Math.random()*maxY) + "px";
+  el.addEventListener("click", ()=>{
+    mouseCatches++;
+    haptic("success");
+    el.remove();
+    if(mouseTimeLeft > 0) setTimeout(spawnMouse, 300);
+  });
+  board.appendChild(el);
 }
 
-document.querySelectorAll(".action[data-act]").forEach(btn => {
-  btn.addEventListener("click", () => doAction(btn.dataset.act));
+async function finishMouseGame(){
+  clearInterval(mouseTimerInterval);
+  $("mouseTimer").textContent = "0";
+  const caught = mouseCatches > 0 ? 1 : 0;
+  try {
+    const r = await api("/api/mouse/done", {method:"POST", body: JSON.stringify({
+      pet_id: petId, user_id: userId, caught
+    })});
+    if(r.reward > 0){
+      toast("🐭 Поймал "+mouseCatches+" раз, +"+r.reward+" очков!", true);
+      if(me) me.score = (me.score||0)+r.reward;
+      if(me) me.last_mouse_at = new Date().toISOString();
+      render();
+      loadLeaderboard();
+    } else {
+      toast("Мышь не поймана");
+    }
+  } catch(e){
+    toast("Ошибка");
+  }
+}
+
+// ===== Обработчики =====
+document.querySelectorAll(".action[data-act]").forEach(b=>{
+  b.addEventListener("click", ()=>doAction(b.dataset.act));
 });
-$("petEl").addEventListener("click", () => doAction("pet"));
+$("petEl").addEventListener("click", ()=>doAction("pet"));
 $("dailyBtn").addEventListener("click", claimDaily);
+$("mouseBtn").addEventListener("click", startMouseGame);
+$("mouseClose").addEventListener("click", ()=>{
+  clearInterval(mouseTimerInterval);
+  $("mouseArea").classList.remove("show");
+  checkMouse();
+});
 
-$("renameBtn").addEventListener("click", () => {
-  if (!pet || Number(pet.owner_id) !== Number(userId)) { toast("Только создатель может переименовать"); return; }
+$("renameBtn").addEventListener("click", ()=>{
+  if(!pet || Number(pet.owner_id)!==Number(userId)){ toast("Только создатель"); return; }
   $("renameInput").value = pet?.name || "";
   $("renameModal").classList.add("show");
-  setTimeout(() => $("renameInput").focus(), 50);
+  setTimeout(()=>$("renameInput").focus(), 50);
 });
-$("renameCancel").addEventListener("click", () => $("renameModal").classList.remove("show"));
-$("renameOk").addEventListener("click", async () => {
+$("renameCancel").addEventListener("click", ()=>$("renameModal").classList.remove("show"));
+$("renameOk").addEventListener("click", async ()=>{
   const v = $("renameInput").value;
   $("renameModal").classList.remove("show");
   await renamePet(v);
 });
-$("renameModal").addEventListener("click", (e) => { if (e.target.id === "renameModal") $("renameModal").classList.remove("show"); });
+$("renameModal").addEventListener("click", e=>{ if(e.target.id==="renameModal")$("renameModal").classList.remove("show"); });
 
 // TOPUP
 let topupAmount = 1;
-$("topupBtn").addEventListener("click", () => {
-  if (!isOwner) return;
-  topupAmount = 1;
-  $("topupInput").value = "";
-  document.querySelectorAll("#topupPresets button").forEach(b => b.classList.toggle("active", b.dataset.val === "1"));
+$("topupBtn").addEventListener("click", ()=>{
+  if(!isOwner)return;
+  topupAmount = 1; $("topupInput").value = "";
+  document.querySelectorAll("#topupPresets button").forEach(b=>b.classList.toggle("active", b.dataset.val==="1"));
   $("topupModal").classList.add("show");
 });
-document.querySelectorAll("#topupPresets button").forEach(b => {
-  b.addEventListener("click", () => {
-    topupAmount = parseFloat(b.dataset.val);
-    $("topupInput").value = "";
-    document.querySelectorAll("#topupPresets button").forEach(x => x.classList.remove("active"));
+document.querySelectorAll("#topupPresets button").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    topupAmount = parseFloat(b.dataset.val); $("topupInput").value = "";
+    document.querySelectorAll("#topupPresets button").forEach(x=>x.classList.remove("active"));
     b.classList.add("active");
   });
 });
-$("topupInput").addEventListener("input", (e) => {
+$("topupInput").addEventListener("input", e=>{
   const v = parseFloat(e.target.value);
-  if (!isNaN(v) && v > 0) {
-    topupAmount = v;
-    document.querySelectorAll("#topupPresets button").forEach(x => x.classList.remove("active"));
-  }
+  if(!isNaN(v) && v>0){ topupAmount = v; document.querySelectorAll("#topupPresets button").forEach(x=>x.classList.remove("active")); }
 });
-$("topupCancel").addEventListener("click", () => $("topupModal").classList.remove("show"));
-$("topupOk").addEventListener("click", () => {
+$("topupCancel").addEventListener("click", ()=>$("topupModal").classList.remove("show"));
+$("topupOk").addEventListener("click", ()=>{
   const v = parseFloat($("topupInput").value);
-  const amount = (!isNaN(v) && v > 0) ? v : topupAmount;
-  const cents = Math.round(amount * 100);
+  const amount = (!isNaN(v) && v>0) ? v : topupAmount;
+  const cents = Math.round(amount*100);
   $("topupModal").classList.remove("show");
-  openBotLink("https://t.me/" + BOT_USERNAME + "?start=topup_" + petId + "_" + cents);
+  try { tg?.openTelegramLink("https://t.me/"+BOT_USERNAME+"?start=topup_"+petId+"_"+cents); }
+  catch(e){ window.open("https://t.me/"+BOT_USERNAME+"?start=topup_"+petId+"_"+cents); }
 });
-$("topupModal").addEventListener("click", (e) => { if (e.target.id === "topupModal") $("topupModal").classList.remove("show"); });
+$("topupModal").addEventListener("click", e=>{ if(e.target.id==="topupModal")$("topupModal").classList.remove("show"); });
 
 // SALARY
 let topN = 3;
-$("salaryBtn").addEventListener("click", () => {
-  if (!isOwner) return;
-  $("salaryBalance").textContent = Number(pet.bank_balance || 0).toFixed(2);
-  $("salaryInput").value = "";
-  $("salaryInput").placeholder = "вся сумма (" + Number(pet.bank_balance || 0).toFixed(2) + ")";
-  topN = 3;
-  document.querySelectorAll("#topnRow button").forEach(b => b.classList.toggle("active", b.dataset.n === "3"));
+$("salaryBtn").addEventListener("click", ()=>{
+  if(!isOwner)return;
+  $("salaryBalance").textContent = Number(pet.bank_balance||0).toFixed(2);
+  $("salaryInput").value = ""; topN = 3;
+  document.querySelectorAll("#topnRow button").forEach(b=>b.classList.toggle("active", b.dataset.n==="3"));
   $("salaryModal").classList.add("show");
 });
-document.querySelectorAll("#topnRow button").forEach(b => {
-  b.addEventListener("click", () => {
+document.querySelectorAll("#topnRow button").forEach(b=>{
+  b.addEventListener("click", ()=>{
     topN = parseInt(b.dataset.n, 10);
-    document.querySelectorAll("#topnRow button").forEach(x => x.classList.remove("active"));
+    document.querySelectorAll("#topnRow button").forEach(x=>x.classList.remove("active"));
     b.classList.add("active");
   });
 });
-$("salaryCancel").addEventListener("click", () => $("salaryModal").classList.remove("show"));
-$("salaryOk").addEventListener("click", () => {
+$("salaryCancel").addEventListener("click", ()=>$("salaryModal").classList.remove("show"));
+$("salaryOk").addEventListener("click", ()=>{
   const v = parseFloat($("salaryInput").value);
-  const bank = Number(pet.bank_balance || 0);
-  const amount = (!isNaN(v) && v > 0) ? v : bank;
-  if (amount <= 0) { toast("Банк пуст"); return; }
-  if (amount > bank) { toast("Больше банка нельзя"); return; }
-  const cents = Math.round(amount * 100);
+  const bank = Number(pet.bank_balance||0);
+  const amount = (!isNaN(v) && v>0) ? v : bank;
+  if(amount<=0){ toast("Банк пуст"); return; }
+  if(amount>bank){ toast("Больше банка нельзя"); return; }
+  const cents = Math.round(amount*100);
   $("salaryModal").classList.remove("show");
-  openBotLink("https://t.me/" + BOT_USERNAME + "?start=salary_" + petId + "_" + cents + "_" + topN);
+  try { tg?.openTelegramLink("https://t.me/"+BOT_USERNAME+"?start=salary_"+petId+"_"+cents+"_"+topN); }
+  catch(e){ window.open("https://t.me/"+BOT_USERNAME+"?start=salary_"+petId+"_"+cents+"_"+topN); }
 });
-$("salaryModal").addEventListener("click", (e) => { if (e.target.id === "salaryModal") $("salaryModal").classList.remove("show"); });
+$("salaryModal").addEventListener("click", e=>{ if(e.target.id==="salaryModal")$("salaryModal").classList.remove("show"); });
 
+// ===== Автообновление часов =====
 setInterval(render, 1000);
 
-(async () => {
+// ===== Инициализация =====
+(async ()=>{
   try {
     await loadPet();
-    if (!pet) return;
+    if(!pet)return;
     await loadMe();
-    await loadLeaderboard();
-    await loadEvents();
-    subscribe();
+    await Promise.all([loadLeaderboard(), loadEvents(), loadQuests(), loadInventory()]);
     $("loader").style.display = "none";
     $("app").style.display = "block";
-  } catch (e) {
-    console.error(e);
-    showFatal("Ошибка", e);
+  } catch(e){
+    console.error(e); fatal("Ошибка", e);
   }
 })();
 </script>
