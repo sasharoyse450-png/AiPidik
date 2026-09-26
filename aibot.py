@@ -422,7 +422,7 @@ async def load_stickers(bot):
 
 
 # ==================== AiPredict ====================
-@dp.message(Command("AiPredict"))
+@dp.message(Command("aipredict"))
 async def cmd_predict(message: Message):
     kb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🎲 Кости", callback_data="pred:dice:menu")],
@@ -647,7 +647,7 @@ async def cmd_reset_all(message: Message):
 async def cmd_help(message: Message):
     await message.reply(
         "команды:\n"
-        "/AiPredict — предсказать исход (кости, баскет, слот, карты, монетка)\n"
+        "/aipredict — предсказать исход (кости, баскет, слот, карты, монетка)\n"
         "/me — твоя карточка\n"
         "/mood — настроение (0 = тильт, 100 = занос)\n"
         "/rep — в реплай, репутация\n"
