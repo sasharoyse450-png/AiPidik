@@ -6,6 +6,7 @@
 <title>Питомец</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
@@ -625,6 +626,7 @@
           <circle cx="100" cy="100" r="90" class="fg" id="ringFg"/>
         </svg>
         <div class="pet" id="petEl">🥚</div>
+        <div id="lottieContainer" style="position:absolute;inset:0;display:none;"></div>
       </div>
       <div class="pet-title">
         <h1>
@@ -798,34 +800,39 @@ if(!userId){ document.getElementById("loader").innerHTML="<div style='text-align
    3         ур. 12-15
    4         ур. 16-19
    5         ур. 20-23
-   6         ур. 24-27
-   7         ур. 28-30
+   6         ур. 24-27  ← NFT-анимация (Старейшина)
+   7         ур. 28-30  ← NFT-анимация (Легенда)
 */
 const SKINS = {
   classic: {
     name:"Птица",
     stages:["🥚","🐣","🐥","🐤","🐓","🦅","🦉","🐲"],
-    stageNames:["Яйцо","Птенец","Юнец","Подросток","Взрослый","Опытный","Старейшина","Легенда"]
+    stageNames:["Яйцо","Птенец","Юнец","Подросток","Взрослый","Опытный","Старейшина","Легенда"],
+    nftUrl: "https://nft.fragment.com/gift/rarebird-4759.lottie.json"
   },
   cat: {
     name:"Котик",
     stages:["🥚","🐱","🐈","🐈‍⬛","🐆","🐅","🦁","🐯"],
-    stageNames:["Яйцо","Котёнок","Котик","Подросший кот","Крупный кот","Хищник","Царь зверей","Тигр"]
+    stageNames:["Яйцо","Котёнок","Котик","Подросший кот","Крупный кот","Хищник","Царь зверей","Тигр"],
+    nftUrl: "https://nft.fragment.com/gift/scaredcat-11007.lottie.json"
   },
   dragon: {
     name:"Дракон",
     stages:["🥚","🦎","🐊","🐉","🐲","🐲","🦕","🔥"],
-    stageNames:["Яйцо","Ящерка","Дракончик","Юный дракон","Дракон","Взрослый дракон","Древний дракон","Огненный владыка"]
+    stageNames:["Яйцо","Ящерка","Дракончик","Юный дракон","Дракон","Взрослый дракон","Древний дракон","Огненный владыка"],
+    nftUrl: null // Анимация не найдена, используем эмодзи
   },
   space: {
     name:"Космос",
     stages:["🌫","🌙","⭐","🌟","✨","☄️","🌠","☀️"],
-    stageNames:["Туманность","Луна","Звезда","Яркая звезда","Созвездие","Комета","Сверхновая","Солнце"]
+    stageNames:["Туманность","Луна","Звезда","Яркая звезда","Созвездие","Комета","Сверхновая","Солнце"],
+    nftUrl: "https://nft.fragment.com/gift/astralshard-2908.lottie.json"
   },
   dino: {
     name:"Динозавр",
     stages:["🥚","🦎","🦕","🦖","🐊","🐉","🐲","🌋"],
-    stageNames:["Яйцо","Ящерка","Динозаврик","Юный дино","Ящер","Хищный дино","Древний ящер","Вулкан"]
+    stageNames:["Яйцо","Ящерка","Динозаврик","Юный дино","Ящер","Хищный дино","Древний ящер","Вулкан"],
+    nftUrl: null // Анимация не найдена, используем эмодзи
   },
 };
 const SKIN_PRICE = 50;
@@ -875,6 +882,7 @@ function badgesFor(m){
 }
 
 let pet=null, me=null, cooldowns={}, myWriteAt=0, isOwner=false;
+let lottieAnim = null;
 
 const $ = id => document.getElementById(id);
 const clamp = (v,mn=0,mx=100) => Math.max(mn, Math.min(mx, Math.round(v)));
@@ -927,7 +935,38 @@ function render(){
   const st = stageFromLevel(lvl);
   const stages = stagesFor(pet.skin);
   const names = stageNamesFor(pet.skin);
-  $("petEl").textContent = stages[st] || stages[0];
+  const petEl = $("petEl");
+  const lottieContainer = $("lottieContainer");
+
+  // --- ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ЭМОДЗИ / LOTTIE ---
+  const nftStages = [6, 7]; // Старейшина и Легенда
+  const skinData = SKINS[pet.skin] || SKINS.classic;
+  const useLottie = skinData.nftUrl && nftStages.includes(st);
+
+  if (useLottie) {
+    petEl.style.display = "none";
+    lottieContainer.style.display = "block";
+    // Загружаем анимацию только если сменился скин или стадия
+    if (!lottieAnim || lottieAnim._skinKey !== pet.skin || lottieAnim._stage !== st) {
+      if (lottieAnim) lottieAnim.destroy();
+      lottieAnim = lottie.loadAnimation({
+        container: lottieContainer,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: skinData.nftUrl
+      });
+      lottieAnim._skinKey = pet.skin;
+      lottieAnim._stage = st;
+    }
+  } else {
+    petEl.style.display = "flex";
+    lottieContainer.style.display = "none";
+    if (lottieAnim) { lottieAnim.destroy(); lottieAnim = null; }
+    petEl.textContent = stages[st] || stages[0];
+  }
+  // --- КОНЕЦ ЛОГИКИ ---
+
   $("nameEl").textContent = pet.name;
   $("petIdEl").textContent = "ID: " + pet.id;
 
