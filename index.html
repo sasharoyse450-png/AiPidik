@@ -12,9 +12,7 @@
     --card: var(--tg-theme-secondary-bg-color,#1c2733);
     --text: var(--tg-theme-text-color,#fff);
     --hint: var(--tg-theme-hint-color,#7d8b99);
-    --btn: var(--tg-theme-button-color,#5288c1);
-    --btnText: var(--tg-theme-button-text-color,#fff);
-    --accent: #7a5cff;
+    --accent:#7a5cff;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
@@ -49,15 +47,8 @@
   @keyframes mega{0%,100%{transform:scale(1)}30%{transform:scale(1.3) rotate(6deg)}60%{transform:scale(.9) rotate(-6deg)}}
 
   .pet-title{margin-top:14px;text-align:center;}
-  .pet-title h1{
-    font-size:22px;margin:0;font-weight:700;letter-spacing:-.3px;
-    display:flex;align-items:center;justify-content:center;gap:8px;
-  }
-  .edit-btn{
-    background:rgba(255,255,255,.08);border:0;color:var(--hint);
-    font-size:13px;border-radius:8px;padding:4px 8px;cursor:pointer;
-  }
-  .edit-btn:active{background:rgba(255,255,255,.15);}
+  .pet-title h1{font-size:22px;margin:0;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .edit-btn{background:rgba(255,255,255,.08);border:0;color:var(--hint);font-size:13px;border-radius:8px;padding:4px 8px;cursor:pointer;}
   .pet-sub{color:var(--hint);font-size:13px;margin-top:4px;}
   .pet-mood{font-size:14px;margin-top:8px;min-height:20px;}
   .xp-text{text-align:center;font-size:12px;color:var(--hint);margin-top:6px;font-variant-numeric:tabular-nums;}
@@ -68,11 +59,8 @@
     padding:12px 16px;margin-bottom:12px;cursor:pointer;
     justify-content:space-between;align-items:center;
     box-shadow:0 6px 20px rgba(255,159,67,.35);
-    animation:dailyPulse 2s ease-in-out infinite;
   }
   .daily.hidden{display:none;}
-  .daily .emoji{font-size:22px;margin-right:8px;}
-  @keyframes dailyPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
 
   .bank-card{
     background:linear-gradient(135deg,#1a2a3a,#0f1a26);
@@ -80,14 +68,10 @@
     border-radius:18px;padding:16px;margin-bottom:12px;
     position:relative;overflow:hidden;
   }
-  .bank-card::before{
-    content:'🏦';position:absolute;right:-10px;top:-20px;font-size:110px;opacity:.06;
-    pointer-events:none;
-  }
+  .bank-card::before{content:'🏦';position:absolute;right:-10px;top:-20px;font-size:110px;opacity:.06;pointer-events:none;}
   .bank-title{font-size:13px;color:var(--hint);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
-  .bank-balance{font-size:30px;font-weight:800;color:#ffd23f;letter-spacing:-.8px;line-height:1.1;}
+  .bank-balance{font-size:30px;font-weight:800;color:#ffd23f;line-height:1.1;}
   .bank-balance small{font-size:14px;color:var(--hint);font-weight:600;margin-left:4px;}
-  .bank-hint{font-size:12px;color:var(--hint);margin-top:6px;}
   .owner-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
   .owner-actions button{
     padding:13px 10px;border:0;border-radius:12px;font-family:inherit;
@@ -99,19 +83,16 @@
   .btn-topup{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
   .btn-salary{background:linear-gradient(135deg,#7a5cff,#00d4ff);color:#fff;}
 
-  .card{
-    background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;
-    border:1px solid rgba(255,255,255,.04);
-  }
+  .card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;border:1px solid rgba(255,255,255,.04);}
   .stat{margin:10px 0;}
   .stat-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;color:var(--hint);}
   .stat-head b{color:var(--text);font-weight:600;}
-  .bar{height:8px;background:rgba(127,127,127,.18);border-radius:6px;overflow:hidden;position:relative;}
+  .bar{height:8px;background:rgba(127,127,127,.18);border-radius:6px;overflow:hidden;}
   .bar>i{display:block;height:100%;border-radius:6px;transition:width .5s ease;}
   .b-hunger{background:linear-gradient(90deg,#ff7a18,#ff9f43);}
-  .b-mood  {background:linear-gradient(90deg,#ffb020,#ffd23f);}
+  .b-mood{background:linear-gradient(90deg,#ffb020,#ffd23f);}
   .b-energy{background:linear-gradient(90deg,#2d7cff,#54a0ff);}
-  .b-clean {background:linear-gradient(90deg,#00b8d4,#48dbfb);}
+  .b-clean{background:linear-gradient(90deg,#00b8d4,#48dbfb);}
   .b-health{background:linear-gradient(90deg,#ff3b5c,#ee5253);}
 
   .actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
@@ -135,26 +116,15 @@
   .action .cd:empty{display:none;}
   .action.wide{grid-column:span 2;flex-direction:row;justify-content:center;gap:8px;padding:13px;}
   .action.heal{background:linear-gradient(135deg,#ff3b5c,#ee5253);color:#fff;border:0;}
-  .action.wide .lbl{font-size:14px;}
 
   .score-line{text-align:center;color:var(--hint);font-size:13px;margin-top:12px;}
   .score-line b{color:var(--text);}
-  .streak-badge{
-    display:inline-block;margin-left:6px;padding:2px 8px;border-radius:10px;
-    background:rgba(255,120,60,.15);color:#ff8a3c;font-weight:700;
-  }
+  .streak-badge{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:10px;background:rgba(255,120,60,.15);color:#ff8a3c;font-weight:700;}
 
   .events-title{font-size:15px;font-weight:700;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
-  .event{
-    display:flex;gap:10px;align-items:center;padding:8px 0;
-    border-bottom:1px solid rgba(127,127,127,.1);font-size:13px;
-  }
+  .event{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(127,127,127,.1);font-size:13px;}
   .event:last-child{border:0;}
-  .event .av{
-    width:30px;height:30px;border-radius:50%;flex:0 0 30px;
-    display:flex;align-items:center;justify-content:center;
-    font-weight:700;font-size:12px;color:#fff;
-  }
+  .event .av{width:30px;height:30px;border-radius:50%;flex:0 0 30px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;}
   .event .txt{flex:1;min-width:0;}
   .event .txt b{font-weight:600;}
   .event .time{color:var(--hint);font-size:11px;white-space:nowrap;}
@@ -164,14 +134,8 @@
   .lb{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(127,127,127,.1);}
   .lb:last-child{border:0;}
   .lb .rank{width:22px;text-align:center;font-weight:700;font-size:13px;color:var(--hint);}
-  .lb .rank.g{color:#ffd23f;}
-  .lb .rank.s{color:#c0c8d0;}
-  .lb .rank.b{color:#cd7f32;}
-  .lb .av{
-    width:32px;height:32px;border-radius:50%;flex:0 0 32px;
-    display:flex;align-items:center;justify-content:center;
-    font-weight:700;font-size:13px;color:#fff;
-  }
+  .lb .rank.g{color:#ffd23f;}.lb .rank.s{color:#c0c8d0;}.lb .rank.b{color:#cd7f32;}
+  .lb .av{width:32px;height:32px;border-radius:50%;flex:0 0 32px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;}
   .lb .name{flex:1;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .lb .name.me{color:#48dbfb;font-weight:700;}
   .lb .pts{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;}
@@ -190,15 +154,32 @@
   .loader{text-align:center;padding:40px;color:var(--hint);}
   .fatal{color:#ff6b6b;font-size:13px;padding:16px;line-height:1.5;word-break:break-word;}
 
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;}
   .modal.show{display:flex;}
-  .modal-box{background:var(--card);border-radius:16px;padding:20px;width:100%;max-width:340px;}
-  .modal-box h3{margin:0 0 12px;font-size:16px;}
+  .modal-box{background:var(--card);border-radius:16px;padding:20px;width:100%;max-width:360px;}
+  .modal-box h3{margin:0 0 4px;font-size:17px;}
+  .modal-box .sub{color:var(--hint);font-size:12px;margin-bottom:14px;}
+  .modal-box label{display:block;font-size:12px;color:var(--hint);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px;}
   .modal-box input{
     width:100%;padding:12px;border-radius:10px;border:1px solid rgba(127,127,127,.3);
-    background:rgba(0,0,0,.2);color:var(--text);font-size:15px;font-family:inherit;margin-bottom:12px;
+    background:rgba(0,0,0,.2);color:var(--text);font-size:16px;font-family:inherit;
+    margin-bottom:12px;
   }
   .modal-box input:focus{outline:none;border-color:var(--accent);}
+  .preset-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px;}
+  .preset-row button{
+    padding:10px 0;border:1px solid rgba(127,127,127,.25);background:transparent;
+    color:var(--text);border-radius:10px;font-family:inherit;font-size:13px;
+    font-weight:600;cursor:pointer;
+  }
+  .preset-row button.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .topn-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px;}
+  .topn-row button{
+    padding:10px 0;border:1px solid rgba(127,127,127,.25);background:transparent;
+    color:var(--text);border-radius:10px;font-family:inherit;font-size:13px;
+    font-weight:600;cursor:pointer;
+  }
+  .topn-row button.active{background:var(--accent);border-color:var(--accent);color:#fff;}
   .modal-btns{display:flex;gap:8px;}
   .modal-btns button{flex:1;padding:12px;border:0;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;}
   .modal-btns .cancel{background:rgba(127,127,127,.15);color:var(--text);}
@@ -221,7 +202,7 @@
 
   <div id="app" style="display:none">
     <div class="daily hidden" id="dailyBtn">
-      <span><span class="emoji">🎁</span>Ежедневный бонус</span>
+      <span>🎁 Ежедневный бонус</span>
       <span id="dailyStreak"></span>
     </div>
 
@@ -250,7 +231,6 @@
         <span id="bankBalance">0.00</span>
         <small id="bankCurrency">USDT</small>
       </div>
-      <div class="bank-hint" id="bankHint">Пополни банк и раздай зарплату активным участникам</div>
       <div class="owner-actions">
         <button class="btn-topup" id="topupBtn">💳 Пополнить</button>
         <button class="btn-salary" id="salaryBtn">💸 Зарплата</button>
@@ -265,7 +245,7 @@
       <div class="stat"><div class="stat-head"><span>❤️ Здоровье</span><b id="v-health">100%</b></div><div class="bar"><i id="b-health" class="b-health" style="width:0%"></i></div></div>
     </div>
 
-    <div class="actions-grid" id="actions">
+    <div class="actions-grid">
       <button class="action" data-act="feed"><span class="ic">🍖</span><span class="lbl">Покормить</span><span class="cd"></span></button>
       <button class="action" data-act="pet"><span class="ic">✋</span><span class="lbl">Погладить</span><span class="cd"></span></button>
       <button class="action" data-act="play"><span class="ic">🎾</span><span class="lbl">Играть</span><span class="cd"></span></button>
@@ -273,9 +253,7 @@
       <button class="action wide heal" data-act="heal"><span class="ic">💊</span><span class="lbl">Лечить (30 очков)</span><span class="cd"></span></button>
     </div>
 
-    <div class="score-line" id="scoreEl">
-      Твои очки: <b>0</b>
-    </div>
+    <div class="score-line" id="scoreEl">Твои очки: <b>0</b></div>
 
     <div class="card" style="margin-top:12px">
       <div class="events-title">📜 Лента событий</div>
@@ -291,6 +269,7 @@
 
 <div class="toast" id="toastEl"></div>
 
+<!-- Модал переименования -->
 <div class="modal" id="renameModal">
   <div class="modal-box">
     <h3>Переименовать питомца</h3>
@@ -302,10 +281,53 @@
   </div>
 </div>
 
+<!-- Модал пополнения -->
+<div class="modal" id="topupModal">
+  <div class="modal-box">
+    <h3>💳 Пополнить банк</h3>
+    <div class="sub">Выбери сумму или введи свою</div>
+    <div class="preset-row" id="topupPresets">
+      <button data-val="0.5">0.5</button>
+      <button data-val="1" class="active">1</button>
+      <button data-val="2">2</button>
+      <button data-val="5">5</button>
+      <button data-val="10">10</button>
+    </div>
+    <label>Своя сумма (USDT)</label>
+    <input type="number" id="topupInput" min="0.01" step="0.01" placeholder="например 0.04" />
+    <div class="modal-btns">
+      <button class="cancel" id="topupCancel">Отмена</button>
+      <button class="ok" id="topupOk">Перейти к оплате</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модал зарплаты -->
+<div class="modal" id="salaryModal">
+  <div class="modal-box">
+    <h3>💸 Зарплата</h3>
+    <div class="sub">В банке: <span id="salaryBalance">0.00</span> USDT</div>
+    <label>Сумма к раздаче</label>
+    <input type="number" id="salaryInput" min="0.01" step="0.01" placeholder="вся сумма" />
+    <label>Сколько лучших получат</label>
+    <div class="topn-row" id="topnRow">
+      <button data-n="1">Топ-1</button>
+      <button data-n="3" class="active">Топ-3</button>
+      <button data-n="5">Топ-5</button>
+      <button data-n="10">Топ-10</button>
+      <button data-n="0">Все</button>
+    </div>
+    <div class="modal-btns">
+      <button class="cancel" id="salaryCancel">Отмена</button>
+      <button class="ok" id="salaryOk">Раздать</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL = "https://ripjvcglkcqvyolnewaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_P5IC_YkWUcchuxcQM_THFQ_uOxhPv4Q";
-const BOT_USERNAME = "Aipidik_bot"; // ← ЗАМЕНИ на username своего бота (без @)
+const BOT_USERNAME = "Aipidik_bot"; // ← без @
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const tg = window.Telegram?.WebApp;
@@ -407,6 +429,13 @@ function showFatal(title, err){
   $("app").style.display = "none";
 }
 
+function openBotLink(url){
+  try {
+    if (tg?.openTelegramLink) tg.openTelegramLink(url);
+    else window.open(url, "_blank");
+  } catch(e) { window.open(url, "_blank"); }
+}
+
 function petMoodText(p){
   if (p.health < 30) return "Мне плохо… 💔";
   if (p.hunger < 20) return "Я голоден! 🍖";
@@ -473,15 +502,12 @@ function render(){
   $("ringFg").style.strokeDashoffset = RING_CIRC * (1 - progress);
   $("xpEl").textContent = lvl >= MAX_LEVEL ? "МАКС. УРОВЕНЬ" : ("XP: " + cur + " / " + XP_PER_LEVEL);
 
-  // Банк
   const bankCard = $("bankCard");
   if (isOwner) {
     bankCard.style.display = "";
     $("bankBalance").textContent = Number(pet.bank_balance || 0).toFixed(2);
     $("bankCurrency").textContent = pet.currency || "USDT";
-  } else {
-    bankCard.style.display = "none";
-  }
+  } else bankCard.style.display = "none";
 
   document.querySelectorAll(".action[data-act]").forEach(btn => {
     const a = btn.dataset.act;
@@ -514,12 +540,8 @@ function checkDaily(){
   const last = me.last_daily_at ? new Date(me.last_daily_at).getTime() : 0;
   const canClaim = Date.now() - last > 24*60*60*1000;
   const btn = $("dailyBtn");
-  if (canClaim) {
-    btn.classList.remove("hidden");
-    $("dailyStreak").textContent = "+" + DAILY_BONUS;
-  } else {
-    btn.classList.add("hidden");
-  }
+  if (canClaim) { btn.classList.remove("hidden"); $("dailyStreak").textContent = "+" + DAILY_BONUS; }
+  else btn.classList.add("hidden");
 }
 
 async function loadPet(){
@@ -592,8 +614,7 @@ async function loadEvents(){
 
 function renderEvent(e){
   const t = new Date(e.created_at);
-  const now = new Date();
-  const diff = Math.floor((now - t) / 1000);
+  const diff = Math.floor((new Date() - t) / 1000);
   let timeStr;
   if (diff < 60) timeStr = "только что";
   else if (diff < 3600) timeStr = Math.floor(diff/60) + " мин";
@@ -615,7 +636,7 @@ async function logEvent(action){
     });
     const cutoff = new Date(Date.now() - 7*24*60*60*1000).toISOString();
     await sb.from("events").delete().eq("pet_id", petId).lt("created_at", cutoff);
-  } catch(e) { /* не критично */ }
+  } catch(e){}
 }
 
 async function doAction(act){
@@ -640,15 +661,10 @@ async function doAction(act){
     clean: newPet.clean, health: newPet.health, xp: newPet.xp
   };
 
-  // Дневной счёт для зарплаты
   const today = new Date().toISOString().slice(0,10);
   const memberUpdate = { score: me.score + cfg.score, ["last_" + act + "_at"]: iso };
-  if (me.today_date === today) {
-    memberUpdate.today_score = (me.today_score || 0) + Math.max(cfg.score, 0);
-  } else {
-    memberUpdate.today_score = Math.max(cfg.score, 0);
-    memberUpdate.today_date = today;
-  }
+  if (me.today_date === today) memberUpdate.today_score = (me.today_score || 0) + Math.max(cfg.score, 0);
+  else { memberUpdate.today_score = Math.max(cfg.score, 0); memberUpdate.today_date = today; }
 
   myWriteAt = Date.now();
   const [{ error: e1 }, { error: e2 }] = await Promise.all([
@@ -734,18 +750,16 @@ async function refreshMe(){
   if (data) { me = data; render(); }
 }
 
-// ===== Events =====
+// ===== Обработчики =====
 document.querySelectorAll(".action[data-act]").forEach(btn => {
   btn.addEventListener("click", () => doAction(btn.dataset.act));
 });
 $("petEl").addEventListener("click", () => doAction("pet"));
 $("dailyBtn").addEventListener("click", claimDaily);
 
+// переименование
 $("renameBtn").addEventListener("click", () => {
-  if (!pet || Number(pet.owner_id) !== Number(userId)) {
-    toast("Только создатель может переименовать");
-    return;
-  }
+  if (!pet || Number(pet.owner_id) !== Number(userId)) { toast("Только создатель может переименовать"); return; }
   $("renameInput").value = pet?.name || "";
   $("renameModal").classList.add("show");
   setTimeout(() => $("renameInput").focus(), 50);
@@ -756,36 +770,70 @@ $("renameOk").addEventListener("click", async () => {
   $("renameModal").classList.remove("show");
   await renamePet(v);
 });
-$("renameInput").addEventListener("keydown", async (e) => {
-  if (e.key === "Enter") {
-    const v = $("renameInput").value;
-    $("renameModal").classList.remove("show");
-    await renamePet(v);
-  }
-});
-$("renameModal").addEventListener("click", (e) => {
-  if (e.target.id === "renameModal") $("renameModal").classList.remove("show");
-});
+$("renameModal").addEventListener("click", (e) => { if (e.target.id === "renameModal") $("renameModal").classList.remove("show"); });
 
-// Кнопка "Пополнить" — открывает бота с deep link
+// ===== TOPUP модал =====
+let topupAmount = 1;
 $("topupBtn").addEventListener("click", () => {
   if (!isOwner) return;
-  const url = "https://t.me/" + BOT_USERNAME + "?start=topup_" + petId;
-  try {
-    if (tg?.openTelegramLink) tg.openTelegramLink(url);
-    else window.open(url, "_blank");
-  } catch(e) { window.open(url, "_blank"); }
+  topupAmount = 1;
+  $("topupInput").value = "";
+  document.querySelectorAll("#topupPresets button").forEach(b => b.classList.toggle("active", b.dataset.val === "1"));
+  $("topupModal").classList.add("show");
 });
+document.querySelectorAll("#topupPresets button").forEach(b => {
+  b.addEventListener("click", () => {
+    topupAmount = parseFloat(b.dataset.val);
+    $("topupInput").value = "";
+    document.querySelectorAll("#topupPresets button").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+  });
+});
+$("topupInput").addEventListener("input", (e) => {
+  const v = parseFloat(e.target.value);
+  if (!isNaN(v) && v > 0) {
+    topupAmount = v;
+    document.querySelectorAll("#topupPresets button").forEach(x => x.classList.remove("active"));
+  }
+});
+$("topupCancel").addEventListener("click", () => $("topupModal").classList.remove("show"));
+$("topupOk").addEventListener("click", () => {
+  const v = parseFloat($("topupInput").value);
+  const amount = (!isNaN(v) && v > 0) ? v : topupAmount;
+  $("topupModal").classList.remove("show");
+  openBotLink("https://t.me/" + BOT_USERNAME + "?start=topup_" + petId + "_" + amount);
+});
+$("topupModal").addEventListener("click", (e) => { if (e.target.id === "topupModal") $("topupModal").classList.remove("show"); });
 
-// Кнопка "Зарплата" — открывает бота с командой /salary
+// ===== SALARY модал =====
+let topN = 3;
 $("salaryBtn").addEventListener("click", () => {
   if (!isOwner) return;
-  const url = "https://t.me/" + BOT_USERNAME + "?start=salary";
-  try {
-    if (tg?.openTelegramLink) tg.openTelegramLink(url);
-    else window.open(url, "_blank");
-  } catch(e) { window.open(url, "_blank"); }
+  $("salaryBalance").textContent = Number(pet.bank_balance || 0).toFixed(2);
+  $("salaryInput").value = "";
+  $("salaryInput").placeholder = "вся сумма (" + Number(pet.bank_balance || 0).toFixed(2) + ")";
+  topN = 3;
+  document.querySelectorAll("#topnRow button").forEach(b => b.classList.toggle("active", b.dataset.n === "3"));
+  $("salaryModal").classList.add("show");
 });
+document.querySelectorAll("#topnRow button").forEach(b => {
+  b.addEventListener("click", () => {
+    topN = parseInt(b.dataset.n, 10);
+    document.querySelectorAll("#topnRow button").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+  });
+});
+$("salaryCancel").addEventListener("click", () => $("salaryModal").classList.remove("show"));
+$("salaryOk").addEventListener("click", () => {
+  const v = parseFloat($("salaryInput").value);
+  const bank = Number(pet.bank_balance || 0);
+  const amount = (!isNaN(v) && v > 0) ? v : bank;
+  if (amount <= 0) { toast("Банк пуст"); return; }
+  if (amount > bank) { toast("Больше банка нельзя"); return; }
+  $("salaryModal").classList.remove("show");
+  openBotLink("https://t.me/" + BOT_USERNAME + "?start=salary_" + petId + "_" + amount + "_" + topN);
+});
+$("salaryModal").addEventListener("click", (e) => { if (e.target.id === "salaryModal") $("salaryModal").classList.remove("show"); });
 
 setInterval(render, 1000);
 
