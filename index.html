@@ -19,8 +19,7 @@
   body{font-family:-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;
     background:var(--bg);color:var(--text);padding:14px 14px 30px;min-height:100vh;}
   .wrap{max-width:480px;margin:0 auto;}
-  .card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;
-    border:1px solid rgba(255,255,255,.04);}
+
   .pet-card{background:linear-gradient(160deg,#1c2733,#131c26);border-radius:22px;
     padding:20px 16px 18px;margin-bottom:12px;position:relative;overflow:hidden;
     border:1px solid rgba(255,255,255,.05);}
@@ -37,17 +36,23 @@
   .pet.mega{animation:mega .7s;}
   @keyframes mega{0%,100%{transform:scale(1)}30%{transform:scale(1.3) rotate(6deg)}60%{transform:scale(.9) rotate(-6deg)}}
   .pet-title{margin-top:14px;text-align:center;}
-  .pet-title h1{font-size:22px;margin:0;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;}
-  .edit-btn{background:rgba(255,255,255,.08);border:0;color:var(--hint);font-size:13px;border-radius:8px;padding:4px 8px;cursor:pointer;}
+  .pet-title h1{font-size:22px;margin:0;font-weight:700;display:flex;
+    align-items:center;justify-content:center;gap:8px;}
+  .edit-btn{background:rgba(255,255,255,.08);border:0;color:var(--hint);font-size:13px;
+    border-radius:8px;padding:4px 8px;cursor:pointer;}
   .pet-sub{color:var(--hint);font-size:13px;margin-top:4px;}
   .pet-mood{font-size:14px;margin-top:8px;min-height:20px;}
-  .xp-text{text-align:center;font-size:12px;color:var(--hint);margin-top:6px;font-variant-numeric:tabular-nums;}
+  .xp-text{text-align:center;font-size:12px;color:var(--hint);margin-top:6px;
+    font-variant-numeric:tabular-nums;}
+
   .daily{display:flex;background:linear-gradient(90deg,#ff9f43,#ffcc48);color:#1a1000;
     font-weight:700;border-radius:14px;padding:12px 16px;margin-bottom:12px;cursor:pointer;
     justify-content:space-between;align-items:center;box-shadow:0 6px 20px rgba(255,159,67,.35);}
   .daily.hidden{display:none;}
-  .bank-card{background:linear-gradient(135deg,#1a2a3a,#0f1a26);border:1px solid rgba(255,215,0,.18);
-    border-radius:18px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden;}
+
+  .bank-card{background:linear-gradient(135deg,#1a2a3a,#0f1a26);
+    border:1px solid rgba(255,215,0,.18);border-radius:18px;padding:16px;margin-bottom:12px;
+    position:relative;overflow:hidden;}
   .bank-card::before{content:'🏦';position:absolute;right:-10px;top:-20px;font-size:110px;opacity:.06;}
   .bank-title{font-size:13px;color:var(--hint);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
   .bank-balance{font-size:30px;font-weight:800;color:#ffd23f;line-height:1.1;}
@@ -58,6 +63,10 @@
   .owner-actions button:active{transform:scale(.96);}
   .btn-topup{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
   .btn-salary{background:linear-gradient(135deg,#7a5cff,#00d4ff);color:#fff;}
+
+  .card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;
+    border:1px solid rgba(255,255,255,.04);}
+
   .stat{margin:10px 0;}
   .stat-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;color:var(--hint);}
   .stat-head b{color:var(--text);font-weight:600;}
@@ -68,6 +77,7 @@
   .b-energy{background:linear-gradient(90deg,#2d7cff,#54a0ff);}
   .b-clean{background:linear-gradient(90deg,#00b8d4,#48dbfb);}
   .b-health{background:linear-gradient(90deg,#ff3b5c,#ee5253);}
+
   .actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .action{background:var(--card);border:1px solid rgba(255,255,255,.05);
     border-radius:16px;padding:14px 10px;cursor:pointer;display:flex;flex-direction:column;
@@ -83,54 +93,54 @@
   .action .cd:empty{display:none;}
   .action.wide{grid-column:span 2;flex-direction:row;justify-content:center;gap:8px;padding:13px;}
   .action.heal{background:linear-gradient(135deg,#ff3b5c,#ee5253);color:#fff;border:0;}
+
   .score-line{text-align:center;color:var(--hint);font-size:13px;margin-top:12px;}
   .score-line b{color:var(--text);}
   .streak-badge{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:10px;
     background:rgba(255,120,60,.15);color:#ff8a3c;font-weight:700;}
+
   h2{font-size:15px;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
-  .quest{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(127,127,127,.1);}
-  .quest:last-child{border:0;}
-  .quest.done{opacity:.6;}
-  .quest .qi{font-size:22px;}
-  .quest .qt{flex:1;font-size:13px;}
-  .quest .qt small{display:block;color:var(--hint);font-size:11px;margin-top:2px;}
-  .quest button{padding:6px 12px;border:0;border-radius:8px;font-size:12px;font-weight:700;
-    cursor:pointer;background:rgba(127,127,127,.15);color:var(--text);}
-  .quest button.ready{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
-  .quest button.claimed{background:rgba(72,217,142,.2);color:#48d98e;}
-  .inv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-  .inv-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);
-    border-radius:12px;padding:10px 6px;text-align:center;position:relative;cursor:pointer;}
-  .inv-item .ie{font-size:24px;}
-  .inv-item .in{font-size:11px;color:var(--hint);margin-top:4px;font-weight:600;}
-  .inv-item .ic2{font-size:11px;color:#ffd23f;margin-top:2px;font-weight:700;}
-  .inv-item .badge{position:absolute;top:-6px;right:-6px;background:var(--accent);color:#fff;
-    font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
-  .inv-item.owned{background:rgba(122,92,255,.12);border-color:rgba(122,92,255,.3);}
-  .mouse-btn{width:100%;padding:14px;border:0;border-radius:14px;font-family:inherit;
-    font-size:15px;font-weight:700;cursor:pointer;
-    background:linear-gradient(135deg,#48d98e,#00b8d4);color:#fff;
-    display:flex;align-items:center;justify-content:center;gap:8px;}
-  .mouse-btn:disabled{opacity:.5;cursor:not-allowed;background:rgba(127,127,127,.2);}
-  .mouse-area{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;
-    display:none;align-items:center;justify-content:center;padding:20px;}
-  .mouse-area.show{display:flex;}
-  .mouse-box{background:var(--card);border-radius:20px;padding:20px;width:100%;
-    max-width:400px;text-align:center;}
-  .mouse-board{height:280px;background:linear-gradient(135deg,#1a2a3a,#0f1a26);
-    border-radius:16px;position:relative;overflow:hidden;margin:12px 0;}
-  .mouse-target{position:absolute;font-size:48px;cursor:pointer;user-select:none;
-    transition:transform .1s;animation:pop .3s;}
-  .mouse-target:active{transform:scale(.85);}
-  @keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
-  .mouse-timer{font-size:22px;font-weight:800;color:#ffd23f;margin-bottom:8px;}
+
+  /* LEADERBOARD */
+  .lb{display:flex;align-items:center;gap:10px;padding:9px 0;
+    border-bottom:1px solid rgba(127,127,127,.1);}
+  .lb:last-child{border:0;}
+  .lb .rank{width:22px;text-align:center;font-weight:700;font-size:13px;color:var(--hint);flex:0 0 22px;}
+  .lb .rank.g{color:#ffd23f;}
+  .lb .rank.s{color:#c0c8d0;}
+  .lb .rank.b{color:#cd7f32;}
+  .lb .av{width:32px;height:32px;border-radius:50%;flex:0 0 32px;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:13px;color:#fff;text-transform:uppercase;}
+  .lb .name{flex:1;font-size:14px;min-width:0;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap;}
+  .lb .name.me{color:#48dbfb;font-weight:700;}
+  .lb .pts{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;flex:0 0 auto;}
+  .lb .badges{display:flex;gap:3px;font-size:14px;flex:0 0 auto;}
+
+  /* EVENTS */
+  .events-title{font-size:15px;font-weight:700;margin:0 0 10px;
+    display:flex;align-items:center;gap:6px;}
+  .event{display:flex;gap:10px;align-items:center;padding:8px 0;
+    border-bottom:1px solid rgba(127,127,127,.1);font-size:13px;}
+  .event:last-child{border:0;}
+  .event .av{width:30px;height:30px;border-radius:50%;flex:0 0 30px;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:12px;color:#fff;text-transform:uppercase;}
+  .event .txt{flex:1;min-width:0;}
+  .event .txt b{font-weight:600;}
+  .event .time{color:var(--hint);font-size:11px;white-space:nowrap;flex:0 0 auto;}
+  .empty{text-align:center;color:var(--hint);font-size:13px;padding:16px 0;}
+
   .loader{text-align:center;padding:40px;color:var(--hint);}
   .fatal{color:#ff6b6b;font-size:13px;padding:16px;line-height:1.5;word-break:break-word;}
+
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);
     background:rgba(0,0,0,.9);color:#fff;padding:10px 18px;border-radius:12px;font-size:14px;
     opacity:0;transition:.25s;pointer-events:none;z-index:400;max-width:82%;text-align:center;font-weight:600;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .toast.gold{background:linear-gradient(90deg,#ff9f43,#ffcc48);color:#1a1000;}
+
   .modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;
     justify-content:center;z-index:200;padding:20px;}
   .modal.show{display:flex;}
@@ -158,6 +168,7 @@
 </style>
 </head>
 <body>
+
 <svg width="0" height="0" style="position:absolute">
   <defs>
     <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
@@ -185,7 +196,6 @@
       </div>
       <div class="pet-title">
         <h1>
-          <span id="hatEl"></span>
           <span id="nameEl">Пушистик</span>
           <button class="edit-btn" id="renameBtn" style="display:none">✏️</button>
         </h1>
@@ -225,23 +235,8 @@
     <div class="score-line" id="scoreEl">Твои очки: <b>0</b></div>
 
     <div class="card" style="margin-top:12px">
-      <h2>🐭 Мини-игра</h2>
-      <button class="mouse-btn" id="mouseBtn">🐭 Поймать мышь (+3 очка)</button>
-    </div>
-
-    <div class="card">
-      <h2>📋 Квесты на сегодня</h2>
-      <div id="questsEl"><div class="loader">Загрузка…</div></div>
-    </div>
-
-    <div class="card">
-      <h2>🎒 Инвентарь</h2>
-      <div class="inv-grid" id="invEl"></div>
-    </div>
-
-    <div class="card">
-      <h2>📜 Лента событий</h2>
-      <div id="eventsEl"><div class="loader">Тут пока тихо…</div></div>
+      <div class="events-title">📜 Лента событий</div>
+      <div id="eventsEl"><div class="empty">Тут пока тихо…</div></div>
     </div>
 
     <div class="card">
@@ -253,7 +248,6 @@
 
 <div class="toast" id="toastEl"></div>
 
-<!-- Модал переименования -->
 <div class="modal" id="renameModal">
   <div class="modal-box">
     <h3>Переименовать питомца</h3>
@@ -265,7 +259,6 @@
   </div>
 </div>
 
-<!-- Модал пополнения -->
 <div class="modal" id="topupModal">
   <div class="modal-box">
     <h3>💳 Пополнить банк</h3>
@@ -283,7 +276,6 @@
   </div>
 </div>
 
-<!-- Модал зарплаты -->
 <div class="modal" id="salaryModal">
   <div class="modal-box">
     <h3>💸 Зарплата</h3>
@@ -302,23 +294,10 @@
   </div>
 </div>
 
-<!-- Мини-игра -->
-<div class="mouse-area" id="mouseArea">
-  <div class="mouse-box">
-    <h3>🐭 Поймай мышь</h3>
-    <div class="mouse-timer" id="mouseTimer">10</div>
-    <div class="mouse-board" id="mouseBoard"></div>
-    <div class="modal-btns">
-      <button class="ok" id="mouseClose" style="background:var(--accent);color:#fff">Закрыть</button>
-    </div>
-  </div>
-</div>
-
 <script>
 const SUPABASE_URL = "https://ripjvcglkcqvyolnewaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_P5IC_YkWUcchuxcQM_THFQ_uOxhPv4Q";
 const BOT_USERNAME = "Aipidik_bot";
-const API_BASE = "botpet-production.up.railway.app"; // ← ЗАМЕНИ на URL Railway
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const tg = window.Telegram?.WebApp;
@@ -334,8 +313,8 @@ const userId = user.id;
 const firstName = user.first_name || "Гость";
 const username = user.username || null;
 
-if (!petId) { document.getElementById("loader").innerHTML = "<div style='text-align:center;padding:40px'>🐾<br><b>Открой из бота</b></div>"; throw 0; }
-if (!userId) { document.getElementById("loader").innerHTML = "<div style='text-align:center;padding:40px'>🔒<br><b>Только в Telegram</b></div>"; throw 0; }
+if(!petId){ document.getElementById("loader").innerHTML="<div style='text-align:center;padding:40px'>🐾<br><b>Открой из бота</b></div>"; throw 0; }
+if(!userId){ document.getElementById("loader").innerHTML="<div style='text-align:center;padding:40px'>🔒<br><b>Только в Telegram</b></div>"; throw 0; }
 
 const STAGES      = ["🥚","🐣","🐥","🐓","🦅"];
 const STAGE_NAMES = ["Яйцо","Птенец","Юнец","Взрослый","Старейшина"];
@@ -344,14 +323,7 @@ const XP_PER_LEVEL = 50;
 const DAILY_BONUS = 20;
 const RING_CIRC   = 2 * Math.PI * 90;
 
-const ITEMS = {
-  food:     { emoji:"🍖", name:"Еда",     price: 5,  effect:"+30 сытости, +15 энергии" },
-  toy:      { emoji:"🎾", name:"Игрушка", price: 8,  effect:"+30 настроения" },
-  medicine: { emoji:"💊", name:"Аптечка", price: 15, effect:"+40 здоровья" },
-  hat:      { emoji:"🎩", name:"Шапка",   price: 30, effect:"Украшение" },
-};
-
-// ВАЖНО: feed даёт +10 энергии
+// feed даёт +10 энергии
 const ACTIONS = {
   feed: { emoji:"🍖", label:"Покормить", cd: 5*60,  xp: 2, effects:{ hunger:+25, energy:+10 }, score:+1, msg:"+25 сытости, +10 энергии" },
   pet:  { emoji:"✋", label:"Погладить", cd: 60,    xp: 1, effects:{ mood:+10 },               score:+1, msg:"+10 настроения" },
@@ -371,7 +343,6 @@ function badgesFor(m){
 }
 
 let pet=null, me=null, cooldowns={}, myWriteAt=0, isOwner=false;
-let quests=[], inventory=[];
 
 const $ = id => document.getElementById(id);
 const clamp = (v,mn=0,mx=100) => Math.max(mn, Math.min(mx, Math.round(v)));
@@ -415,15 +386,6 @@ function tick(p){
 }
 function setBar(k,v){ $("b-"+k).style.width=v+"%"; $("v-"+k).textContent=v+"%"; }
 
-async function api(path, opts={}){
-  const r = await fetch(API_BASE + path, {
-    ...opts,
-    headers: {"Content-Type":"application/json", ...(opts.headers||{})}
-  });
-  if(!r.ok) throw new Error(await r.text());
-  return r.json();
-}
-
 function render(){
   if(!pet)return;
   const lvl = levelFromXp(pet.xp);
@@ -431,7 +393,6 @@ function render(){
   $("petEl").textContent = STAGES[st];
   $("petEl").style.filter = "drop-shadow("+glow(pet)+")";
   $("nameEl").textContent = pet.name;
-  $("hatEl").textContent = (inventory.find(i=>i.item_type==="hat"&&i.count>0) ? "🎩 " : "");
 
   isOwner = Number(pet.owner_id) === Number(userId);
   $("renameBtn").style.display = isOwner ? "" : "none";
@@ -472,11 +433,7 @@ function render(){
     let extra = me.streak>=3 ? " <span class='streak-badge'>🔥 "+me.streak+" дн.</span>" : "";
     $("scoreEl").innerHTML = "Твои очки: <b>"+me.score+"</b>"+extra;
   }
-
   checkDaily();
-  renderQuests();
-  renderInventory();
-  checkMouse();
 }
 
 function checkDaily(){
@@ -486,110 +443,6 @@ function checkDaily(){
   const b = $("dailyBtn");
   if(can){ b.classList.remove("hidden"); $("dailyStreak").textContent="+"+DAILY_BONUS; }
   else b.classList.add("hidden");
-}
-
-function checkMouse(){
-  if(!me)return;
-  const last = me.last_mouse_at ? new Date(me.last_mouse_at).getTime() : 0;
-  const left = 3600*1000 - (Date.now()-last);
-  const btn = $("mouseBtn");
-  if(left>0){
-    btn.disabled = true;
-    const m = Math.ceil(left/60000);
-    btn.textContent = "🐭 Доступно через "+m+" мин";
-  } else {
-    btn.disabled = false;
-    btn.textContent = "🐭 Поймать мышь (+3 очка)";
-  }
-}
-
-function renderQuests(){
-  const el = $("questsEl");
-  if(!quests.length){ el.innerHTML = "<div class='loader'>Загрузка…</div>"; return; }
-  const tmpl = {
-    feed_3:{emoji:"🍖",text:"Покормить 3 раза"},
-    pet_5:{emoji:"✋",text:"Погладить 5 раз"},
-    play_2:{emoji:"🎾",text:"Поиграть 2 раза"},
-    wash_1:{emoji:"🧼",text:"Помыть 1 раз"},
-    all_acts:{emoji:"🌟",text:"Сделать 4 разных дела"},
-  };
-  el.innerHTML = quests.map(q=>{
-    const t = tmpl[q.quest_type] || {emoji:"✨",text:q.quest_type};
-    const done = q.progress >= q.target;
-    const cls = q.claimed ? "done" : "";
-    let btn = "";
-    if(q.claimed) btn = "<button class='claimed'>✓ Забрано</button>";
-    else if(done) btn = "<button class='ready' data-claim='"+q.id+"'>Забрать</button>";
-    else btn = "<button disabled>"+q.progress+"/"+q.target+"</button>";
-    return "<div class='quest "+cls+"'>"+
-      "<div class='qi'>"+t.emoji+"</div>"+
-      "<div class='qt'>"+t.text+"<small>Прогресс: "+q.progress+" / "+q.target+"</small></div>"+
-      btn+"</div>";
-  }).join("");
-
-  el.querySelectorAll("button[data-claim]").forEach(b=>{
-    b.addEventListener("click", async ()=>{
-      try {
-        const r = await api("/api/quest/claim", {method:"POST", body: JSON.stringify({
-          pet_id: petId, user_id: userId, quest_id: parseInt(b.dataset.claim, 10)
-        })});
-        toast("🎁 +"+r.reward+" очков!", true);
-        if(me) me.score = (me.score||0) + r.reward;
-        await loadQuests();
-        render();
-      } catch(e){ toast("Ошибка"); }
-    });
-  });
-}
-
-function renderInventory(){
-  const el = $("invEl");
-  el.innerHTML = Object.entries(ITEMS).map(([k,it])=>{
-    const owned = inventory.find(i=>i.item_type===k);
-    const cnt = owned ? owned.count : 0;
-    const isHatOwned = k==="hat" && cnt>0;
-    const cls = cnt>0 ? "owned" : "";
-    const action = cnt>0 && k!=="hat" ? "use" : "buy";
-    const label = cnt>0 && k!=="hat" ? "Исп." : it.price;
-    return "<div class='inv-item "+cls+"' data-type='"+k+"'>"+
-      (cnt>0 ? "<span class='badge'>"+cnt+"</span>" : "")+
-      "<div class='ie'>"+it.emoji+"</div>"+
-      "<div class='in'>"+it.name+"</div>"+
-      "<div class='ic2'>"+label+" ⭐</div>"+
-      "</div>";
-  }).join("");
-
-  el.querySelectorAll(".inv-item").forEach(item=>{
-    item.addEventListener("click", async ()=>{
-      const type = item.dataset.type;
-      const owned = inventory.find(i=>i.item_type===type);
-      const cnt = owned ? owned.count : 0;
-      const isHatOwned = type==="hat" && cnt>0;
-      try {
-        if(cnt>0 && type!=="hat"){
-          const r = await api("/api/inventory/use", {method:"POST", body: JSON.stringify({
-            pet_id: petId, user_id: userId, item_type: type
-          })});
-          toast(ITEMS[type].emoji+" Использовано");
-          if(pet && r.effects){ Object.assign(pet, r.effects); }
-          await loadInventory();
-          render();
-        } else if(isHatOwned){
-          toast("Шапка уже надета");
-        } else {
-          const r = await api("/api/inventory/buy", {method:"POST", body: JSON.stringify({
-            pet_id: petId, user_id: userId, item_type: type
-          })});
-          toast("✅ Куплено за "+ITEMS[type].price+" ⭐");
-          if(me) me.score = r.new_score;
-          await loadInventory();
-          render();
-        }
-      } catch(e){
-        toast("Не хватает очков");
-      }
-    });
-  });
 }
 
 async function loadPet(){
@@ -626,26 +479,12 @@ async function loadMe(){
   render();
 }
 
-async function loadQuests(){
-  try {
-    const r = await api("/api/quests?pet_id="+petId+"&user_id="+userId);
-    quests = r.quests || [];
-  } catch(e){ quests = []; }
-}
-
-async function loadInventory(){
-  try {
-    const r = await api("/api/inventory?pet_id="+petId+"&user_id="+userId);
-    inventory = r.items || [];
-  } catch(e){ inventory = []; }
-}
-
 async function loadLeaderboard(){
   const {data} = await sb.from("members")
     .select("user_id,first_name,username,score,streak,today_score")
     .eq("pet_id", petId).order("score",{ascending:false}).limit(10);
   const el = $("lbEl");
-  if(!data || !data.length){ el.innerHTML = "<div class='loader'>Пока никого</div>"; return; }
+  if(!data || !data.length){ el.innerHTML = "<div class='empty'>Пока никого</div>"; return; }
   const medals = ["🥇","🥈","🥉","4.","5.","6.","7.","8.","9.","10."];
   el.innerHTML = data.map((m,i)=>{
     const name = esc(m.first_name || m.username || ("#"+m.user_id));
@@ -664,7 +503,7 @@ async function loadEvents(){
   const {data} = await sb.from("events").select("*").eq("pet_id", petId)
     .order("created_at",{ascending:false}).limit(8);
   const el = $("eventsEl");
-  if(!data || !data.length){ el.innerHTML = "<div class='loader'>Тут пока тихо…</div>"; return; }
+  if(!data || !data.length){ el.innerHTML = "<div class='empty'>Тут пока тихо…</div>"; return; }
   el.innerHTML = data.map(e=>{
     const diff = Math.floor((Date.now()-new Date(e.created_at))/1000);
     let t; if(diff<60)t="только что"; else if(diff<3600)t=Math.floor(diff/60)+" мин";
@@ -728,8 +567,6 @@ async function doAction(act){
   render();
   loadLeaderboard();
   loadEvents();
-  // Обновить квесты через секунду, чтобы events успели записаться
-  setTimeout(loadQuests, 800);
 }
 
 async function claimDaily(){
@@ -757,78 +594,11 @@ async function renamePet(newName){
   pet = {...pet, name:newName}; render(); toast("📛 Имя изменено");
 }
 
-// ===== МИНИ-ИГРА =====
-let mouseTimerInterval = null;
-let mouseCatches = 0;
-let mouseTimeLeft = 10;
-
-function startMouseGame(){
-  $("mouseArea").classList.add("show");
-  $("mouseBoard").innerHTML = "";
-  mouseCatches = 0;
-  mouseTimeLeft = 10;
-  $("mouseTimer").textContent = "10";
-  spawnMouse();
-  mouseTimerInterval = setInterval(()=>{
-    mouseTimeLeft--;
-    $("mouseTimer").textContent = mouseTimeLeft;
-    if(mouseTimeLeft<=0) finishMouseGame();
-  }, 1000);
-}
-
-function spawnMouse(){
-  const board = $("mouseBoard");
-  board.innerHTML = "";
-  const el = document.createElement("div");
-  el.className = "mouse-target";
-  el.textContent = "🐭";
-  const maxX = board.clientWidth - 50;
-  const maxY = board.clientHeight - 50;
-  el.style.left = Math.max(10, Math.random()*maxX) + "px";
-  el.style.top = Math.max(10, Math.random()*maxY) + "px";
-  el.addEventListener("click", ()=>{
-    mouseCatches++;
-    haptic("success");
-    el.remove();
-    if(mouseTimeLeft > 0) setTimeout(spawnMouse, 300);
-  });
-  board.appendChild(el);
-}
-
-async function finishMouseGame(){
-  clearInterval(mouseTimerInterval);
-  $("mouseTimer").textContent = "0";
-  const caught = mouseCatches > 0 ? 1 : 0;
-  try {
-    const r = await api("/api/mouse/done", {method:"POST", body: JSON.stringify({
-      pet_id: petId, user_id: userId, caught
-    })});
-    if(r.reward > 0){
-      toast("🐭 Поймал "+mouseCatches+" раз, +"+r.reward+" очков!", true);
-      if(me) me.score = (me.score||0)+r.reward;
-      if(me) me.last_mouse_at = new Date().toISOString();
-      render();
-      loadLeaderboard();
-    } else {
-      toast("Мышь не поймана");
-    }
-  } catch(e){
-    toast("Ошибка");
-  }
-}
-
-// ===== Обработчики =====
 document.querySelectorAll(".action[data-act]").forEach(b=>{
   b.addEventListener("click", ()=>doAction(b.dataset.act));
 });
 $("petEl").addEventListener("click", ()=>doAction("pet"));
 $("dailyBtn").addEventListener("click", claimDaily);
-$("mouseBtn").addEventListener("click", startMouseGame);
-$("mouseClose").addEventListener("click", ()=>{
-  clearInterval(mouseTimerInterval);
-  $("mouseArea").classList.remove("show");
-  checkMouse();
-});
 
 $("renameBtn").addEventListener("click", ()=>{
   if(!pet || Number(pet.owner_id)!==Number(userId)){ toast("Только создатель"); return; }
@@ -844,7 +614,6 @@ $("renameOk").addEventListener("click", async ()=>{
 });
 $("renameModal").addEventListener("click", e=>{ if(e.target.id==="renameModal")$("renameModal").classList.remove("show"); });
 
-// TOPUP
 let topupAmount = 1;
 $("topupBtn").addEventListener("click", ()=>{
   if(!isOwner)return;
@@ -874,7 +643,6 @@ $("topupOk").addEventListener("click", ()=>{
 });
 $("topupModal").addEventListener("click", e=>{ if(e.target.id==="topupModal")$("topupModal").classList.remove("show"); });
 
-// SALARY
 let topN = 3;
 $("salaryBtn").addEventListener("click", ()=>{
   if(!isOwner)return;
@@ -904,16 +672,14 @@ $("salaryOk").addEventListener("click", ()=>{
 });
 $("salaryModal").addEventListener("click", e=>{ if(e.target.id==="salaryModal")$("salaryModal").classList.remove("show"); });
 
-// ===== Автообновление часов =====
 setInterval(render, 1000);
 
-// ===== Инициализация =====
 (async ()=>{
   try {
     await loadPet();
     if(!pet)return;
     await loadMe();
-    await Promise.all([loadLeaderboard(), loadEvents(), loadQuests(), loadInventory()]);
+    await Promise.all([loadLeaderboard(), loadEvents()]);
     $("loader").style.display = "none";
     $("app").style.display = "block";
   } catch(e){
