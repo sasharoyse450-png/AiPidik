@@ -20,7 +20,6 @@
   }
   .wrap{max-width:440px;margin:0 auto;}
 
-  /* ===== КАРТОЧКА ПИТОМЦА ===== */
   .pet-card{
     background:#151515;
     border-radius:18px;
@@ -102,7 +101,6 @@
     letter-spacing:.3px;
   }
 
-  /* ===== ДНЕВНОЙ БОНУС ===== */
   .daily{
     display:flex;
     background:linear-gradient(90deg,#ff9f43,#ffcc48);
@@ -120,7 +118,6 @@
   .daily.hidden{display:none;}
   #dailyStreak{font-variant-numeric:tabular-nums;}
 
-  /* ===== БАНК ===== */
   .bank-card{
     background:#151515;
     border:1px solid rgba(255,215,0,.15);
@@ -180,7 +177,6 @@
   .btn-topup{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
   .btn-salary{background:linear-gradient(135deg,#7a5cff,#00d4ff);color:#fff;}
 
-  /* ===== КАРТОЧКА СТАТОВ ===== */
   .stats-card{
     background:#151515;
     border-radius:18px;
@@ -233,7 +229,6 @@
   .b-clean{background:linear-gradient(90deg,#00b8d4,#48dbfb);}
   .b-health{background:linear-gradient(90deg,#ff3b5c,#ff6b7a);}
 
-  /* ===== ДЕЙСТВИЯ ===== */
   .actions-grid{
     display:grid;grid-template-columns:1fr 1fr;
     gap:8px;margin-bottom:12px;
@@ -288,7 +283,6 @@
     font-weight:700;font-size:11.5px;
   }
 
-  /* ===== УНИВЕРСАЛЬНАЯ КАРТОЧКА С ВОДЯНЫМ ЗНАКОМ ===== */
   .card{
     background:#151515;
     border-radius:18px;
@@ -316,7 +310,6 @@
     display:flex;align-items:center;gap:7px;
   }
 
-  /* ===== ЛЕНТА СОБЫТИЙ ===== */
   .event{
     display:flex;gap:11px;align-items:center;
     padding:9px 0;
@@ -340,7 +333,6 @@
     font-size:13px;padding:18px 0;
   }
 
-  /* ===== ЛИДЕРБОРД ===== */
   .lb{
     display:flex;align-items:center;gap:10px;
     padding:10px 0;
@@ -377,7 +369,6 @@
     flex:0 0 auto;opacity:.85;
   }
 
-  /* ===== ГЛОБАЛЬНЫЙ РЕЙТИНГ ===== */
   .pet-row{
     display:flex;align-items:center;gap:10px;
     padding:11px 0;
@@ -415,7 +406,6 @@
     padding-left:10px;padding-right:10px;
   }
 
-  /* ===== СЛУЖЕБНОЕ ===== */
   .loader{
     text-align:center;padding:48px 20px;
     color:#7d8b99;font-size:13px;
@@ -438,7 +428,6 @@
   .deleted-screen h2{font-size:18px;font-weight:700;display:block;justify-content:center;}
   .deleted-screen p{color:#7d8b99;font-size:13px;margin-top:8px;}
 
-  /* ===== ТОСТ ===== */
   .toast{
     position:fixed;left:50%;bottom:24px;
     transform:translateX(-50%) translateY(20px);
@@ -464,7 +453,6 @@
     color:#1a1000;
   }
 
-  /* ===== МОДАЛКИ ===== */
   .modal{
     position:fixed;inset:0;
     background:rgba(0,0,0,.7);
@@ -574,7 +562,6 @@
     color:#fff;
   }
 
-  /* ===== СКИНЫ ===== */
   .skins-grid{
     display:grid;grid-template-columns:1fr 1fr;
     gap:8px;margin-bottom:16px;
@@ -593,8 +580,9 @@
     background:rgba(122,92,255,.14);
   }
   .skin-opt .em{
-    font-size:26px;line-height:1;
-    display:flex;justify-content:center;gap:3px;
+    font-size:24px;line-height:1;
+    display:flex;justify-content:center;gap:2px;
+    flex-wrap:wrap;
   }
   .skin-opt .nm{
     font-size:12.5px;color:#c0c8d0;
@@ -803,15 +791,46 @@ const username = user.username || null;
 if(!petId){ document.getElementById("loader").innerHTML="<div style='text-align:center;padding:40px;color:#7d8b99'>🐾<br><br><b style='color:#fff'>Открой из бота</b></div>"; throw 0; }
 if(!userId){ document.getElementById("loader").innerHTML="<div style='text-align:center;padding:40px;color:#7d8b99'>🔒<br><br><b style='color:#fff'>Только в Telegram</b></div>"; throw 0; }
 
+/* ===== 8 СТАДИЙ РОСТА — у каждого скина свои названия =====
+   0         ур. 1-3
+   1         ур. 4-7
+   2         ур. 8-11
+   3         ур. 12-15
+   4         ур. 16-19
+   5         ур. 20-23
+   6         ур. 24-27
+   7         ур. 28-30
+*/
 const SKINS = {
-  classic: { name:"Птица",     stages:["🥚","🐣","🐥","🐓","🦅"] },
-  cat:     { name:"Котик",     stages:["🥚","🐱","🐈","🐈‍⬛","🦁"] },
-  dragon:  { name:"Дракон",    stages:["🥚","🦎","🐉","🐲","🐲"] },
-  space:   { name:"Космос",    stages:["🪐","🌙","⭐","🌟","☀️"] },
-  dino:    { name:"Динозавр",  stages:["🥚","🦕","🦖","🐊","🐲"] },
+  classic: {
+    name:"Птица",
+    stages:["🥚","🐣","🐥","🐤","🐓","🦅","🦉","🐲"],
+    stageNames:["Яйцо","Птенец","Юнец","Подросток","Взрослый","Опытный","Старейшина","Легенда"]
+  },
+  cat: {
+    name:"Котик",
+    stages:["🥚","🐱","🐈","🐈‍⬛","🐆","🐅","🦁","🐯"],
+    stageNames:["Яйцо","Котёнок","Котик","Подросший кот","Крупный кот","Хищник","Царь зверей","Тигр"]
+  },
+  dragon: {
+    name:"Дракон",
+    stages:["🥚","🦎","🐊","🐉","🐲","🐲","🦕","🔥"],
+    stageNames:["Яйцо","Ящерка","Дракончик","Юный дракон","Дракон","Взрослый дракон","Древний дракон","Огненный владыка"]
+  },
+  space: {
+    name:"Космос",
+    stages:["🌫","🌙","⭐","🌟","✨","☄️","🌠","☀️"],
+    stageNames:["Туманность","Луна","Звезда","Яркая звезда","Созвездие","Комета","Сверхновая","Солнце"]
+  },
+  dino: {
+    name:"Динозавр",
+    stages:["🥚","🦎","🦕","🦖","🐊","🐉","🐲","🌋"],
+    stageNames:["Яйцо","Ящерка","Динозаврик","Юный дино","Ящер","Хищный дино","Древний ящер","Вулкан"]
+  },
 };
 const SKIN_PRICE = 50;
 function stagesFor(skinKey){ return (SKINS[skinKey] || SKINS.classic).stages; }
+function stageNamesFor(skinKey){ return (SKINS[skinKey] || SKINS.classic).stageNames; }
 
 const SEASONS = {
   winter: { emoji:"❄️", name:"Зима" },
@@ -832,7 +851,6 @@ function weatherFor(d){
   return WEATHERS[seed % WEATHERS.length];
 }
 
-const STAGE_NAMES = ["Яйцо","Птенец","Юнец","Взрослый","Старейшина"];
 const MAX_LEVEL   = 30;
 const XP_PER_LEVEL = 50;
 const DAILY_BONUS = 20;
@@ -862,7 +880,7 @@ const $ = id => document.getElementById(id);
 const clamp = (v,mn=0,mx=100) => Math.max(mn, Math.min(mx, Math.round(v)));
 const levelFromXp = xp => Math.min(MAX_LEVEL, Math.floor(xp/XP_PER_LEVEL)+1);
 const xpForLevel = lvl => (lvl-1)*XP_PER_LEVEL;
-const stageFromLevel = l => l>=25?4 : l>=17?3 : l>=10?2 : l>=5?1 : 0;
+const stageFromLevel = l => l>=28?7 : l>=24?6 : l>=20?5 : l>=16?4 : l>=12?3 : l>=8?2 : l>=4?1 : 0;
 const esc = s => String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 function toast(msg, gold){
@@ -908,6 +926,7 @@ function render(){
   const lvl = levelFromXp(pet.xp);
   const st = stageFromLevel(lvl);
   const stages = stagesFor(pet.skin);
+  const names = stageNamesFor(pet.skin);
   $("petEl").textContent = stages[st] || stages[0];
   $("nameEl").textContent = pet.name;
   $("petIdEl").textContent = "ID: " + pet.id;
@@ -917,7 +936,7 @@ function render(){
   $("skinBtn").style.display = isOwner ? "" : "none";
   $("deleteBtn").style.display = isOwner ? "" : "none";
 
-  $("stageEl").textContent = STAGE_NAMES[st]+" · Ур. "+lvl;
+  $("stageEl").textContent = names[st]+" · Ур. "+lvl;
   $("moodEl").textContent = moodText(pet);
 
   setBar("hunger",pet.hunger); setBar("mood",pet.mood); setBar("energy",pet.energy);
@@ -1055,6 +1074,7 @@ async function loadGlobalRating(){
     const lvl = Math.min(30, Math.floor((p.xp||0)/XP_PER_LEVEL)+1);
     const st = stageFromLevel(lvl);
     const stages = stagesFor(p.skin);
+    const names = stageNamesFor(p.skin);
     const emoji = stages[st] || stages[0];
     const isMe = p.id === petId;
     const owner = esc(ownerName(p));
@@ -1063,7 +1083,7 @@ async function loadGlobalRating(){
       "<div class='ic'>"+emoji+"</div>"+
       "<div class='pn'>"+
         "<div class='pname'>"+esc(p.name)+(isMe?" · твой":"")+"</div>"+
-        "<div class='psub'>Ур. "+lvl+" · "+STAGE_NAMES[st]+" · 👤 <span class='owner'>"+owner+"</span></div>"+
+        "<div class='psub'>Ур. "+lvl+" · "+names[st]+" · 👤 <span class='owner'>"+owner+"</span></div>"+
       "</div>"+
       "<div class='xp'>"+ (p.xp||0) +"</div></div>";
   }).join("");
@@ -1131,7 +1151,7 @@ async function doAction(act){
   if(newSt>oldSt){
     $("petEl").classList.add("mega");
     setTimeout(()=>$("petEl").classList.remove("mega"), 700);
-    setTimeout(()=>toast("✨ Эволюция! "+STAGE_NAMES[newSt], true), 500);
+    setTimeout(()=>toast("✨ "+stageNamesFor(pet.skin)[newSt]+"!", true), 500);
   }
   logEvent(act);
   render();
@@ -1231,7 +1251,7 @@ function openSkinModal(){
   grid.innerHTML = Object.entries(SKINS).map(([key, s])=>{
     const isActive = pet.skin === key;
     const cls = "skin-opt" + (isActive?" active":"") + (isActive?" owned":"");
-    const preview = s.stages[2] || s.stages[0];
+    const preview = s.stages[4] || s.stages[0];
     const priceLabel = isActive ? "✓ выбрано" : (SKIN_PRICE + " ⭐");
     return "<div class='"+cls+"' data-skin='"+key+"'>"+
       "<div class='em'>"+preview+"</div>"+
@@ -1250,7 +1270,6 @@ function openSkinModal(){
   $("skinModal").classList.add("show");
 }
 
-// ===== Обработчики =====
 document.querySelectorAll(".action[data-act]").forEach(b=>{
   b.addEventListener("click", ()=>doAction(b.dataset.act));
 });
