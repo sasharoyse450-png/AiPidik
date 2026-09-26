@@ -10,7 +10,7 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
 from aiogram.types import Message
 from openai import AsyncOpenAI
-from supabase import create_client, Client
+from supabase import create_client
 
 # ================== НАСТРОЙКИ ==================
 BOT_TOKEN = "8875553934:AAFDQgQHTbOwoUMI3SY31ydfpV6b6M34QnE"
@@ -47,7 +47,7 @@ ADMIN_IDS = {8130244626}
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 SYSTEM_BASE = """Ты — КАЗИК. Живёшь в Telegram-чате. Ты одержим казино: автоматы, ставки, рулетка, блэкджек, джекпот, слоты, лудомания, заносы, иксы.
 
@@ -103,24 +103,24 @@ MOOD_LEVELS = [
 dp = Dispatcher()
 client = AsyncOpenAI(api_key=API_KEY, base_url=BASE_URL)
 
-_me_id: int | None = None
-_me_username: str = ""
+_me_id = None
+_me_username = ""
 
-_last_reply: dict[int, float] = {}
-_last_bot_post: dict[int, float] = {}
-_last_activity: dict[int, float] = {}
-_known_chats: set[int] = set()
+_last_reply = {}
+_last_bot_post = {}
+_last_activity = {}
+_known_chats = set()
 
-_history: dict[int, deque] = defaultdict(lambda: deque(maxlen=HISTORY_SIZE))
-_rep_cache: dict[int, dict[int, int]] = defaultdict(dict)
-_stats_cache: dict[int, dict[int, int]] = defaultdict(dict)
-_mood_cache: dict[int, int] = defaultdict(lambda: MOOD_START)
-_mood_last_decay_cache: dict[int, float] = {}
+_history = defaultdict(lambda: deque(maxlen=HISTORY_SIZE))
+_rep_cache = defaultdict(dict)
+_stats_cache = defaultdict(dict)
+_mood_cache = defaultdict(lambda: MOOD_START)
+_mood_last_decay_cache = {}
 
-STICKER_IDS: list[str] = []
+STICKER_IDS = []
 
 
-def is_admin(user_id: int) -> bool:
+def is_admin(user_id):
     return user_id in ADMIN_IDS
 
 
@@ -156,7 +156,7 @@ def load_from_supabase():
 
 
 # ==================== СИНХРОНИЗАЦИЯ ====================
-def sb_save_rep(chat_id: int, user_id: int, score: int):
+def sb_save_rep(chat_id, user_id, score):
     try:
         supabase.table("reputation").upsert(
             {"chat_id": chat_id, "user_id": user_id, "score": score},
@@ -166,7 +166,7 @@ def sb_save_rep(chat_id: int, user_id: int, score: int):
         logging.exception(f"sb_save_rep failed {chat_id}/{user_id}")
 
 
-def sb_save_stats(chat_id: int, user_id: int, count: int):
+def sb_save_stats(chat_id, user_id, count):
     try:
         supabase.table("stats").upsert(
             {"chat_id": chat_id, "user_id": user_id, "count": count},
@@ -176,7 +176,7 @@ def sb_save_stats(chat_id: int, user_id: int, count: int):
         logging.exception(f"sb_save_stats failed {chat_id}/{user_id}")
 
 
-def sb_save_mood(chat_id: int, mood: int, last_decay: float):
+def sb_save_mood(chat_id, mood, last_decay):
     try:
         dt = datetime.fromtimestamp(last_decay, tz=timezone.utc).isoformat()
         supabase.table("mood").upsert(
@@ -188,17 +188,17 @@ def sb_save_mood(chat_id: int, mood: int, last_decay: float):
 
 
 # ==================== РЕПУТАЦИЯ ====================
-def get_score(chat_id, user_id) -> int:
+def get_score(chat_id, user_id):
     return _rep_cache[chat_id].get(user_id, 0)
 
 
-def add_score(chat_id, user_id, delta: int):
+def add_score(chat_id, user_id, delta):
     new_score = get_score(chat_id, user_id) + delta
     _rep_cache[chat_id][user_id] = new_score
     sb_save_rep(chat_id, user_id, new_score)
 
 
-def relation_for(chat_id, user_id) -> str:
+def relation_for(chat_id, user_id):
     if get_score(chat_id, user_id) <= HATER_THRESHOLD:
         return "hater"
     return "kind"
@@ -211,7 +211,7 @@ def add_msg_count(chat_id, user_id):
 
 
 # ==================== НАСТРОЕНИЕ ====================
-def mood_level(chat_id: int):
+def mood_level(chat_id):
     v = _mood_cache[chat_id]
     for lo, hi, name, desc in MOOD_LEVELS:
         if lo <= v <= hi:
@@ -219,14 +219,14 @@ def mood_level(chat_id: int):
     return "нейтральный", ""
 
 
-def mood_label(value: int) -> str:
+def mood_label(value):
     for lo, hi, name, _ in MOOD_LEVELS:
         if lo <= value <= hi:
             return name
     return "нейтральный"
 
 
-def mood_change(chat_id: int, delta: int):
+def mood_change(chat_id, delta):
     old = _mood_cache[chat_id]
     new = max(MOOD_MIN, min(MOOD_MAX, old + delta))
     _mood_cache[chat_id] = new
@@ -234,7 +234,7 @@ def mood_change(chat_id: int, delta: int):
         sb_save_mood(chat_id, new, _mood_last_decay_cache.get(chat_id, time.time()))
 
 
-def mood_decay(chat_id: int):
+def mood_decay(chat_id):
     now = time.time()
     last = _mood_last_decay_cache.get(chat_id)
     if last is None:
@@ -274,7 +274,7 @@ SUPPORT_WORDS = (
 )
 
 
-def analyze_tone(text: str) -> int:
+def analyze_tone(text):
     low = text.lower()
     s = 0
     for w in BAD_WORDS:
@@ -286,7 +286,7 @@ def analyze_tone(text: str) -> int:
     return s
 
 
-def mood_delta_from_text(text: str) -> int:
+def mood_delta_from_text(text):
     low = text.lower()
     d = 0
     for w in SUPPORT_WORDS:
@@ -302,7 +302,7 @@ def mood_delta_from_text(text: str) -> int:
 
 
 # ==================== СТИКЕРЫ ====================
-async def load_stickers(bot: Bot):
+async def load_stickers(bot):
     global STICKER_IDS
     try:
         sticker_set = await bot.get_sticker_set(name=STICKER_PACK)
