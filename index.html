@@ -8,12 +8,13 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
-    --bg: var(--tg-theme-bg-color,#17212b);
-    --card: var(--tg-theme-secondary-bg-color,#232e3c);
+    --bg: var(--tg-theme-bg-color,#0e1621);
+    --card: var(--tg-theme-secondary-bg-color,#1c2733);
     --text: var(--tg-theme-text-color,#fff);
     --hint: var(--tg-theme-hint-color,#7d8b99);
     --btn: var(--tg-theme-button-color,#5288c1);
     --btnText: var(--tg-theme-button-text-color,#fff);
+    --accent: #7a5cff;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
@@ -23,81 +24,266 @@
     padding:14px 14px 30px;min-height:100vh;
   }
   .wrap{max-width:480px;margin:0 auto;}
-  .card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;}
+
+  /* ===== PET CARD ===== */
+  .pet-card{
+    background:linear-gradient(160deg,#1c2733,#131c26);
+    border-radius:22px;padding:20px 16px 18px;margin-bottom:12px;
+    position:relative;overflow:hidden;
+    border:1px solid rgba(255,255,255,.05);
+  }
+  .pet-card::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(400px 200px at 50% 0%,rgba(122,92,255,.18),transparent 70%);
+  }
+  .pet-stage{
+    width:200px;height:200px;margin:0 auto;position:relative;
+  }
+  .ring{position:absolute;inset:0;transform:rotate(-90deg);}
+  .ring circle{fill:none;stroke-linecap:round;}
+  .ring .bg{stroke:rgba(255,255,255,.07);stroke-width:8;}
+  .ring .fg{
+    stroke:url(#ringGrad);stroke-width:8;
+    transition:stroke-dashoffset .6s ease;
+  }
   .pet{
-    font-size:110px;text-align:center;line-height:1;
-    transition:transform .2s;user-select:none;cursor:pointer;
-    filter:drop-shadow(0 6px 10px rgba(0,0,0,.25));
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:96px;line-height:1;user-select:none;cursor:pointer;
+    transition:transform .25s;
   }
-  .pet.pulse{transform:scale(1.18) rotate(-4deg);}
-  h1{font-size:20px;margin:6px 0 0;text-align:center;}
-  .sub{text-align:center;color:var(--hint);font-size:13px;margin-top:6px;}
-  .mood{text-align:center;font-size:14px;margin-top:8px;min-height:20px;}
-  .stat{margin:12px 0;}
-  .stat-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;color:var(--hint);}
-  .bar{height:10px;background:rgba(127,127,127,.2);border-radius:6px;overflow:hidden;}
-  .bar>i{display:block;height:100%;border-radius:6px;transition:width .35s ease;}
-  .b-hunger{background:#ff9f43}.b-mood{background:#ffcc48}
-  .b-energy{background:#54a0ff}.b-clean{background:#48dbfb}
-  .b-health{background:#ee5253}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  button{
-    font-family:inherit;font-size:14px;font-weight:600;padding:13px 10px;
-    border:0;border-radius:12px;background:var(--btn);color:var(--btnText);
-    cursor:pointer;transition:transform .1s,opacity .15s;
+  .pet.pulse{transform:scale(1.14) rotate(-4deg);}
+  .pet.mega{animation:mega .7s;}
+  @keyframes mega{0%,100%{transform:scale(1)}30%{transform:scale(1.3) rotate(6deg)}60%{transform:scale(.9) rotate(-6deg)}}
+
+  .pet-title{margin-top:14px;text-align:center;}
+  .pet-title h1{
+    font-size:22px;margin:0;font-weight:700;letter-spacing:-.3px;
+    display:flex;align-items:center;justify-content:center;gap:8px;
   }
-  button:active:not(:disabled){transform:scale(.96);}
-  button:disabled{opacity:.45;cursor:not-allowed;}
-  button.wide{grid-column:span 2;}
-  h2{font-size:16px;margin:0 0 10px 0;}
-  .lb{display:flex;justify-content:space-between;font-size:14px;padding:8px 0;border-bottom:1px solid rgba(127,127,127,.15);}
+  .edit-btn{
+    background:rgba(255,255,255,.08);border:0;color:var(--hint);
+    font-size:13px;border-radius:8px;padding:4px 8px;cursor:pointer;
+  }
+  .edit-btn:active{background:rgba(255,255,255,.15);}
+  .pet-sub{color:var(--hint);font-size:13px;margin-top:4px;}
+  .pet-mood{font-size:14px;margin-top:8px;min-height:20px;}
+  .xp-text{
+    text-align:center;font-size:12px;color:var(--hint);margin-top:6px;
+    font-variant-numeric:tabular-nums;
+  }
+
+  /* ===== DAILY BONUS ===== */
+  .daily{
+    display:none;background:linear-gradient(90deg,#ff9f43,#ffcc48);
+    color:#1a1000;font-weight:700;border-radius:14px;
+    padding:12px 16px;margin-bottom:12px;cursor:pointer;
+    display:flex;justify-content:space-between;align-items:center;
+    box-shadow:0 6px 20px rgba(255,159,67,.35);
+    animation:dailyPulse 2s ease-in-out infinite;
+  }
+  .daily.hidden{display:none;}
+  .daily .emoji{font-size:22px;margin-right:8px;}
+  @keyframes dailyPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+
+  /* ===== STATS ===== */
+  .card{
+    background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;
+    border:1px solid rgba(255,255,255,.04);
+  }
+  .stat{margin:10px 0;}
+  .stat-head{
+    display:flex;justify-content:space-between;font-size:13px;
+    margin-bottom:5px;color:var(--hint);
+  }
+  .stat-head b{color:var(--text);font-weight:600;}
+  .bar{
+    height:8px;background:rgba(127,127,127,.18);border-radius:6px;
+    overflow:hidden;position:relative;
+  }
+  .bar>i{
+    display:block;height:100%;border-radius:6px;
+    transition:width .5s ease;
+  }
+  .b-hunger{background:linear-gradient(90deg,#ff7a18,#ff9f43);}
+  .b-mood  {background:linear-gradient(90deg,#ffb020,#ffd23f);}
+  .b-energy{background:linear-gradient(90deg,#2d7cff,#54a0ff);}
+  .b-clean {background:linear-gradient(90deg,#00b8d4,#48dbfb);}
+  .b-health{background:linear-gradient(90deg,#ff3b5c,#ee5253);}
+
+  /* ===== ACTIONS ===== */
+  .actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .action{
+    background:var(--card);border:1px solid rgba(255,255,255,.05);
+    border-radius:16px;padding:14px 10px;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    position:relative;overflow:hidden;transition:transform .12s;
+    color:var(--text);font-family:inherit;
+  }
+  .action:active:not(:disabled){transform:scale(.96);}
+  .action:disabled{opacity:.55;cursor:not-allowed;}
+  .action .ic{font-size:26px;}
+  .action .lbl{font-size:13px;font-weight:600;}
+  .action .cd{
+    position:absolute;inset:0;background:rgba(0,0,0,.55);
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;
+    backdrop-filter:blur(2px);
+  }
+  .action .cd:empty{display:none;}
+  .action.wide{grid-column:span 2;flex-direction:row;justify-content:center;gap:8px;padding:13px;}
+  .action.heal{
+    background:linear-gradient(135deg,#ff3b5c,#ee5253);
+    color:#fff;border:0;
+  }
+  .action.wide .lbl{font-size:14px;}
+
+  .score-line{
+    text-align:center;color:var(--hint);font-size:13px;margin-top:12px;
+  }
+  .score-line b{color:var(--text);}
+  .streak-badge{
+    display:inline-block;margin-left:6px;padding:2px 8px;border-radius:10px;
+    background:rgba(255,120,60,.15);color:#ff8a3c;font-weight:700;
+  }
+
+  /* ===== EVENT FEED ===== */
+  .events-title{font-size:15px;font-weight:700;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
+  .event{
+    display:flex;gap:10px;align-items:center;padding:8px 0;
+    border-bottom:1px solid rgba(127,127,127,.1);font-size:13px;
+  }
+  .event:last-child{border:0;}
+  .event .av{
+    width:30px;height:30px;border-radius:50%;flex:0 0 30px;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:12px;color:#fff;
+  }
+  .event .txt{flex:1;min-width:0;}
+  .event .txt b{font-weight:600;}
+  .event .time{color:var(--hint);font-size:11px;white-space:nowrap;}
+  .empty{text-align:center;color:var(--hint);font-size:13px;padding:16px 0;}
+
+  /* ===== LEADERBOARD ===== */
+  h2{font-size:15px;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
+  .lb{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(127,127,127,.1);}
   .lb:last-child{border:0;}
-  .lb .me{color:#48dbfb;font-weight:700;}
+  .lb .rank{width:22px;text-align:center;font-weight:700;font-size:13px;color:var(--hint);}
+  .lb .rank.g{color:#ffd23f;}
+  .lb .rank.s{color:#c0c8d0;}
+  .lb .rank.b{color:#cd7f32;}
+  .lb .av{
+    width:32px;height:32px;border-radius:50%;flex:0 0 32px;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:13px;color:#fff;
+  }
+  .lb .name{flex:1;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lb .name.me{color:#48dbfb;font-weight:700;}
+  .lb .pts{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;}
+  .lb .badges{display:flex;gap:3px;font-size:14px;}
+
+  /* ===== TOAST ===== */
   .toast{
     position:fixed;left:50%;bottom:24px;
     transform:translateX(-50%) translateY(30px);
-    background:rgba(0,0,0,.88);color:#fff;padding:10px 16px;border-radius:10px;
+    background:rgba(0,0,0,.9);color:#fff;padding:10px 18px;border-radius:12px;
     font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:100;
-    max-width:82%;text-align:center;
+    max-width:82%;text-align:center;font-weight:600;
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-  .hint{font-size:12px;color:var(--hint);text-align:center;margin-top:10px;}
+  .toast.gold{background:linear-gradient(90deg,#ff9f43,#ffcc48);color:#1a1000;}
+
   .loader{text-align:center;padding:40px;color:var(--hint);}
-  .fatal{color:#ff6b6b;font-size:13px;padding:16px;text-align:left;line-height:1.5;word-break:break-word;}
-  .empty{text-align:center;padding:40px;line-height:1.6;}
-  .empty .big{font-size:64px;margin-bottom:8px;}
+  .fatal{color:#ff6b6b;font-size:13px;padding:16px;line-height:1.5;word-break:break-word;}
+
+  /* ===== MODAL (rename) ===== */
+  .modal{
+    position:fixed;inset:0;background:rgba(0,0,0,.7);
+    display:none;align-items:center;justify-content:center;z-index:200;
+    padding:20px;
+  }
+  .modal.show{display:flex;}
+  .modal-box{
+    background:var(--card);border-radius:16px;padding:20px;
+    width:100%;max-width:340px;
+  }
+  .modal-box h3{margin:0 0 12px;font-size:16px;}
+  .modal-box input{
+    width:100%;padding:12px;border-radius:10px;border:1px solid rgba(127,127,127,.3);
+    background:rgba(0,0,0,.2);color:var(--text);font-size:15px;font-family:inherit;
+    margin-bottom:12px;
+  }
+  .modal-box input:focus{outline:none;border-color:var(--accent);}
+  .modal-btns{display:flex;gap:8px;}
+  .modal-btns button{
+    flex:1;padding:12px;border:0;border-radius:10px;font-family:inherit;
+    font-size:14px;font-weight:600;cursor:pointer;
+  }
+  .modal-btns .cancel{background:rgba(127,127,127,.15);color:var(--text);}
+  .modal-btns .ok{background:var(--accent);color:#fff;}
 </style>
 </head>
 <body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7a5cff"/>
+      <stop offset="100%" stop-color="#00d4ff"/>
+    </linearGradient>
+  </defs>
+</svg>
+
 <div class="wrap">
   <div class="loader" id="loader">Загружаем питомца…</div>
 
   <div id="app" style="display:none">
-    <div class="card">
-      <div class="pet" id="petEl">🥚</div>
-      <h1 id="nameEl">Питомец</h1>
-      <div class="sub" id="stageEl">—</div>
-      <div class="mood" id="moodEl"></div>
+    <div class="daily hidden" id="dailyBtn">
+      <span><span class="emoji">🎁</span>Ежедневный бонус</span>
+      <span id="dailyStreak"></span>
     </div>
 
-    <div class="card">
-      <div class="stat"><div class="stat-head"><span>🍖 Сытость</span><span id="v-hunger">0%</span></div><div class="bar"><i id="b-hunger" class="b-hunger"></i></div></div>
-      <div class="stat"><div class="stat-head"><span>😊 Настроение</span><span id="v-mood">0%</span></div><div class="bar"><i id="b-mood" class="b-mood"></i></div></div>
-      <div class="stat"><div class="stat-head"><span>⚡ Энергия</span><span id="v-energy">0%</span></div><div class="bar"><i id="b-energy" class="b-energy"></i></div></div>
-      <div class="stat"><div class="stat-head"><span>🧼 Чистота</span><span id="v-clean">0%</span></div><div class="bar"><i id="b-clean" class="b-clean"></i></div></div>
-      <div class="stat"><div class="stat-head"><span>❤️ Здоровье</span><span id="v-health">0%</span></div><div class="bar"><i id="b-health" class="b-health"></i></div></div>
-      <div class="sub" id="xpEl">XP: 0 / 50</div>
-    </div>
-
-    <div class="card">
-      <div class="grid">
-        <button data-act="feed">🍖 Покормить</button>
-        <button data-act="pet">✋ Погладить</button>
-        <button data-act="play">🎾 Играть</button>
-        <button data-act="wash">🧼 Помыть</button>
-        <button class="wide" data-act="heal">💊 Лечить (30 очков)</button>
+    <div class="pet-card">
+      <div class="pet-stage">
+        <svg class="ring" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="90" class="bg"/>
+          <circle cx="100" cy="100" r="90" class="fg" id="ringFg"/>
+        </svg>
+        <div class="pet" id="petEl">🥚</div>
       </div>
-      <div class="hint" id="scoreEl">Твои очки: 0</div>
+      <div class="pet-title">
+        <h1>
+          <span id="nameEl">Пушистик</span>
+          <button class="edit-btn" id="renameBtn" style="display:none">✏️</button>
+        </h1>
+        <div class="pet-sub" id="stageEl">Яйцо · Ур. 1</div>
+        <div class="pet-mood" id="moodEl"></div>
+      </div>
+      <div class="xp-text" id="xpEl">XP: 0 / 50</div>
+    </div>
+
+    <div class="card">
+      <div class="stat"><div class="stat-head"><span>🍖 Сытость</span><b id="v-hunger">100%</b></div><div class="bar"><i id="b-hunger" class="b-hunger" style="width:0%"></i></div></div>
+      <div class="stat"><div class="stat-head"><span>😊 Настроение</span><b id="v-mood">100%</b></div><div class="bar"><i id="b-mood" class="b-mood" style="width:0%"></i></div></div>
+      <div class="stat"><div class="stat-head"><span>⚡ Энергия</span><b id="v-energy">100%</b></div><div class="bar"><i id="b-energy" class="b-energy" style="width:0%"></i></div></div>
+      <div class="stat"><div class="stat-head"><span>🧼 Чистота</span><b id="v-clean">100%</b></div><div class="bar"><i id="b-clean" class="b-clean" style="width:0%"></i></div></div>
+      <div class="stat"><div class="stat-head"><span>❤️ Здоровье</span><b id="v-health">100%</b></div><div class="bar"><i id="b-health" class="b-health" style="width:0%"></i></div></div>
+    </div>
+
+    <div class="actions-grid" id="actions">
+      <button class="action" data-act="feed"><span class="ic">🍖</span><span class="lbl">Покормить</span><span class="cd"></span></button>
+      <button class="action" data-act="pet"><span class="ic">✋</span><span class="lbl">Погладить</span><span class="cd"></span></button>
+      <button class="action" data-act="play"><span class="ic">🎾</span><span class="lbl">Играть</span><span class="cd"></span></button>
+      <button class="action" data-act="wash"><span class="ic">🧼</span><span class="lbl">Помыть</span><span class="cd"></span></button>
+      <button class="action wide heal" data-act="heal"><span class="ic">💊</span><span class="lbl">Лечить (30 очков)</span><span class="cd"></span></button>
+    </div>
+
+    <div class="score-line" id="scoreEl">
+      Твои очки: <b>0</b>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="events-title">📜 Лента событий</div>
+      <div id="eventsEl"><div class="empty">Тут пока тихо…</div></div>
     </div>
 
     <div class="card">
@@ -108,6 +294,17 @@
 </div>
 
 <div class="toast" id="toastEl"></div>
+
+<div class="modal" id="renameModal">
+  <div class="modal-box">
+    <h3>Переименовать питомца</h3>
+    <input type="text" id="renameInput" maxlength="20" placeholder="Новое имя" />
+    <div class="modal-btns">
+      <button class="cancel" id="renameCancel">Отмена</button>
+      <button class="ok" id="renameOk">Сохранить</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const SUPABASE_URL = "https://ripjvcglkcqvyolnewaj.supabase.co";
@@ -131,21 +328,15 @@ const username = user.username || null;
 
 if (!petId) {
   document.getElementById("loader").innerHTML =
-    "<div class='empty'>" +
-    "<div class='big'>🐾</div>" +
-    "<b>Открой меня из бота</b><br><br>" +
-    "Зайди в бота, создай питомца<br>и нажми «Открыть питомца»" +
-    "</div>";
+    "<div style='text-align:center;padding:40px;line-height:1.6'>" +
+    "<div style='font-size:64px'>🐾</div><b>Открой меня из бота</b><br><br>" +
+    "Зайди в бота, создай питомца<br>и нажми «Открыть питомца»</div>";
   throw new Error("no pet");
 }
-
 if (!userId) {
   document.getElementById("loader").innerHTML =
-    "<div class='empty'>" +
-    "<div class='big'>🔒</div>" +
-    "<b>Открой через Telegram</b><br><br>" +
-    "Эта игра работает только внутри Telegram." +
-    "</div>";
+    "<div style='text-align:center;padding:40px;line-height:1.6'>" +
+    "<div style='font-size:64px'>🔒</div><b>Открой через Telegram</b></div>";
   throw new Error("no user");
 }
 
@@ -153,6 +344,8 @@ const STAGES      = ["🥚","🐣","🐥","🐓","🦅"];
 const STAGE_NAMES = ["Яйцо","Птенец","Юнец","Взрослый","Старейшина"];
 const MAX_LEVEL   = 30;
 const XP_PER_LEVEL = 50;
+const DAILY_BONUS = 20;
+const RING_CIRC   = 2 * Math.PI * 90;
 
 const ACTIONS = {
   feed: { emoji:"🍖", label:"Покормить", cd: 5*60,  xp: 2, effects:{ hunger:+25 },           score:+1, msg:"+25 сытости" },
@@ -161,6 +354,25 @@ const ACTIONS = {
   wash: { emoji:"🧼", label:"Помыть",    cd: 15*60, xp: 2, effects:{ clean:+30 },            score:+1, msg:"+30 чистоты" },
   heal: { emoji:"💊", label:"Лечить",    cd: 60*60, xp: 3, effects:{ health:+20 },           score:-30, cost:30, msg:"+20 здоровья" }
 };
+
+const AVATAR_COLORS = ["#7a5cff","#00b8d4","#ff7a18","#ff3b5c","#48dbfb","#ffcc48","#48d98e","#c86dd7"];
+function avatarColor(id){ return AVATAR_COLORS[Math.abs(Number(id) || 0) % AVATAR_COLORS.length]; }
+function initial(name){ return (name || "?").trim().charAt(0).toUpperCase(); }
+
+const RANKS = [
+  { min: 0,   icon: "🐣" },
+  { min: 5,   icon: "🍼" },
+  { min: 30,  icon: "💪" },
+  { min: 100, icon: "👑" }
+];
+function badgesFor(m) {
+  const b = [];
+  const r = [...RANKS].reverse().find(r => (m.score || 0) >= r.min);
+  if (r) b.push(r.icon);
+  if ((m.streak || 0) >= 3) b.push("🔥");
+  if ((m.streak || 0) >= 7) b.push("⚡");
+  return b;
+}
 
 let pet = null;
 let me  = null;
@@ -174,12 +386,13 @@ const xpForLevel  = lvl => (lvl - 1) * XP_PER_LEVEL;
 const stageFromLevel = lvl => lvl>=25?4 : lvl>=17?3 : lvl>=10?2 : lvl>=5?1 : 0;
 const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-function toast(msg){
+function toast(msg, gold){
   const el = $("toastEl");
   el.textContent = msg;
+  el.classList.toggle("gold", !!gold);
   el.classList.add("show");
   clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove("show"), 1800);
+  el._t = setTimeout(() => el.classList.remove("show"), 2000);
 }
 
 function haptic(type){
@@ -190,14 +403,9 @@ function haptic(type){
 }
 
 function showFatal(title, err){
-  const box = $("loader");
-  box.style.display = "block";
-  box.innerHTML =
-    "<div class='fatal'><b>" + title + "</b><br><br>" +
-    "code: " + (err?.code || "—") + "<br>" +
-    "message: " + (err?.message || err) + "<br>" +
-    "details: " + (err?.details || "—") +
-    "</div>";
+  $("loader").style.display = "block";
+  $("loader").innerHTML = "<div class='fatal'><b>" + title + "</b><br><br>" +
+    "message: " + (err?.message || err) + "</div>";
   $("app").style.display = "none";
 }
 
@@ -209,6 +417,14 @@ function petMoodText(p){
   if (p.mood   < 20) return "Мне грустно… 😢";
   if (p.hunger > 70 && p.mood > 70 && p.clean > 70 && p.health > 70) return "Я счастлив! ✨";
   return "Мне хорошо 😊";
+}
+
+function petGlow(p){
+  if (p.health < 30) return "0 0 40px rgba(255,59,92,.55)";
+  if (p.mood < 30)   return "0 0 40px rgba(122,140,160,.4)";
+  if (p.energy < 30) return "0 0 40px rgba(84,160,255,.4)";
+  if (p.mood > 70 && p.health > 70) return "0 0 50px rgba(255,204,72,.55)";
+  return "0 0 35px rgba(122,92,255,.35)";
 }
 
 function applyTick(p){
@@ -238,8 +454,13 @@ function render(){
   const lvl = levelFromXp(pet.xp);
   const stage = stageFromLevel(lvl);
   $("petEl").textContent = STAGES[stage];
+  $("petEl").style.filter = "drop-shadow(" + petGlow(pet) + ")";
   $("nameEl").textContent = pet.name;
-  $("stageEl").textContent = `${STAGE_NAMES[stage]} · Ур. ${lvl}`;
+
+  const isOwner = pet.owner_id === userId;
+  $("renameBtn").style.display = isOwner ? "" : "none";
+
+  $("stageEl").textContent = STAGE_NAMES[stage] + " · Ур. " + lvl;
   $("moodEl").textContent = petMoodText(pet);
 
   setBar("hunger", pet.hunger);
@@ -249,32 +470,54 @@ function render(){
   setBar("health", pet.health);
 
   const cur = pet.xp - xpForLevel(lvl);
-  $("xpEl").textContent = `XP: ${cur} / ${XP_PER_LEVEL}`;
+  const progress = lvl >= MAX_LEVEL ? 1 : cur / XP_PER_LEVEL;
+  $("ringFg").style.strokeDasharray = RING_CIRC;
+  $("ringFg").style.strokeDashoffset = RING_CIRC * (1 - progress);
+  $("xpEl").textContent = lvl >= MAX_LEVEL ? "МАКС. УРОВЕНЬ" : ("XP: " + cur + " / " + XP_PER_LEVEL);
 
-  document.querySelectorAll("button[data-act]").forEach(btn => {
+  document.querySelectorAll(".action[data-act]").forEach(btn => {
     const a = btn.dataset.act;
     const cfg = ACTIONS[a];
+    const cd = btn.querySelector(".cd");
     const until = cooldowns[a] || 0;
     const left = Math.ceil((until - Date.now()) / 1000);
     if (left > 0) {
       btn.disabled = true;
       const m = Math.floor(left / 60);
       const s = left % 60;
-      btn.textContent = `${cfg.emoji} ${m}:${String(s).padStart(2,"0")}`;
+      cd.textContent = m + ":" + String(s).padStart(2,"0");
     } else {
-      btn.disabled = false;
-      btn.textContent = `${cfg.emoji} ${cfg.label}${cfg.cost ? " (" + cfg.cost + " очков)" : ""}`;
-      if (cfg.cost && me && me.score < cfg.cost) btn.disabled = true;
+      btn.disabled = (cfg.cost && me && me.score < cfg.cost) ? true : false;
+      cd.textContent = "";
     }
   });
 
-  if (me) $("scoreEl").textContent = `Твои очки: ${me.score}`;
+  if (me) {
+    let extra = "";
+    if (me.streak >= 3) extra = " <span class='streak-badge'>🔥 " + me.streak + " дн.</span>";
+    $("scoreEl").innerHTML = "Твои очки: <b>" + me.score + "</b>" + extra;
+  }
+
+  checkDaily();
+}
+
+function checkDaily(){
+  if (!me) return;
+  const last = me.last_daily_at ? new Date(me.last_daily_at).getTime() : 0;
+  const canClaim = Date.now() - last > 24*60*60*1000;
+  const btn = $("dailyBtn");
+  if (canClaim) {
+    btn.classList.remove("hidden");
+    $("dailyStreak").textContent = "+" + DAILY_BONUS;
+  } else {
+    btn.classList.add("hidden");
+  }
 }
 
 async function loadPet(){
   const { data, error } = await sb.from("pets").select("*").eq("id", petId).maybeSingle();
-  if (error) { console.error(error); showFatal("Ошибка загрузки питомца", error); return; }
-  if (!data) { showFatal("Питомец не найден", { message: "Возможно, ссылка устарела" }); return; }
+  if (error) { showFatal("Ошибка загрузки", error); return; }
+  if (!data) { showFatal("Питомец не найден", { message: "Ссылка устарела" }); return; }
   pet = data;
   const ticked = applyTick(pet);
   if (ticked.last_tick_at !== pet.last_tick_at) {
@@ -296,11 +539,10 @@ async function loadMe(){
     const { data: created, error: e2 } = await sb.from("members").insert({
       pet_id: petId, user_id: userId, username, first_name: firstName, score: 0
     }).select().single();
-    if (e2) { console.error(e2); showFatal("Ошибка регистрации", e2); return; }
+    if (e2) { showFatal("Ошибка регистрации", e2); return; }
     me = created;
-  } else {
-    me = data;
-  }
+  } else me = data;
+
   for (const k of Object.keys(ACTIONS)) {
     const t = me["last_" + k + "_at"];
     if (t) cooldowns[k] = new Date(t).getTime() + ACTIONS[k].cd * 1000;
@@ -310,19 +552,62 @@ async function loadMe(){
 
 async function loadLeaderboard(){
   const { data, error } = await sb.from("members")
-    .select("user_id,first_name,username,score")
-    .eq("pet_id", petId)
-    .order("score", { ascending: false })
-    .limit(5);
+    .select("user_id,first_name,username,score,streak")
+    .eq("pet_id", petId).order("score", { ascending: false }).limit(10);
   if (error) { console.error(error); return; }
   const el = $("lbEl");
-  if (!data || !data.length) { el.innerHTML = '<div class="sub">Пока никого</div>'; return; }
-  const medals = ["🥇","🥈","🥉","4.","5."];
+  if (!data || !data.length) { el.innerHTML = "<div class='empty'>Пока никого</div>"; return; }
+
   el.innerHTML = data.map((m, i) => {
     const name = escapeHtml(m.first_name || m.username || ("#" + m.user_id));
     const cls = m.user_id === userId ? "me" : "";
-    return `<div class="lb"><span class="${cls}">${medals[i]} ${name}</span><span class="${cls}">${m.score}</span></div>`;
+    const rankCls = i===0?"g":i===1?"s":i===2?"b":"";
+    const badges = badgesFor(m).join("");
+    return "<div class='lb'>" +
+      "<div class='rank "+rankCls+"'>" + (i+1) + "</div>" +
+      "<div class='av' style='background:" + avatarColor(m.user_id) + "'>" + escapeHtml(initial(name)) + "</div>" +
+      "<div class='name "+cls+"'>" + name + "</div>" +
+      (badges ? "<div class='badges'>" + badges + "</div>" : "") +
+      "<div class='pts'>" + m.score + "</div>" +
+      "</div>";
   }).join("");
+}
+
+async function loadEvents(){
+  const { data, error } = await sb.from("events")
+    .select("*").eq("pet_id", petId).order("created_at", { ascending: false }).limit(8);
+  if (error) { console.error(error); return; }
+  const el = $("eventsEl");
+  if (!data || !data.length) { el.innerHTML = "<div class='empty'>Тут пока тихо…</div>"; return; }
+  el.innerHTML = data.map(renderEvent).join("");
+}
+
+function renderEvent(e){
+  const t = new Date(e.created_at);
+  const now = new Date();
+  const diff = Math.floor((now - t) / 1000);
+  let timeStr;
+  if (diff < 60) timeStr = "только что";
+  else if (diff < 3600) timeStr = Math.floor(diff/60) + " мин";
+  else if (diff < 86400) timeStr = Math.floor(diff/3600) + " ч";
+  else timeStr = Math.floor(diff/86400) + " дн";
+  const name = escapeHtml(e.first_name || "Кто-то");
+  const cfg = ACTIONS[e.action] || { emoji: "✨" };
+  return "<div class='event'>" +
+    "<div class='av' style='background:" + avatarColor(e.user_id) + "'>" + escapeHtml(initial(name)) + "</div>" +
+    "<div class='txt'><b>" + name + "</b> " + cfg.emoji + "</div>" +
+    "<div class='time'>" + timeStr + "</div>" +
+    "</div>";
+}
+
+async function logEvent(action){
+  try {
+    await sb.from("events").insert({
+      pet_id: petId, user_id: userId, first_name: firstName, action
+    });
+    const cutoff = new Date(Date.now() - 7*24*60*60*1000).toISOString();
+    await sb.from("events").delete().eq("pet_id", petId).lt("created_at", cutoff);
+  } catch(e) { /* не критично */ }
 }
 
 async function doAction(act){
@@ -358,14 +643,57 @@ async function doAction(act){
   pet = { ...pet, ...petUpdate };
   me  = { ...me,  ...memberUpdate };
   $("petEl").classList.add("pulse");
-  setTimeout(() => $("petEl").classList.remove("pulse"), 220);
+  setTimeout(() => $("petEl").classList.remove("pulse"), 250);
 
-  toast(`${cfg.emoji} ${cfg.msg}`);
+  toast(cfg.emoji + " " + cfg.msg);
   haptic(newStage > oldStage ? "success" : "light");
-  if (newStage > oldStage) setTimeout(() => toast(`✨ Эволюция! ${STAGE_NAMES[newStage]}`), 900);
 
+  if (newStage > oldStage) {
+    $("petEl").classList.add("mega");
+    setTimeout(() => $("petEl").classList.remove("mega"), 800);
+    setTimeout(() => toast("✨ Эволюция! Теперь это " + STAGE_NAMES[newStage], true), 600);
+  }
+
+  logEvent(act);
   render();
   loadLeaderboard();
+  loadEvents();
+}
+
+async function claimDaily(){
+  if (!me) return;
+  const last = me.last_daily_at ? new Date(me.last_daily_at).getTime() : 0;
+  if (Date.now() - last < 24*60*60*1000) { toast("Уже получен сегодня"); return; }
+
+  const yesterday = 24*60*60*1000;
+  const newStreak = (Date.now() - last < 2*yesterday) ? (me.streak || 0) + 1 : 1;
+  const now = new Date().toISOString();
+  const newScore = me.score + DAILY_BONUS;
+
+  myWriteAt = Date.now();
+  const { error } = await sb.from("members").update({
+    score: newScore, last_daily_at: now, streak: newStreak
+  }).eq("pet_id", petId).eq("user_id", userId);
+  if (error) { toast("Ошибка"); return; }
+
+  me = { ...me, score: newScore, last_daily_at: now, streak: newStreak };
+  toast("🎁 +" + DAILY_BONUS + " очков!", true);
+  haptic("success");
+  render();
+  loadLeaderboard();
+}
+
+async function renamePet(newName){
+  if (!pet) return;
+  if (pet.owner_id !== userId) { toast("Только создатель может переименовать"); return; }
+  newName = newName.trim().slice(0, 20);
+  if (!newName) return;
+  myWriteAt = Date.now();
+  const { error } = await sb.from("pets").update({ name: newName }).eq("id", petId);
+  if (error) { toast("Ошибка"); return; }
+  pet = { ...pet, name: newName };
+  render();
+  toast("📛 Имя изменено");
 }
 
 function subscribe(){
@@ -374,12 +702,13 @@ function subscribe(){
       (payload) => {
         if (Date.now() - myWriteAt < 1200) return;
         if (!pet) return;
-        if (payload.new.xp === pet.xp && payload.new.hunger === pet.hunger) return;
         pet = { ...pet, ...payload.new };
         render();
       })
     .on("postgres_changes", { event: "*", schema: "public", table: "members", filter: "pet_id=eq." + petId },
       () => { loadLeaderboard(); if (Date.now() - myWriteAt > 1200) refreshMe(); })
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "events", filter: "pet_id=eq." + petId },
+      () => loadEvents())
     .subscribe();
 }
 
@@ -388,10 +717,38 @@ async function refreshMe(){
   if (data) { me = data; render(); }
 }
 
-document.querySelectorAll("button[data-act]").forEach(btn => {
+// ===== Events =====
+document.querySelectorAll(".action[data-act]").forEach(btn => {
   btn.addEventListener("click", () => doAction(btn.dataset.act));
 });
 $("petEl").addEventListener("click", () => doAction("pet"));
+$("dailyBtn").addEventListener("click", claimDaily);
+
+$("renameBtn").addEventListener("click", () => {
+  if (!pet || pet.owner_id !== userId) {
+    toast("Только создатель может переименовать");
+    return;
+  }
+  $("renameInput").value = pet?.name || "";
+  $("renameModal").classList.add("show");
+  setTimeout(() => $("renameInput").focus(), 50);
+});
+$("renameCancel").addEventListener("click", () => $("renameModal").classList.remove("show"));
+$("renameOk").addEventListener("click", async () => {
+  const v = $("renameInput").value;
+  $("renameModal").classList.remove("show");
+  await renamePet(v);
+});
+$("renameInput").addEventListener("keydown", async (e) => {
+  if (e.key === "Enter") {
+    const v = $("renameInput").value;
+    $("renameModal").classList.remove("show");
+    await renamePet(v);
+  }
+});
+$("renameModal").addEventListener("click", (e) => {
+  if (e.target.id === "renameModal") $("renameModal").classList.remove("show");
+});
 
 setInterval(render, 1000);
 
@@ -401,6 +758,7 @@ setInterval(render, 1000);
     if (!pet) return;
     await loadMe();
     await loadLeaderboard();
+    await loadEvents();
     subscribe();
     $("loader").style.display = "none";
     $("app").style.display = "block";
