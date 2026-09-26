@@ -73,7 +73,6 @@
   .owner-actions button{padding:13px 10px;border:0;border-radius:12px;font-family:inherit;
     font-size:13px;font-weight:700;cursor:pointer;transition:transform .1s;}
   .owner-actions button:active{transform:scale(.96);}
-  .owner-actions button:disabled{opacity:.4;cursor:not-allowed;}
   .btn-topup{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
   .btn-salary{background:linear-gradient(135deg,#7a5cff,#00d4ff);color:#fff;}
 
@@ -143,18 +142,24 @@
   .event .time{color:var(--hint);font-size:11px;white-space:nowrap;flex:0 0 auto;}
   .empty{text-align:center;color:var(--hint);font-size:13px;padding:16px 0;}
 
-  .pet-row{display:flex;align-items:center;gap:10px;padding:9px 0;
+  .pet-row{display:flex;align-items:center;gap:10px;padding:10px 0;
     border-bottom:1px solid rgba(127,127,127,.1);}
   .pet-row:last-child{border:0;}
-  .pet-row .place{width:22px;text-align:center;font-weight:700;font-size:13px;color:var(--hint);flex:0 0 22px;}
+  .pet-row .place{width:22px;text-align:center;font-weight:700;font-size:13px;
+    color:var(--hint);flex:0 0 22px;}
   .pet-row .place.g{color:#ffd23f;}
   .pet-row .place.s{color:#c0c8d0;}
   .pet-row .place.b{color:#cd7f32;}
   .pet-row .ic{font-size:26px;flex:0 0 auto;}
-  .pet-row .pn{flex:1;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .pet-row .pn small{display:block;color:var(--hint);font-size:11px;}
-  .pet-row .xp{font-weight:700;font-size:13px;color:#48dbfb;font-variant-numeric:tabular-nums;flex:0 0 auto;}
-  .pet-row.me{background:rgba(122,92,255,.08);border-radius:8px;padding-left:8px;padding-right:8px;}
+  .pet-row .pn{flex:1;font-size:14px;min-width:0;overflow:hidden;}
+  .pet-row .pn .pname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
+  .pet-row .pn .psub{color:var(--hint);font-size:11px;margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pet-row .pn .psub .owner{color:#48dbfb;}
+  .pet-row .xp{font-weight:700;font-size:13px;color:#48dbfb;
+    font-variant-numeric:tabular-nums;flex:0 0 auto;}
+  .pet-row.me{background:rgba(122,92,255,.08);border-radius:8px;
+    padding-left:8px;padding-right:8px;}
 
   .loader{text-align:center;padding:40px;color:var(--hint);}
   .fatal{color:#ff6b6b;font-size:13px;padding:16px;line-height:1.5;word-break:break-word;}
@@ -172,9 +177,9 @@
   .modal-box h3{margin:0 0 4px;font-size:17px;}
   .modal-box .sub{color:var(--hint);font-size:12px;margin-bottom:14px;line-height:1.5;}
   .modal-box .sub b{color:var(--text);}
-  .modal-box .pid{font-family:monospace;font-size:11px;color:var(--hint);
+  .modal-box .pid{font-family:monospace;font-size:10px;color:var(--hint);
     background:rgba(0,0,0,.2);padding:6px 8px;border-radius:6px;margin-bottom:12px;
-    word-break:break-all;}
+    word-break:break-all;opacity:.7;}
   .modal-box label{display:block;font-size:12px;color:var(--hint);margin-bottom:6px;
     text-transform:uppercase;letter-spacing:.4px;}
   .modal-box input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(127,127,127,.3);
@@ -205,6 +210,9 @@
   .skin-opt .pr{font-size:11px;color:#ffd23f;font-weight:700;margin-top:2px;}
   .skin-opt.owned .pr{color:#48d98e;}
   .skin-price-hint{text-align:center;color:var(--hint);font-size:12px;margin-bottom:10px;}
+
+  .deleted-screen{text-align:center;padding:60px 20px;color:var(--text);font-family:sans-serif;}
+  .deleted-screen .big{font-size:64px;margin-bottom:16px;}
 </style>
 </head>
 <body>
@@ -239,6 +247,7 @@
           <span id="nameEl">Пушистик</span>
           <button class="edit-btn" id="skinBtn" style="display:none">🎨</button>
           <button class="edit-btn" id="renameBtn" style="display:none">✏️</button>
+          <button class="edit-btn" id="deleteBtn" style="display:none;background:rgba(255,60,90,.15);color:#ff6b6b">🗑</button>
         </h1>
         <div class="pet-sub" id="stageEl">Яйцо · Ур. 1</div>
         <div class="pet-id" id="petIdEl"></div>
@@ -298,6 +307,7 @@
 
 <div class="toast" id="toastEl"></div>
 
+<!-- Модал переименования -->
 <div class="modal" id="renameModal">
   <div class="modal-box">
     <h3>Переименовать питомца</h3>
@@ -310,6 +320,28 @@
   </div>
 </div>
 
+<!-- Модал удаления -->
+<div class="modal" id="deleteModal">
+  <div class="modal-box">
+    <h3 style="color:#ff6b6b">🗑 Удалить питомца</h3>
+    <div class="sub">
+      <b>Это действие необратимо.</b> Вместе с питомцем удалятся:<br>
+      • все участники и их очки,<br>
+      • вся лента событий,<br>
+      • все чеки и выплаты,<br>
+      • вся история.
+    </div>
+    <div class="pid" id="deletePid"></div>
+    <label>Введи имя питомца для подтверждения</label>
+    <input type="text" id="deleteInput" placeholder="имя питомца" autocomplete="off" />
+    <div class="modal-btns">
+      <button class="cancel" id="deleteCancel">Отмена</button>
+      <button class="ok" id="deleteOk" style="background:#ee5253">Удалить навсегда</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модал скина -->
 <div class="modal" id="skinModal">
   <div class="modal-box">
     <h3>🎨 Скин питомца</h3>
@@ -323,6 +355,7 @@
   </div>
 </div>
 
+<!-- Модал пополнения -->
 <div class="modal" id="topupModal">
   <div class="modal-box">
     <h3>💳 Пополнить банк</h3>
@@ -341,6 +374,7 @@
   </div>
 </div>
 
+<!-- Модал зарплаты -->
 <div class="modal" id="salaryModal">
   <div class="modal-box">
     <h3>💸 Зарплата</h3>
@@ -471,10 +505,10 @@ function tick(p){
   if(min<1)return p;
   const h=min/60, c={...p};
   const season = seasonFor(new Date());
-  const energyRate = season==="winter" ? 2.5 : 2;
-  const moodRate   = season==="summer" ? 2.5 : 3;
-  c.hunger=clamp(c.hunger-3*h); c.mood=clamp(c.mood-moodRate*h);
-  c.energy=clamp(c.energy-energyRate*h); c.clean=clamp(c.clean-2*h);
+  const eRate = season==="winter" ? 2.5 : 2;
+  const mRate = season==="summer" ? 2.5 : 3;
+  c.hunger=clamp(c.hunger-3*h); c.mood=clamp(c.mood-mRate*h);
+  c.energy=clamp(c.energy-eRate*h); c.clean=clamp(c.clean-2*h);
   if(c.hunger<20||c.clean<20)c.health=clamp(c.health-5*h);
   else if(c.hunger>60&&c.mood>60&&c.clean>60)c.health=clamp(c.health+2*h);
   c.last_tick_at=new Date().toISOString();
@@ -484,12 +518,12 @@ function setBar(k,v){ $("b-"+k).style.width=v+"%"; $("v-"+k).textContent=v+"%"; 
 
 function renderWeather(){
   const d = new Date();
-  const seasonKey = seasonFor(d);
-  const season = SEASONS[seasonKey];
-  const weather = weatherFor(d);
+  const sk = seasonFor(d);
+  const s = SEASONS[sk];
+  const w = weatherFor(d);
   document.body.classList.remove("season-winter","season-spring","season-summer","season-autumn");
-  document.body.classList.add("season-"+seasonKey);
-  $("weatherEl").innerHTML = season.emoji + " " + season.name + " · <b>" + weather + "</b>";
+  document.body.classList.add("season-"+sk);
+  $("weatherEl").innerHTML = s.emoji + " " + s.name + " · <b>" + w + "</b>";
 }
 
 function render(){
@@ -505,6 +539,7 @@ function render(){
   isOwner = Number(pet.owner_id) === Number(userId);
   $("renameBtn").style.display = isOwner ? "" : "none";
   $("skinBtn").style.display = isOwner ? "" : "none";
+  $("deleteBtn").style.display = isOwner ? "" : "none";
 
   $("stageEl").textContent = STAGE_NAMES[st]+" · Ур. "+lvl;
   $("moodEl").textContent = moodText(pet);
@@ -518,7 +553,6 @@ function render(){
   $("ringFg").style.strokeDashoffset = RING_CIRC*(1-prog);
   $("xpEl").textContent = lvl>=MAX_LEVEL ? "МАКС" : ("XP: "+cur+" / "+XP_PER_LEVEL);
 
-  // Банк всегда показываем
   $("bankBalance").textContent = Number(pet.bank_balance||0).toFixed(2);
   $("bankCurrency").textContent = pet.currency||"USDT";
   $("bankPetId").textContent = "ID: " + pet.id;
@@ -530,11 +564,8 @@ function render(){
     noticeEl.innerHTML = "";
   } else {
     actionsEl.style.display = "none";
-    noticeEl.innerHTML = "<div class='bank-not-owner'>" +
-      "⚠️ Ты не владелец этого питомца — кнопки пополнения и зарплаты скрыты.<br>" +
-      "owner_id: <code>" + (pet.owner_id||"?") + "</code><br>" +
-      "твой id: <code>" + userId + "</code>" +
-      "</div>";
+    noticeEl.innerHTML = "<div class='bank-not-owner'>⚠️ Ты не владелец — кнопки скрыты.<br>" +
+      "owner_id: <code>" + (pet.owner_id||"?") + "</code> · твой: <code>" + userId + "</code></div>";
   }
 
   document.querySelectorAll(".action[data-act]").forEach(btn=>{
@@ -570,7 +601,7 @@ function checkDaily(){
 async function loadPet(){
   const {data, error} = await sb.from("pets").select("*").eq("id", petId).maybeSingle();
   if(error){ fatal("Ошибка загрузки", error); return; }
-  if(!data){ fatal("Питомец не найден", "Ссылка устарела"); return; }
+  if(!data){ fatal("Питомец не найден", "Возможно удалён"); return; }
   pet = data;
   const t = tick(pet);
   if(t.last_tick_at !== pet.last_tick_at){
@@ -622,21 +653,42 @@ async function loadLeaderboard(){
 }
 
 async function loadGlobalRating(){
-  const {data} = await sb.from("pets").select("id,name,xp,skin,owner_id")
+  const {data: pets} = await sb.from("pets")
+    .select("id,name,xp,skin,owner_id")
     .order("xp",{ascending:false}).limit(10);
   const el = $("globalEl");
-  if(!data || !data.length){ el.innerHTML = "<div class='empty'>Пока никого</div>"; return; }
+  if(!pets || !pets.length){ el.innerHTML = "<div class='empty'>Пока никого</div>"; return; }
+
+  const petIds = pets.map(p => p.id);
+  const {data: members} = await sb.from("members")
+    .select("pet_id,user_id,first_name,username")
+    .in("pet_id", petIds);
+
+  function ownerName(p){
+    const m = (members||[]).find(x =>
+      x.pet_id === p.id && Number(x.user_id) === Number(p.owner_id));
+    if(m){
+      if(m.username) return "@" + m.username;
+      return m.first_name || ("#" + p.owner_id);
+    }
+    return "#" + p.owner_id;
+  }
+
   const medals = ["🥇","🥈","🥉","4.","5.","6.","7.","8.","9.","10."];
-  el.innerHTML = data.map((p,i)=>{
+  el.innerHTML = pets.map((p,i)=>{
     const lvl = Math.min(30, Math.floor((p.xp||0)/XP_PER_LEVEL)+1);
     const st = stageFromLevel(lvl);
     const stages = stagesFor(p.skin);
     const emoji = stages[st] || stages[0];
     const isMe = p.id === petId;
+    const owner = esc(ownerName(p));
     return "<div class='pet-row "+(isMe?"me":"")+"'>"+
       "<div class='place "+(i<3?["g","s","b"][i]:"")+"'>"+(medals[i]||(i+1))+"</div>"+
       "<div class='ic'>"+emoji+"</div>"+
-      "<div class='pn'>"+esc(p.name)+"<small>Ур. "+lvl+" · "+STAGE_NAMES[st]+(isMe?" · твой":"")+"</small></div>"+
+      "<div class='pn'>"+
+        "<div class='pname'>"+esc(p.name)+(isMe?" · твой":"")+"</div>"+
+        "<div class='psub'>Ур. "+lvl+" · "+STAGE_NAMES[st]+" · 👤 <span class='owner'>"+owner+"</span></div>"+
+      "</div>"+
       "<div class='xp'>"+ (p.xp||0) +" XP</div></div>";
   }).join("");
 }
@@ -754,10 +806,47 @@ async function changeSkin(newSkin){
   pet = {...pet, skin: newSkin};
   me = {...me, score: newScore};
   render();
-  toast("🎨 Скин «"+SKINS[newSkin].name+"» за "+SKIN_PRICE+" очков", true);
+  toast("🎨 Скин «"+SKINS[newSkin].name+"»", true);
   loadLeaderboard();
   loadGlobalRating();
   openSkinModal();
+}
+
+async function deletePet(){
+  if(!pet || Number(pet.owner_id)!==Number(userId)){ toast("Только создатель"); return; }
+  const typed = $("deleteInput").value.trim();
+  if(typed !== pet.name){
+    toast("Имя не совпадает");
+    return;
+  }
+  if(!confirm("Точно удалить? Это необратимо.")) return;
+
+  const btn = $("deleteOk");
+  btn.disabled = true;
+  btn.textContent = "Удаляю…";
+
+  try {
+    const { error } = await sb.from("pets").delete().eq("id", petId);
+    if(error) throw error;
+
+    toast("🗑 Питомец удалён", true);
+    $("deleteModal").classList.remove("show");
+
+    setTimeout(()=>{
+      try { tg?.close(); } catch(e){}
+      document.body.innerHTML =
+        "<div class='deleted-screen'>" +
+        "<div class='big'>🗑</div>" +
+        "<h2>Питомец удалён</h2>" +
+        "<p style='color:#7d8b99'>Можешь закрыть это окно и создать нового через бота.</p>" +
+        "</div>";
+    }, 1200);
+  } catch(e) {
+    console.error(e);
+    toast("Ошибка: " + (e.message || e));
+    btn.disabled = false;
+    btn.textContent = "Удалить навсегда";
+  }
 }
 
 function openSkinModal(){
@@ -814,10 +903,35 @@ $("skinBtn").addEventListener("click", ()=>{
 $("skinCancel").addEventListener("click", ()=>$("skinModal").classList.remove("show"));
 $("skinModal").addEventListener("click", e=>{ if(e.target.id==="skinModal")$("skinModal").classList.remove("show"); });
 
+// DELETE
+$("deleteBtn").addEventListener("click", ()=>{
+  if(!pet || Number(pet.owner_id)!==Number(userId)){ toast("Только создатель"); return; }
+  $("deletePid").textContent = "ID: " + petId;
+  $("deleteInput").value = "";
+  $("deleteOk").disabled = false;
+  $("deleteOk").textContent = "Удалить навсегда";
+  $("deleteModal").classList.add("show");
+  setTimeout(()=>$("deleteInput").focus(), 50);
+});
+$("deleteCancel").addEventListener("click", ()=>{
+  $("deleteModal").classList.remove("show");
+  $("deleteInput").value = "";
+});
+$("deleteModal").addEventListener("click", e=>{
+  if(e.target.id==="deleteModal"){
+    $("deleteModal").classList.remove("show");
+    $("deleteInput").value = "";
+  }
+});
+$("deleteOk").addEventListener("click", deletePet);
+$("deleteInput").addEventListener("keydown", e=>{
+  if(e.key === "Enter") deletePet();
+});
+
 // TOPUP
 let topupAmount = 1;
 $("topupBtn").addEventListener("click", ()=>{
-  if(!isOwner){ toast("Только владелец может пополнять банк"); return; }
+  if(!isOwner){ toast("Только владелец"); return; }
   topupAmount = 1; $("topupInput").value = "";
   $("topupPid").textContent = "ID: " + petId;
   document.querySelectorAll("#topupPresets button").forEach(b=>b.classList.toggle("active", b.dataset.val==="1"));
@@ -853,7 +967,7 @@ $("topupModal").addEventListener("click", e=>{ if(e.target.id==="topupModal")$("
 // SALARY
 let topN = 3;
 $("salaryBtn").addEventListener("click", ()=>{
-  if(!isOwner){ toast("Только владелец может запускать зарплату"); return; }
+  if(!isOwner){ toast("Только владелец"); return; }
   $("salaryBalance").textContent = Number(pet.bank_balance||0).toFixed(2);
   $("salaryPid").textContent = "ID: " + petId;
   $("salaryInput").value = ""; topN = 3;
@@ -878,7 +992,7 @@ $("salaryOk").addEventListener("click", ()=>{
   const cents = Math.round(amount*100);
   const url = "https://t.me/"+BOT_USERNAME+"?start=salary_"+petId+"_"+cents+"_"+topN;
   $("salaryModal").classList.remove("show");
-  toast("💸 Отправляю команду…");
+  toast("💸 Отправляю…");
   try {
     if(tg?.openTelegramLink){ tg.openTelegramLink(url); tg.close(); }
     else window.open(url, "_blank");
