@@ -97,117 +97,93 @@ MOOD_LEVELS = [
     (76, 100, "на заносе",  "Ты СЧАСТЛИВ, у тебя ЗАНОС. Кричишь 'ЗАНОС!', 'ИКС!'."),
 ]
 
-PREDICT_MENUS = {
-    "dice": (
-        "🎲 выбери исход броска костей:",
-        [
-            [("1", "1"), ("2", "2"), ("3", "3")],
-            [("4", "4"), ("5", "5"), ("6", "6")],
-            [("Чётное", "even"), ("Нечётное", "odd")],
-            [("1-3", "1-3"), ("4-6", "4-6")],
-        ],
-    ),
-    "basket": (
-        "🏀 выбери исход матча:",
-        [
-            [("Победа 1", "win1")],
-            [("Победа 2", "win2")],
-            [("Тотал > 200", "over")],
-            [("Тотал < 200", "under")],
-        ],
-    ),
-    "slot": (
-        "🎰 на что ставишь?",
-        [
-            [("🍒 Вишня", "cherry")],
-            [("🍋 Лимон", "lemon")],
-            [("🔔 Колокол", "bell")],
-            [("7️⃣ Семёрка", "seven")],
-            [("🎁 Любой занос", "any")],
-        ],
-    ),
-    "cards": (
-        "🃏 выбери исход карты:",
-        [
-            [("Красная", "red"), ("Чёрная", "black")],
-            [("Больше 7", "high"), ("Меньше 7", "low")],
-        ],
-    ),
-    "coin": (
-        "🪙 монетка:",
-        [
-            [("Орёл", "heads"), ("Решка", "tails")],
-        ],
-    ),
-}
+# события верхнего уровня — без подменю
+PREDICT_EVENTS = [
+    ("🎲 Кости", "dice"),
+    ("🏀 Баскетбол", "basket"),
+    ("🎰 Слоты", "slot"),
+    ("🃏 Карты", "cards"),
+    ("🪙 Монетка", "coin"),
+]
 
 
-def resolve_prediction(event, choice):
+def make_and_resolve(event):
+    """Бот сам делает прогноз и сразу бросает. Возвращает (совет, результат, угадал)."""
     if event == "dice":
         result = random.randint(1, 6)
         emoji = {1: "⚀", 2: "⚁", 3: "⚂", 4: "⚃", 5: "⚄", 6: "⚅"}
-        won = False
-        if choice in {"1", "2", "3", "4", "5", "6"} and result == int(choice):
+        pick = random.choice(["even", "odd", "1-3", "4-6", "exact"])
+        if pick == "exact":
+            advice_text = f"ставь ровно на {result}"
             won = True
-        elif choice == "even" and result % 2 == 0:
-            won = True
-        elif choice == "odd" and result % 2 == 1:
-            won = True
-        elif choice == "1-3" and 1 <= result <= 3:
-            won = True
-        elif choice == "4-6" and 4 <= result <= 6:
-            won = True
-        return f"🎲 выпало {result} {emoji[result]}", won
+        elif pick == "even":
+            advice_text = "ставь на ЧЁТ"
+            won = result % 2 == 0
+        elif pick == "odd":
+            advice_text = "ставь на НЕЧЁТ"
+            won = result % 2 == 1
+        elif pick == "1-3":
+            advice_text = "ставь на 1-3"
+            won = 1 <= result <= 3
+        else:
+            advice_text = "ставь на 4-6"
+            won = 4 <= result <= 6
+        return advice_text, f"🎲 выпало {result} {emoji[result]}", won
 
     if event == "basket":
         s1 = random.randint(80, 130)
         s2 = random.randint(80, 130)
         total = s1 + s2
-        won = False
-        if choice == "win1" and s1 > s2:
-            won = True
-        elif choice == "win2" and s2 > s1:
-            won = True
-        elif choice == "over" and total > 200:
-            won = True
-        elif choice == "under" and total < 200:
-            won = True
-        return f"🏀 финал: {s1} : {s2} (тотал {total})", won
+        pick = random.choice(["win1", "win2", "over", "under"])
+        if pick == "win1":
+            advice_text = "ставь на победу первой команды"
+            won = s1 > s2
+        elif pick == "win2":
+            advice_text = "ставь на победу второй команды"
+            won = s2 > s1
+        elif pick == "over":
+            advice_text = "ставь на тотал БОЛЬШЕ 200"
+            won = total > 200
+        else:
+            advice_text = "ставь на тотал МЕНЬШЕ 200"
+            won = total < 200
+        return advice_text, f"🏀 финал: {s1} : {s2} (тотал {total})", won
 
     if event == "slot":
         symbols = ["🍒", "🍋", "🔔", "7️⃣", "⭐"]
         line = [random.choice(symbols) for _ in range(3)]
-        text_line = " ".join(line)
-        won = False
-        if choice == "any":
-            won = len(set(line)) == 1
-        else:
-            smap = {"cherry": "🍒", "lemon": "🍋", "bell": "🔔", "seven": "7️⃣"}
-            target = smap.get(choice, "")
-            won = all(s == target for s in line)
-        return f"🎰 слот: {text_line}", won
+        target = random.choice(symbols)
+        advice_text = f"ставь на {target} (3 в ряд)"
+        won = all(s == target for s in line)
+        return advice_text, f"🎰 слот: {' '.join(line)}", won
 
     if event == "cards":
         card = random.randint(1, 13)
         suit = random.choice(["красная", "чёрная"])
-        won = False
-        if choice == "red" and suit == "красная":
-            won = True
-        elif choice == "black" and suit == "чёрная":
-            won = True
-        elif choice == "high" and card > 7:
-            won = True
-        elif choice == "low" and card < 7:
-            won = True
-        return f"🃏 выпала {suit} карта {card}", won
+        pick = random.choice(["red", "black", "high", "low"])
+        if pick == "red":
+            advice_text = "ставь на КРАСНУЮ"
+            won = suit == "красная"
+        elif pick == "black":
+            advice_text = "ставь на ЧЁРНУЮ"
+            won = suit == "чёрная"
+        elif pick == "high":
+            advice_text = "ставь на БОЛЬШЕ 7"
+            won = card > 7
+        else:
+            advice_text = "ставь на МЕНЬШЕ 7"
+            won = card < 7
+        return advice_text, f"🃏 выпала {suit} карта {card}", won
 
     if event == "coin":
         result = random.choice(["heads", "tails"])
-        won = result == choice
+        pick = random.choice(["heads", "tails"])
+        advice_text = "ставь на ОРЛА" if pick == "heads" else "ставь на РЕШКУ"
+        won = pick == result
         name = "орёл" if result == "heads" else "решка"
-        return f"🪙 выпало: {name}", won
+        return advice_text, f"🪙 выпало: {name}", won
 
-    return "не знаю такого события", False
+    return "не знаю такого события", "", False
 
 
 dp = Dispatcher()
@@ -425,11 +401,8 @@ async def load_stickers(bot):
 @dp.message(Command("aipredict"))
 async def cmd_predict(message: Message):
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🎲 Кости", callback_data="pred:dice:menu")],
-        [InlineKeyboardButton(text="🏀 Баскетбол", callback_data="pred:basket:menu")],
-        [InlineKeyboardButton(text="🎰 Слоты", callback_data="pred:slot:menu")],
-        [InlineKeyboardButton(text="🃏 Карты", callback_data="pred:cards:menu")],
-        [InlineKeyboardButton(text="🪙 Монетка", callback_data="pred:coin:menu")],
+        [InlineKeyboardButton(text=label, callback_data=f"pred:{value}")]
+        for label, value in PREDICT_EVENTS
     ])
     await message.reply("🎲 выбери событие для прогноза:", reply_markup=kb)
 
@@ -439,47 +412,31 @@ async def on_pred_callback(callback: CallbackQuery):
     try:
         await callback.answer()
     except Exception:
-        logging.exception("callback.answer failed")
+        pass
 
-    logging.info(f"CALLBACK: user={callback.from_user.id} data={callback.data}")
+    event = (callback.data or "").split(":")[1] if ":" in (callback.data or "") else ""
+    logging.info(f"CALLBACK: user={callback.from_user.id} event={event}")
 
-    parts = (callback.data or "").split(":")
-    event = parts[1] if len(parts) > 1 else ""
-    choice = parts[2] if len(parts) > 2 else "menu"
+    advice_text, result_text, won = make_and_resolve(event)
 
-    if choice == "menu":
-        menu = PREDICT_MENUS.get(event)
-        if not menu:
-            try:
-                await callback.message.reply("не знаю такого события")
-            except Exception:
-                pass
-            return
-        title, rows = menu
-        kb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=label, callback_data=f"pred:{event}:{value}")
-             for label, value in row]
-            for row in rows
-        ])
+    if not result_text:
         try:
-            await callback.message.edit_text(title, reply_markup=kb)
+            await callback.message.edit_text("не знаю такого события")
         except Exception:
-            logging.exception("edit menu failed")
-            try:
-                await callback.message.reply(title, reply_markup=kb)
-            except Exception:
-                logging.exception("reply menu failed")
+            pass
         return
 
+    # сначала объявляем прогноз
     try:
-        await callback.message.edit_text(f"🎲 бросаю на {choice}...")
+        await callback.message.edit_text(f"🔮 {advice_text}...")
     except Exception:
-        logging.exception("edit 'бросаю' failed")
+        logging.exception("edit advice failed")
 
     await asyncio.sleep(2)
 
-    result_text, won = resolve_prediction(event, choice)
-    final = f"{result_text}\n\n🎉 ЗАНОС! угадал!" if won else f"{result_text}\n\n😢 мимо. тильт."
+    # потом результат
+    tail = "🎉 ЗАШЛО!" if won else "😢 мимо. тильт."
+    final = f"🔮 {advice_text}\n{result_text}\n\n{tail}"
 
     try:
         await callback.message.edit_text(final)
