@@ -97,93 +97,29 @@ MOOD_LEVELS = [
     (76, 100, "на заносе",  "Ты СЧАСТЛИВ, у тебя ЗАНОС. Кричишь 'ЗАНОС!', 'ИКС!'."),
 ]
 
-# события верхнего уровня — без подменю
+# события для предикта
 PREDICT_EVENTS = [
     ("🎲 Кости", "dice"),
+    ("⚽ Футбол", "football"),
     ("🏀 Баскетбол", "basket"),
     ("🎰 Слоты", "slot"),
     ("🃏 Карты", "cards"),
     ("🪙 Монетка", "coin"),
+    ("🎡 Рулетка", "roulette"),
+    ("🎾 Теннис", "tennis"),
 ]
 
-
-def make_and_resolve(event):
-    """Бот сам делает прогноз и сразу бросает. Возвращает (совет, результат, угадал)."""
-    if event == "dice":
-        result = random.randint(1, 6)
-        emoji = {1: "⚀", 2: "⚁", 3: "⚂", 4: "⚃", 5: "⚄", 6: "⚅"}
-        pick = random.choice(["even", "odd", "1-3", "4-6", "exact"])
-        if pick == "exact":
-            advice_text = f"ставь ровно на {result}"
-            won = True
-        elif pick == "even":
-            advice_text = "ставь на ЧЁТ"
-            won = result % 2 == 0
-        elif pick == "odd":
-            advice_text = "ставь на НЕЧЁТ"
-            won = result % 2 == 1
-        elif pick == "1-3":
-            advice_text = "ставь на 1-3"
-            won = 1 <= result <= 3
-        else:
-            advice_text = "ставь на 4-6"
-            won = 4 <= result <= 6
-        return advice_text, f"🎲 выпало {result} {emoji[result]}", won
-
-    if event == "basket":
-        s1 = random.randint(80, 130)
-        s2 = random.randint(80, 130)
-        total = s1 + s2
-        pick = random.choice(["win1", "win2", "over", "under"])
-        if pick == "win1":
-            advice_text = "ставь на победу первой команды"
-            won = s1 > s2
-        elif pick == "win2":
-            advice_text = "ставь на победу второй команды"
-            won = s2 > s1
-        elif pick == "over":
-            advice_text = "ставь на тотал БОЛЬШЕ 200"
-            won = total > 200
-        else:
-            advice_text = "ставь на тотал МЕНЬШЕ 200"
-            won = total < 200
-        return advice_text, f"🏀 финал: {s1} : {s2} (тотал {total})", won
-
-    if event == "slot":
-        symbols = ["🍒", "🍋", "🔔", "7️⃣", "⭐"]
-        line = [random.choice(symbols) for _ in range(3)]
-        target = random.choice(symbols)
-        advice_text = f"ставь на {target} (3 в ряд)"
-        won = all(s == target for s in line)
-        return advice_text, f"🎰 слот: {' '.join(line)}", won
-
-    if event == "cards":
-        card = random.randint(1, 13)
-        suit = random.choice(["красная", "чёрная"])
-        pick = random.choice(["red", "black", "high", "low"])
-        if pick == "red":
-            advice_text = "ставь на КРАСНУЮ"
-            won = suit == "красная"
-        elif pick == "black":
-            advice_text = "ставь на ЧЁРНУЮ"
-            won = suit == "чёрная"
-        elif pick == "high":
-            advice_text = "ставь на БОЛЬШЕ 7"
-            won = card > 7
-        else:
-            advice_text = "ставь на МЕНЬШЕ 7"
-            won = card < 7
-        return advice_text, f"🃏 выпала {suit} карта {card}", won
-
-    if event == "coin":
-        result = random.choice(["heads", "tails"])
-        pick = random.choice(["heads", "tails"])
-        advice_text = "ставь на ОРЛА" if pick == "heads" else "ставь на РЕШКУ"
-        won = pick == result
-        name = "орёл" if result == "heads" else "решка"
-        return advice_text, f"🪙 выпало: {name}", won
-
-    return "не знаю такого события", "", False
+# что должен предсказать бот в каждом событии
+PREDICT_TASKS = {
+    "dice": "предскажи исход броска двух костей — назови конкретную сумму (например 'выпадет 8') или чёт/нечет.",
+    "football": "предскажи исход футбольного матча — кто победит или ничья, и примерный счёт.",
+    "basket": "предскажи исход баскетбольного матча — кто победит и с какой разницей.",
+    "slot": "предскажи, что выпадет на слотах — какой символ или комбинация из 3.",
+    "cards": "предскажи карту — масть (красная/чёрная) и больше/меньше 7.",
+    "coin": "предскажи — орёл или решка.",
+    "roulette": "предскажи исход рулетки — красное, чёрное или конкретное число.",
+    "tennis": "предскажи исход теннисного матча — кто победит и со счётом по сетам.",
+}
 
 
 dp = Dispatcher()
@@ -397,6 +333,39 @@ async def load_stickers(bot):
         STICKER_IDS = []
 
 
+# ==================== ПРЕДИКТ ЧЕРЕЗ LLM ====================
+async def make_prediction(chat_id, event):
+    """Бот сам генерирует предикт через LLM. Никаких кубиков."""
+    task = PREDICT_TASKS.get(event, "сделай прогноз в стиле казика.")
+    mood_name, mood_line = mood_level(chat_id)
+
+    prompt = f"""Юзер просит тебя сделать предикт для ставки.
+
+Событие: {event}
+Задача: {task}
+
+Выдай КОНКРЕТНЫЙ прогноз — без воды, без "возможно", без "может быть". Как будто ты уверен на 100%.
+Например для костей: "ставь на 9, чуйка говорит 9 выпадет."
+Для футбола: "ставь на 2:1 в пользу хозяев, чуйка."
+Для рулетки: "ставь на красное, 100%."
+
+1 короткое предложение. Казино-сленг обязателен (ставь, занос, чуйка, лудка, кэшаут). Уверенно и дерзко."""
+
+    msgs = [
+        {"role": "system", "content": SYSTEM_BASE},
+        {"role": "system", "content": f"Настроение: {mood_name}. {mood_line}"},
+        {"role": "user", "content": prompt},
+    ]
+
+    resp = await client.chat.completions.create(
+        model=MODEL,
+        messages=msgs,
+        temperature=1.0,
+        max_tokens=100,
+    )
+    return (resp.choices[0].message.content or "").strip()
+
+
 # ==================== AiPredict ====================
 @dp.message(Command("aipredict"))
 async def cmd_predict(message: Message):
@@ -404,7 +373,7 @@ async def cmd_predict(message: Message):
         [InlineKeyboardButton(text=label, callback_data=f"pred:{value}")]
         for label, value in PREDICT_EVENTS
     ])
-    await message.reply("🎲 выбери событие для прогноза:", reply_markup=kb)
+    await message.reply("🔮 выбери событие, я дам предикт:", reply_markup=kb)
 
 
 @dp.callback_query(F.data.startswith("pred:"))
@@ -417,26 +386,29 @@ async def on_pred_callback(callback: CallbackQuery):
     event = (callback.data or "").split(":")[1] if ":" in (callback.data or "") else ""
     logging.info(f"CALLBACK: user={callback.from_user.id} event={event}")
 
-    advice_text, result_text, won = make_and_resolve(event)
+    chat_id = callback.message.chat.id if callback.message else 0
 
-    if not result_text:
+    # показываем "думаю"
+    try:
+        await callback.message.edit_text("🔮 ща прикину, чуйка работает...")
+    except Exception:
+        logging.exception("edit thinking failed")
+
+    # генерим предикт через LLM
+    try:
+        prediction = await make_prediction(chat_id, event)
+    except Exception:
+        logging.exception("prediction failed")
         try:
-            await callback.message.edit_text("не знаю такого события")
+            await callback.message.edit_text("🔮 чуйка не работает, попробуй позже")
         except Exception:
             pass
         return
 
-    # сначала объявляем прогноз
-    try:
-        await callback.message.edit_text(f"🔮 {advice_text}...")
-    except Exception:
-        logging.exception("edit advice failed")
+    if not prediction:
+        prediction = "ставь на чёрное, лудоман."
 
-    await asyncio.sleep(2)
-
-    # потом результат
-    tail = "🎉 ЗАШЛО!" if won else "😢 мимо. тильт."
-    final = f"🔮 {advice_text}\n{result_text}\n\n{tail}"
+    final = f"🔮 {prediction}"
 
     try:
         await callback.message.edit_text(final)
@@ -604,7 +576,7 @@ async def cmd_reset_all(message: Message):
 async def cmd_help(message: Message):
     await message.reply(
         "команды:\n"
-        "/aipredict — предсказать исход (кости, баскет, слот, карты, монетка)\n"
+        "/aipredict — предикт для ставки (кости, футбол, баскет, слоты, карты, монетка, рулетка, теннис)\n"
         "/me — твоя карточка\n"
         "/mood — настроение (0 = тильт, 100 = занос)\n"
         "/rep — в реплай, репутация\n"
