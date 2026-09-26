@@ -20,6 +20,12 @@
     background:var(--bg);color:var(--text);padding:14px 14px 30px;min-height:100vh;}
   .wrap{max-width:480px;margin:0 auto;}
 
+  /* сезонный фон — мягкий оттенок */
+  body.season-winter{background:linear-gradient(180deg,#0e1621,#1a2330 60%,#0e1621);}
+  body.season-spring{background:linear-gradient(180deg,#0e1621,#1a2621 60%,#0e1621);}
+  body.season-summer{background:linear-gradient(180deg,#0e1621,#2a2018 60%,#0e1621);}
+  body.season-autumn{background:linear-gradient(180deg,#0e1621,#2a1e16 60%,#0e1621);}
+
   .pet-card{background:linear-gradient(160deg,#1c2733,#131c26);border-radius:22px;
     padding:20px 16px 18px;margin-bottom:12px;position:relative;overflow:hidden;
     border:1px solid rgba(255,255,255,.05);}
@@ -42,6 +48,8 @@
     border-radius:8px;padding:4px 8px;cursor:pointer;}
   .pet-sub{color:var(--hint);font-size:13px;margin-top:4px;}
   .pet-mood{font-size:14px;margin-top:8px;min-height:20px;}
+  .weather{font-size:12px;color:var(--hint);margin-top:6px;}
+  .weather b{color:#ffd23f;font-weight:600;}
   .xp-text{text-align:center;font-size:12px;color:var(--hint);margin-top:6px;
     font-variant-numeric:tabular-nums;}
 
@@ -101,7 +109,6 @@
 
   h2{font-size:15px;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
 
-  /* LEADERBOARD */
   .lb{display:flex;align-items:center;gap:10px;padding:9px 0;
     border-bottom:1px solid rgba(127,127,127,.1);}
   .lb:last-child{border:0;}
@@ -118,7 +125,6 @@
   .lb .pts{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;flex:0 0 auto;}
   .lb .badges{display:flex;gap:3px;font-size:14px;flex:0 0 auto;}
 
-  /* EVENTS */
   .events-title{font-size:15px;font-weight:700;margin:0 0 10px;
     display:flex;align-items:center;gap:6px;}
   .event{display:flex;gap:10px;align-items:center;padding:8px 0;
@@ -131,6 +137,20 @@
   .event .txt b{font-weight:600;}
   .event .time{color:var(--hint);font-size:11px;white-space:nowrap;flex:0 0 auto;}
   .empty{text-align:center;color:var(--hint);font-size:13px;padding:16px 0;}
+
+  /* ===== PET RATING (global) ===== */
+  .pet-row{display:flex;align-items:center;gap:10px;padding:9px 0;
+    border-bottom:1px solid rgba(127,127,127,.1);}
+  .pet-row:last-child{border:0;}
+  .pet-row .place{width:22px;text-align:center;font-weight:700;font-size:13px;color:var(--hint);flex:0 0 22px;}
+  .pet-row .place.g{color:#ffd23f;}
+  .pet-row .place.s{color:#c0c8d0;}
+  .pet-row .place.b{color:#cd7f32;}
+  .pet-row .ic{font-size:26px;flex:0 0 auto;}
+  .pet-row .pn{flex:1;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .pet-row .pn small{display:block;color:var(--hint);font-size:11px;}
+  .pet-row .xp{font-weight:700;font-size:13px;color:#48dbfb;font-variant-numeric:tabular-nums;flex:0 0 auto;}
+  .pet-row.me{background:rgba(122,92,255,.08);border-radius:8px;padding-left:8px;padding-right:8px;}
 
   .loader{text-align:center;padding:40px;color:var(--hint);}
   .fatal{color:#ff6b6b;font-size:13px;padding:16px;line-height:1.5;word-break:break-word;}
@@ -165,6 +185,19 @@
     font-size:14px;font-weight:600;cursor:pointer;}
   .modal-btns .cancel{background:rgba(127,127,127,.15);color:var(--text);}
   .modal-btns .ok{background:var(--accent);color:#fff;}
+
+  /* ===== SKIN SELECTOR ===== */
+  .skins-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+  .skin-opt{background:rgba(255,255,255,.03);border:2px solid rgba(255,255,255,.06);
+    border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;
+    transition:border-color .15s, background .15s;}
+  .skin-opt:active{transform:scale(.97);}
+  .skin-opt.active{border-color:var(--accent);background:rgba(122,92,255,.15);}
+  .skin-opt .em{font-size:28px;line-height:1;display:flex;justify-content:center;gap:2px;}
+  .skin-opt .nm{font-size:12px;color:var(--hint);margin-top:6px;font-weight:600;}
+  .skin-opt .pr{font-size:11px;color:#ffd23f;font-weight:700;margin-top:2px;}
+  .skin-opt.owned .pr{color:#48d98e;}
+  .skin-price-hint{text-align:center;color:var(--hint);font-size:12px;margin-bottom:10px;}
 </style>
 </head>
 <body>
@@ -197,10 +230,12 @@
       <div class="pet-title">
         <h1>
           <span id="nameEl">Пушистик</span>
+          <button class="edit-btn" id="skinBtn" style="display:none">🎨</button>
           <button class="edit-btn" id="renameBtn" style="display:none">✏️</button>
         </h1>
         <div class="pet-sub" id="stageEl">Яйцо · Ур. 1</div>
         <div class="pet-mood" id="moodEl"></div>
+        <div class="weather" id="weatherEl"></div>
       </div>
       <div class="xp-text" id="xpEl">XP: 0 / 50</div>
     </div>
@@ -240,8 +275,13 @@
     </div>
 
     <div class="card">
-      <h2>🏆 Топ заботливых</h2>
+      <h2>🏆 Топ заботливых в чате</h2>
       <div id="lbEl"></div>
+    </div>
+
+    <div class="card">
+      <h2>🌍 Рейтинг питомцев (все чаты)</h2>
+      <div id="globalEl"><div class="loader">Загрузка…</div></div>
     </div>
   </div>
 </div>
@@ -255,6 +295,18 @@
     <div class="modal-btns">
       <button class="cancel" id="renameCancel">Отмена</button>
       <button class="ok" id="renameOk">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="skinModal">
+  <div class="modal-box">
+    <h3>🎨 Скин питомца</h3>
+    <div class="sub">Смена скина — <b>50 очков</b> (только для владельца)</div>
+    <div class="skins-grid" id="skinsGrid"></div>
+    <div class="skin-price-hint" id="skinHint"></div>
+    <div class="modal-btns">
+      <button class="cancel" id="skinCancel">Закрыть</button>
     </div>
   </div>
 </div>
@@ -316,14 +368,52 @@ const username = user.username || null;
 if(!petId){ document.getElementById("loader").innerHTML="<div style='text-align:center;padding:40px'>🐾<br><b>Открой из бота</b></div>"; throw 0; }
 if(!userId){ document.getElementById("loader").innerHTML="<div style='text-align:center;padding:40px'>🔒<br><b>Только в Telegram</b></div>"; throw 0; }
 
-const STAGES      = ["🥚","🐣","🐥","🐓","🦅"];
+// ===== СКИНЫ =====
+const SKINS = {
+  classic: { name:"Птица",     stages:["🥚","🐣","🐥","🐓","🦅"] },
+  cat:     { name:"Котик",     stages:["🥚","🐱","🐈","🐈‍⬛","🦁"] },
+  dragon:  { name:"Дракон",    stages:["🥚","🦎","🐉","🐲","🐲"] },
+  space:   { name:"Космос",    stages:["🪐","🌙","⭐","🌟","☀️"] },
+  dino:    { name:"Динозавр",  stages:["🥚","🦕","🦖","🐊","🐲"] },
+};
+const SKIN_PRICE = 50;
+
+function stagesFor(skinKey){
+  return (SKINS[skinKey] || SKINS.classic).stages;
+}
+function stageNameShort(skinKey, idx){
+  const names = ["Яйцо","Малыш","Юнец","Взрослый","Старейшина"];
+  return names[idx] || "—";
+}
+
+// ===== СЕЗОНЫ И ПОГОДА =====
+const SEASONS = {
+  winter: { emoji:"❄️", name:"Зима" },
+  spring: { emoji:"🌸", name:"Весна" },
+  summer: { emoji:"☀️", name:"Лето" },
+  autumn: { emoji:"🍂", name:"Осень" },
+};
+const WEATHERS = ["☀️ солнечно","⛅ облачно","🌧 дождь","🌫 туман","🌈 радуга","🌤 ясно"];
+
+function seasonFor(d){
+  const m = d.getMonth() + 1;
+  if(m===12 || m<=2) return "winter";
+  if(m<=5) return "spring";
+  if(m<=8) return "summer";
+  return "autumn";
+}
+function weatherFor(d){
+  const seed = d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
+  return WEATHERS[seed % WEATHERS.length];
+}
+
+// ===== ОСНОВА =====
 const STAGE_NAMES = ["Яйцо","Птенец","Юнец","Взрослый","Старейшина"];
 const MAX_LEVEL   = 30;
 const XP_PER_LEVEL = 50;
 const DAILY_BONUS = 20;
 const RING_CIRC   = 2 * Math.PI * 90;
 
-// feed даёт +10 энергии
 const ACTIONS = {
   feed: { emoji:"🍖", label:"Покормить", cd: 5*60,  xp: 2, effects:{ hunger:+25, energy:+10 }, score:+1, msg:"+25 сытости, +10 энергии" },
   pet:  { emoji:"✋", label:"Погладить", cd: 60,    xp: 1, effects:{ mood:+10 },               score:+1, msg:"+10 настроения" },
@@ -377,8 +467,12 @@ function tick(p){
   const now=Date.now(), last=new Date(p.last_tick_at).getTime(), min=(now-last)/60000;
   if(min<1)return p;
   const h=min/60, c={...p};
-  c.hunger=clamp(c.hunger-3*h); c.mood=clamp(c.mood-3*h);
-  c.energy=clamp(c.energy-2*h); c.clean=clamp(c.clean-2*h);
+  const season = seasonFor(new Date());
+  // Зимой энергия падает быстрее, летом — настроение медленнее.
+  const energyRate = season==="winter" ? 2.5 : 2;
+  const moodRate   = season==="summer" ? 2.5 : 3;
+  c.hunger=clamp(c.hunger-3*h); c.mood=clamp(c.mood-moodRate*h);
+  c.energy=clamp(c.energy-energyRate*h); c.clean=clamp(c.clean-2*h);
   if(c.hunger<20||c.clean<20)c.health=clamp(c.health-5*h);
   else if(c.hunger>60&&c.mood>60&&c.clean>60)c.health=clamp(c.health+2*h);
   c.last_tick_at=new Date().toISOString();
@@ -386,16 +480,28 @@ function tick(p){
 }
 function setBar(k,v){ $("b-"+k).style.width=v+"%"; $("v-"+k).textContent=v+"%"; }
 
+function renderWeather(){
+  const d = new Date();
+  const seasonKey = seasonFor(d);
+  const season = SEASONS[seasonKey];
+  const weather = weatherFor(d);
+  document.body.classList.remove("season-winter","season-spring","season-summer","season-autumn");
+  document.body.classList.add("season-"+seasonKey);
+  $("weatherEl").innerHTML = season.emoji + " " + season.name + " · <b>" + weather + "</b>";
+}
+
 function render(){
   if(!pet)return;
   const lvl = levelFromXp(pet.xp);
   const st = stageFromLevel(lvl);
-  $("petEl").textContent = STAGES[st];
+  const stages = stagesFor(pet.skin);
+  $("petEl").textContent = stages[st] || stages[0];
   $("petEl").style.filter = "drop-shadow("+glow(pet)+")";
   $("nameEl").textContent = pet.name;
 
   isOwner = Number(pet.owner_id) === Number(userId);
   $("renameBtn").style.display = isOwner ? "" : "none";
+  $("skinBtn").style.display = isOwner ? "" : "none";
 
   $("stageEl").textContent = STAGE_NAMES[st]+" · Ур. "+lvl;
   $("moodEl").textContent = moodText(pet);
@@ -434,6 +540,7 @@ function render(){
     $("scoreEl").innerHTML = "Твои очки: <b>"+me.score+"</b>"+extra;
   }
   checkDaily();
+  renderWeather();
 }
 
 function checkDaily(){
@@ -496,6 +603,27 @@ async function loadLeaderboard(){
       "<div class='name "+cls+"'>"+name+"</div>"+
       (badges?"<div class='badges'>"+badges+"</div>":"")+
       "<div class='pts'>"+m.score+"</div></div>";
+  }).join("");
+}
+
+async function loadGlobalRating(){
+  // Топ-10 питомцев по XP
+  const {data} = await sb.from("pets").select("id,name,xp,skin,owner_id")
+    .order("xp",{ascending:false}).limit(10);
+  const el = $("globalEl");
+  if(!data || !data.length){ el.innerHTML = "<div class='empty'>Пока никого</div>"; return; }
+  const medals = ["🥇","🥈","🥉","4.","5.","6.","7.","8.","9.","10."];
+  el.innerHTML = data.map((p,i)=>{
+    const lvl = Math.min(30, Math.floor((p.xp||0)/XP_PER_LEVEL)+1);
+    const st = stageFromLevel(lvl);
+    const stages = stagesFor(p.skin);
+    const emoji = stages[st] || stages[0];
+    const isMe = p.id === petId;
+    return "<div class='pet-row "+(isMe?"me":"")+"'>"+
+      "<div class='place "+(i<3?["g","s","b"][i]:"")+"'>"+(medals[i]||(i+1))+"</div>"+
+      "<div class='ic'>"+emoji+"</div>"+
+      "<div class='pn'>"+esc(p.name)+"<small>Ур. "+lvl+" · "+STAGE_NAMES[st]+(isMe?" · твой":"")+"</small></div>"+
+      "<div class='xp'>"+ (p.xp||0) +" XP</div></div>";
   }).join("");
 }
 
@@ -567,6 +695,7 @@ async function doAction(act){
   render();
   loadLeaderboard();
   loadEvents();
+  loadGlobalRating();
 }
 
 async function claimDaily(){
@@ -592,8 +721,58 @@ async function renamePet(newName){
   const {error} = await sb.from("pets").update({name:newName}).eq("id", petId);
   if(error){ toast("Ошибка"); return; }
   pet = {...pet, name:newName}; render(); toast("📛 Имя изменено");
+  loadGlobalRating();
 }
 
+async function changeSkin(newSkin){
+  if(!pet || Number(pet.owner_id)!==Number(userId)){ toast("Только создатель"); return; }
+  if(!SKINS[newSkin]){ toast("Неизвестный скин"); return; }
+  if(pet.skin === newSkin){ toast("Уже выбран"); return; }
+  if(!me || me.score < SKIN_PRICE){ toast("Нужно "+SKIN_PRICE+" очков"); return; }
+
+  myWriteAt = Date.now();
+  const newScore = me.score - SKIN_PRICE;
+  const [{error:e1},{error:e2}] = await Promise.all([
+    sb.from("pets").update({skin: newSkin}).eq("id", petId),
+    sb.from("members").update({score: newScore}).eq("pet_id", petId).eq("user_id", userId)
+  ]);
+  if(e1||e2){ toast("Ошибка"); return; }
+  pet = {...pet, skin: newSkin};
+  me = {...me, score: newScore};
+  render();
+  toast("🎨 Скин «"+SKINS[newSkin].name+"» за "+SKIN_PRICE+" очков", true);
+  loadLeaderboard();
+  loadGlobalRating();
+  openSkinModal();
+}
+
+function openSkinModal(){
+  const grid = $("skinsGrid");
+  grid.innerHTML = Object.entries(SKINS).map(([key, s])=>{
+    const isActive = pet.skin === key;
+    const owned = isActive;
+    const cls = "skin-opt" + (isActive?" active":"") + (owned?" owned":"");
+    // Показываем 3-ю стадию (Юнец) — компромисс между яйцом и взрослым
+    const preview = s.stages[2] || s.stages[0];
+    const priceLabel = isActive ? "✓ выбрано" : (SKIN_PRICE + " ⭐");
+    return "<div class='"+cls+"' data-skin='"+key+"'>"+
+      "<div class='em'>"+preview+"</div>"+
+      "<div class='nm'>"+s.name+"</div>"+
+      "<div class='pr'>"+priceLabel+"</div>"+
+      "</div>";
+  }).join("");
+  grid.querySelectorAll(".skin-opt").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const key = el.dataset.skin;
+      if(pet.skin === key){ toast("Уже выбран"); return; }
+      changeSkin(key);
+    });
+  });
+  $("skinHint").textContent = "Твои очки: " + (me ? me.score : 0) + " ⭐";
+  $("skinModal").classList.add("show");
+}
+
+// ===== Обработчики =====
 document.querySelectorAll(".action[data-act]").forEach(b=>{
   b.addEventListener("click", ()=>doAction(b.dataset.act));
 });
@@ -613,6 +792,13 @@ $("renameOk").addEventListener("click", async ()=>{
   await renamePet(v);
 });
 $("renameModal").addEventListener("click", e=>{ if(e.target.id==="renameModal")$("renameModal").classList.remove("show"); });
+
+$("skinBtn").addEventListener("click", ()=>{
+  if(!pet || Number(pet.owner_id)!==Number(userId)){ toast("Только создатель"); return; }
+  openSkinModal();
+});
+$("skinCancel").addEventListener("click", ()=>$("skinModal").classList.remove("show"));
+$("skinModal").addEventListener("click", e=>{ if(e.target.id==="skinModal")$("skinModal").classList.remove("show"); });
 
 let topupAmount = 1;
 $("topupBtn").addEventListener("click", ()=>{
@@ -679,7 +865,7 @@ setInterval(render, 1000);
     await loadPet();
     if(!pet)return;
     await loadMe();
-    await Promise.all([loadLeaderboard(), loadEvents()]);
+    await Promise.all([loadLeaderboard(), loadEvents(), loadGlobalRating()]);
     $("loader").style.display = "none";
     $("app").style.display = "block";
   } catch(e){
