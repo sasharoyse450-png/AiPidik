@@ -20,7 +20,6 @@
     background:var(--bg);color:var(--text);padding:14px 14px 30px;min-height:100vh;}
   .wrap{max-width:480px;margin:0 auto;}
 
-  /* сезонный фон — мягкий оттенок */
   body.season-winter{background:linear-gradient(180deg,#0e1621,#1a2330 60%,#0e1621);}
   body.season-spring{background:linear-gradient(180deg,#0e1621,#1a2621 60%,#0e1621);}
   body.season-summer{background:linear-gradient(180deg,#0e1621,#2a2018 60%,#0e1621);}
@@ -43,10 +42,12 @@
   @keyframes mega{0%,100%{transform:scale(1)}30%{transform:scale(1.3) rotate(6deg)}60%{transform:scale(.9) rotate(-6deg)}}
   .pet-title{margin-top:14px;text-align:center;}
   .pet-title h1{font-size:22px;margin:0;font-weight:700;display:flex;
-    align-items:center;justify-content:center;gap:8px;}
+    align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
   .edit-btn{background:rgba(255,255,255,.08);border:0;color:var(--hint);font-size:13px;
-    border-radius:8px;padding:4px 8px;cursor:pointer;}
+    border-radius:8px;padding:4px 8px;cursor:pointer;font-family:inherit;}
   .pet-sub{color:var(--hint);font-size:13px;margin-top:4px;}
+  .pet-id{color:var(--hint);font-size:10px;margin-top:4px;font-family:monospace;opacity:.6;
+    word-break:break-all;padding:0 20px;}
   .pet-mood{font-size:14px;margin-top:8px;min-height:20px;}
   .weather{font-size:12px;color:var(--hint);margin-top:6px;}
   .weather b{color:#ffd23f;font-weight:600;}
@@ -65,10 +66,14 @@
   .bank-title{font-size:13px;color:var(--hint);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
   .bank-balance{font-size:30px;font-weight:800;color:#ffd23f;line-height:1.1;}
   .bank-balance small{font-size:14px;color:var(--hint);font-weight:600;margin-left:4px;}
+  .bank-pet-id{font-size:10px;color:var(--hint);margin-top:6px;font-family:monospace;
+    word-break:break-all;opacity:.65;}
+  .bank-not-owner{color:#ff8a3c;font-size:12px;margin-top:10px;line-height:1.5;}
   .owner-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
   .owner-actions button{padding:13px 10px;border:0;border-radius:12px;font-family:inherit;
     font-size:13px;font-weight:700;cursor:pointer;transition:transform .1s;}
   .owner-actions button:active{transform:scale(.96);}
+  .owner-actions button:disabled{opacity:.4;cursor:not-allowed;}
   .btn-topup{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
   .btn-salary{background:linear-gradient(135deg,#7a5cff,#00d4ff);color:#fff;}
 
@@ -138,7 +143,6 @@
   .event .time{color:var(--hint);font-size:11px;white-space:nowrap;flex:0 0 auto;}
   .empty{text-align:center;color:var(--hint);font-size:13px;padding:16px 0;}
 
-  /* ===== PET RATING (global) ===== */
   .pet-row{display:flex;align-items:center;gap:10px;padding:9px 0;
     border-bottom:1px solid rgba(127,127,127,.1);}
   .pet-row:last-child{border:0;}
@@ -166,7 +170,11 @@
   .modal.show{display:flex;}
   .modal-box{background:var(--card);border-radius:16px;padding:20px;width:100%;max-width:360px;}
   .modal-box h3{margin:0 0 4px;font-size:17px;}
-  .modal-box .sub{color:var(--hint);font-size:12px;margin-bottom:14px;}
+  .modal-box .sub{color:var(--hint);font-size:12px;margin-bottom:14px;line-height:1.5;}
+  .modal-box .sub b{color:var(--text);}
+  .modal-box .pid{font-family:monospace;font-size:11px;color:var(--hint);
+    background:rgba(0,0,0,.2);padding:6px 8px;border-radius:6px;margin-bottom:12px;
+    word-break:break-all;}
   .modal-box label{display:block;font-size:12px;color:var(--hint);margin-bottom:6px;
     text-transform:uppercase;letter-spacing:.4px;}
   .modal-box input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(127,127,127,.3);
@@ -186,7 +194,6 @@
   .modal-btns .cancel{background:rgba(127,127,127,.15);color:var(--text);}
   .modal-btns .ok{background:var(--accent);color:#fff;}
 
-  /* ===== SKIN SELECTOR ===== */
   .skins-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
   .skin-opt{background:rgba(255,255,255,.03);border:2px solid rgba(255,255,255,.06);
     border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;
@@ -234,18 +241,21 @@
           <button class="edit-btn" id="renameBtn" style="display:none">✏️</button>
         </h1>
         <div class="pet-sub" id="stageEl">Яйцо · Ур. 1</div>
+        <div class="pet-id" id="petIdEl"></div>
         <div class="pet-mood" id="moodEl"></div>
         <div class="weather" id="weatherEl"></div>
       </div>
       <div class="xp-text" id="xpEl">XP: 0 / 50</div>
     </div>
 
-    <div class="bank-card" id="bankCard" style="display:none">
+    <div class="bank-card" id="bankCard">
       <div class="bank-title">🏦 Банк питомца</div>
       <div class="bank-balance">
         <span id="bankBalance">0.00</span><small id="bankCurrency">USDT</small>
       </div>
-      <div class="owner-actions">
+      <div class="bank-pet-id" id="bankPetId"></div>
+      <div id="ownerNotice"></div>
+      <div class="owner-actions" id="ownerActions">
         <button class="btn-topup" id="topupBtn">💳 Пополнить</button>
         <button class="btn-salary" id="salaryBtn">💸 Зарплата</button>
       </div>
@@ -291,6 +301,7 @@
 <div class="modal" id="renameModal">
   <div class="modal-box">
     <h3>Переименовать питомца</h3>
+    <div class="pid" id="renamePid"></div>
     <input type="text" id="renameInput" maxlength="20" placeholder="Новое имя" />
     <div class="modal-btns">
       <button class="cancel" id="renameCancel">Отмена</button>
@@ -303,6 +314,7 @@
   <div class="modal-box">
     <h3>🎨 Скин питомца</h3>
     <div class="sub">Смена скина — <b>50 очков</b> (только для владельца)</div>
+    <div class="pid" id="skinPid"></div>
     <div class="skins-grid" id="skinsGrid"></div>
     <div class="skin-price-hint" id="skinHint"></div>
     <div class="modal-btns">
@@ -315,6 +327,7 @@
   <div class="modal-box">
     <h3>💳 Пополнить банк</h3>
     <div class="sub">Выбери сумму или введи свою</div>
+    <div class="pid" id="topupPid"></div>
     <div class="preset-row" id="topupPresets">
       <button data-val="0.5">0.5</button><button data-val="1" class="active">1</button>
       <button data-val="2">2</button><button data-val="5">5</button><button data-val="10">10</button>
@@ -331,7 +344,8 @@
 <div class="modal" id="salaryModal">
   <div class="modal-box">
     <h3>💸 Зарплата</h3>
-    <div class="sub">В банке: <span id="salaryBalance">0.00</span> USDT</div>
+    <div class="sub">В банке: <b><span id="salaryBalance">0.00</span> USDT</b></div>
+    <div class="pid" id="salaryPid"></div>
     <label>Сумма к раздаче</label>
     <input type="number" id="salaryInput" min="0.01" step="0.01" placeholder="вся сумма" />
     <label>Сколько лучших получат</label>
@@ -368,7 +382,6 @@ const username = user.username || null;
 if(!petId){ document.getElementById("loader").innerHTML="<div style='text-align:center;padding:40px'>🐾<br><b>Открой из бота</b></div>"; throw 0; }
 if(!userId){ document.getElementById("loader").innerHTML="<div style='text-align:center;padding:40px'>🔒<br><b>Только в Telegram</b></div>"; throw 0; }
 
-// ===== СКИНЫ =====
 const SKINS = {
   classic: { name:"Птица",     stages:["🥚","🐣","🐥","🐓","🦅"] },
   cat:     { name:"Котик",     stages:["🥚","🐱","🐈","🐈‍⬛","🦁"] },
@@ -377,16 +390,8 @@ const SKINS = {
   dino:    { name:"Динозавр",  stages:["🥚","🦕","🦖","🐊","🐲"] },
 };
 const SKIN_PRICE = 50;
+function stagesFor(skinKey){ return (SKINS[skinKey] || SKINS.classic).stages; }
 
-function stagesFor(skinKey){
-  return (SKINS[skinKey] || SKINS.classic).stages;
-}
-function stageNameShort(skinKey, idx){
-  const names = ["Яйцо","Малыш","Юнец","Взрослый","Старейшина"];
-  return names[idx] || "—";
-}
-
-// ===== СЕЗОНЫ И ПОГОДА =====
 const SEASONS = {
   winter: { emoji:"❄️", name:"Зима" },
   spring: { emoji:"🌸", name:"Весна" },
@@ -394,7 +399,6 @@ const SEASONS = {
   autumn: { emoji:"🍂", name:"Осень" },
 };
 const WEATHERS = ["☀️ солнечно","⛅ облачно","🌧 дождь","🌫 туман","🌈 радуга","🌤 ясно"];
-
 function seasonFor(d){
   const m = d.getMonth() + 1;
   if(m===12 || m<=2) return "winter";
@@ -407,7 +411,6 @@ function weatherFor(d){
   return WEATHERS[seed % WEATHERS.length];
 }
 
-// ===== ОСНОВА =====
 const STAGE_NAMES = ["Яйцо","Птенец","Юнец","Взрослый","Старейшина"];
 const MAX_LEVEL   = 30;
 const XP_PER_LEVEL = 50;
@@ -444,7 +447,7 @@ const esc = s => String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">
 function toast(msg, gold){
   const el=$("toastEl"); el.textContent=msg; el.classList.toggle("gold",!!gold);
   el.classList.add("show"); clearTimeout(el._t);
-  el._t=setTimeout(()=>el.classList.remove("show"),2000);
+  el._t=setTimeout(()=>el.classList.remove("show"),2500);
 }
 function haptic(t){ try{ if(t==="success")tg?.HapticFeedback?.notificationOccurred("success"); else tg?.HapticFeedback?.impactOccurred("light"); }catch(e){} }
 function fatal(t,e){ $("loader").style.display="block"; $("loader").innerHTML="<div class='fatal'><b>"+t+"</b><br>"+(e?.message||e)+"</div>"; $("app").style.display="none"; }
@@ -468,7 +471,6 @@ function tick(p){
   if(min<1)return p;
   const h=min/60, c={...p};
   const season = seasonFor(new Date());
-  // Зимой энергия падает быстрее, летом — настроение медленнее.
   const energyRate = season==="winter" ? 2.5 : 2;
   const moodRate   = season==="summer" ? 2.5 : 3;
   c.hunger=clamp(c.hunger-3*h); c.mood=clamp(c.mood-moodRate*h);
@@ -498,6 +500,7 @@ function render(){
   $("petEl").textContent = stages[st] || stages[0];
   $("petEl").style.filter = "drop-shadow("+glow(pet)+")";
   $("nameEl").textContent = pet.name;
+  $("petIdEl").textContent = "ID: " + pet.id;
 
   isOwner = Number(pet.owner_id) === Number(userId);
   $("renameBtn").style.display = isOwner ? "" : "none";
@@ -515,12 +518,24 @@ function render(){
   $("ringFg").style.strokeDashoffset = RING_CIRC*(1-prog);
   $("xpEl").textContent = lvl>=MAX_LEVEL ? "МАКС" : ("XP: "+cur+" / "+XP_PER_LEVEL);
 
-  const bank = $("bankCard");
+  // Банк всегда показываем
+  $("bankBalance").textContent = Number(pet.bank_balance||0).toFixed(2);
+  $("bankCurrency").textContent = pet.currency||"USDT";
+  $("bankPetId").textContent = "ID: " + pet.id;
+
+  const actionsEl = $("ownerActions");
+  const noticeEl = $("ownerNotice");
   if(isOwner){
-    bank.style.display="";
-    $("bankBalance").textContent = Number(pet.bank_balance||0).toFixed(2);
-    $("bankCurrency").textContent = pet.currency||"USDT";
-  } else bank.style.display="none";
+    actionsEl.style.display = "";
+    noticeEl.innerHTML = "";
+  } else {
+    actionsEl.style.display = "none";
+    noticeEl.innerHTML = "<div class='bank-not-owner'>" +
+      "⚠️ Ты не владелец этого питомца — кнопки пополнения и зарплаты скрыты.<br>" +
+      "owner_id: <code>" + (pet.owner_id||"?") + "</code><br>" +
+      "твой id: <code>" + userId + "</code>" +
+      "</div>";
+  }
 
   document.querySelectorAll(".action[data-act]").forEach(btn=>{
     const a = btn.dataset.act, cfg = ACTIONS[a], cd = btn.querySelector(".cd");
@@ -607,7 +622,6 @@ async function loadLeaderboard(){
 }
 
 async function loadGlobalRating(){
-  // Топ-10 питомцев по XP
   const {data} = await sb.from("pets").select("id,name,xp,skin,owner_id")
     .order("xp",{ascending:false}).limit(10);
   const el = $("globalEl");
@@ -748,11 +762,10 @@ async function changeSkin(newSkin){
 
 function openSkinModal(){
   const grid = $("skinsGrid");
+  $("skinPid").textContent = "ID: " + petId;
   grid.innerHTML = Object.entries(SKINS).map(([key, s])=>{
     const isActive = pet.skin === key;
-    const owned = isActive;
-    const cls = "skin-opt" + (isActive?" active":"") + (owned?" owned":"");
-    // Показываем 3-ю стадию (Юнец) — компромисс между яйцом и взрослым
+    const cls = "skin-opt" + (isActive?" active":"") + (isActive?" owned":"");
     const preview = s.stages[2] || s.stages[0];
     const priceLabel = isActive ? "✓ выбрано" : (SKIN_PRICE + " ⭐");
     return "<div class='"+cls+"' data-skin='"+key+"'>"+
@@ -781,6 +794,7 @@ $("dailyBtn").addEventListener("click", claimDaily);
 
 $("renameBtn").addEventListener("click", ()=>{
   if(!pet || Number(pet.owner_id)!==Number(userId)){ toast("Только создатель"); return; }
+  $("renamePid").textContent = "ID: " + petId;
   $("renameInput").value = pet?.name || "";
   $("renameModal").classList.add("show");
   setTimeout(()=>$("renameInput").focus(), 50);
@@ -800,10 +814,12 @@ $("skinBtn").addEventListener("click", ()=>{
 $("skinCancel").addEventListener("click", ()=>$("skinModal").classList.remove("show"));
 $("skinModal").addEventListener("click", e=>{ if(e.target.id==="skinModal")$("skinModal").classList.remove("show"); });
 
+// TOPUP
 let topupAmount = 1;
 $("topupBtn").addEventListener("click", ()=>{
-  if(!isOwner)return;
+  if(!isOwner){ toast("Только владелец может пополнять банк"); return; }
   topupAmount = 1; $("topupInput").value = "";
+  $("topupPid").textContent = "ID: " + petId;
   document.querySelectorAll("#topupPresets button").forEach(b=>b.classList.toggle("active", b.dataset.val==="1"));
   $("topupModal").classList.add("show");
 });
@@ -820,19 +836,26 @@ $("topupInput").addEventListener("input", e=>{
 });
 $("topupCancel").addEventListener("click", ()=>$("topupModal").classList.remove("show"));
 $("topupOk").addEventListener("click", ()=>{
+  if(!isOwner){ toast("Только владелец"); return; }
   const v = parseFloat($("topupInput").value);
   const amount = (!isNaN(v) && v>0) ? v : topupAmount;
   const cents = Math.round(amount*100);
+  const url = "https://t.me/"+BOT_USERNAME+"?start=topup_"+petId+"_"+cents;
   $("topupModal").classList.remove("show");
-  try { tg?.openTelegramLink("https://t.me/"+BOT_USERNAME+"?start=topup_"+petId+"_"+cents); }
-  catch(e){ window.open("https://t.me/"+BOT_USERNAME+"?start=topup_"+petId+"_"+cents); }
+  toast("💳 Открываю бота…");
+  try {
+    if(tg?.openTelegramLink){ tg.openTelegramLink(url); tg.close(); }
+    else window.open(url, "_blank");
+  } catch(e){ window.open(url, "_blank"); }
 });
 $("topupModal").addEventListener("click", e=>{ if(e.target.id==="topupModal")$("topupModal").classList.remove("show"); });
 
+// SALARY
 let topN = 3;
 $("salaryBtn").addEventListener("click", ()=>{
-  if(!isOwner)return;
+  if(!isOwner){ toast("Только владелец может запускать зарплату"); return; }
   $("salaryBalance").textContent = Number(pet.bank_balance||0).toFixed(2);
+  $("salaryPid").textContent = "ID: " + petId;
   $("salaryInput").value = ""; topN = 3;
   document.querySelectorAll("#topnRow button").forEach(b=>b.classList.toggle("active", b.dataset.n==="3"));
   $("salaryModal").classList.add("show");
@@ -846,15 +869,20 @@ document.querySelectorAll("#topnRow button").forEach(b=>{
 });
 $("salaryCancel").addEventListener("click", ()=>$("salaryModal").classList.remove("show"));
 $("salaryOk").addEventListener("click", ()=>{
+  if(!isOwner){ toast("Только владелец"); return; }
   const v = parseFloat($("salaryInput").value);
   const bank = Number(pet.bank_balance||0);
   const amount = (!isNaN(v) && v>0) ? v : bank;
   if(amount<=0){ toast("Банк пуст"); return; }
   if(amount>bank){ toast("Больше банка нельзя"); return; }
   const cents = Math.round(amount*100);
+  const url = "https://t.me/"+BOT_USERNAME+"?start=salary_"+petId+"_"+cents+"_"+topN;
   $("salaryModal").classList.remove("show");
-  try { tg?.openTelegramLink("https://t.me/"+BOT_USERNAME+"?start=salary_"+petId+"_"+cents+"_"+topN); }
-  catch(e){ window.open("https://t.me/"+BOT_USERNAME+"?start=salary_"+petId+"_"+cents+"_"+topN); }
+  toast("💸 Отправляю команду…");
+  try {
+    if(tg?.openTelegramLink){ tg.openTelegramLink(url); tg.close(); }
+    else window.open(url, "_blank");
+  } catch(e){ window.open(url, "_blank"); }
 });
 $("salaryModal").addEventListener("click", e=>{ if(e.target.id==="salaryModal")$("salaryModal").classList.remove("show"); });
 
