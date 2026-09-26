@@ -421,8 +421,8 @@ async def load_stickers(bot):
         STICKER_IDS = []
 
 
-# ==================== PREDICT ====================
-@dp.message(Command("predict"))
+# ==================== AiPredict ====================
+@dp.message(Command("AiPredict"))
 async def cmd_predict(message: Message):
     kb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🎲 Кости", callback_data="pred:dice:menu")],
@@ -436,7 +436,6 @@ async def cmd_predict(message: Message):
 
 @dp.callback_query(F.data.startswith("pred:"))
 async def on_pred_callback(callback: CallbackQuery):
-    # сразу гасим спиннер — кнопка визуально отреагирует
     try:
         await callback.answer()
     except Exception:
@@ -472,7 +471,6 @@ async def on_pred_callback(callback: CallbackQuery):
                 logging.exception("reply menu failed")
         return
 
-    # выбор сделан
     try:
         await callback.message.edit_text(f"🎲 бросаю на {choice}...")
     except Exception:
@@ -649,7 +647,7 @@ async def cmd_reset_all(message: Message):
 async def cmd_help(message: Message):
     await message.reply(
         "команды:\n"
-        "/predict — предсказать исход (кости, баскет, слот, карты, монетка)\n"
+        "/AiPredict — предсказать исход (кости, баскет, слот, карты, монетка)\n"
         "/me — твоя карточка\n"
         "/mood — настроение (0 = тильт, 100 = занос)\n"
         "/rep — в реплай, репутация\n"
