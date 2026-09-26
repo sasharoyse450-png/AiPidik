@@ -22,67 +22,35 @@
     padding:14px 14px 30px;min-height:100vh;
   }
   .wrap{max-width:480px;margin:0 auto;}
-
-  .pet-card{
-    background:linear-gradient(160deg,#1c2733,#131c26);
-    border-radius:22px;padding:20px 16px 18px;margin-bottom:12px;
-    position:relative;overflow:hidden;
-    border:1px solid rgba(255,255,255,.05);
-  }
-  .pet-card::before{
-    content:'';position:absolute;inset:0;pointer-events:none;
-    background:radial-gradient(400px 200px at 50% 0%,rgba(122,92,255,.18),transparent 70%);
-  }
+  .pet-card{background:linear-gradient(160deg,#1c2733,#131c26);border-radius:22px;padding:20px 16px 18px;margin-bottom:12px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.05);}
+  .pet-card::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(400px 200px at 50% 0%,rgba(122,92,255,.18),transparent 70%);}
   .pet-stage{width:200px;height:200px;margin:0 auto;position:relative;}
   .ring{position:absolute;inset:0;transform:rotate(-90deg);}
   .ring circle{fill:none;stroke-linecap:round;}
   .ring .bg{stroke:rgba(255,255,255,.07);stroke-width:8;}
   .ring .fg{stroke:url(#ringGrad);stroke-width:8;transition:stroke-dashoffset .6s ease;}
-  .pet{
-    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    font-size:96px;line-height:1;user-select:none;cursor:pointer;transition:transform .25s;
-  }
+  .pet{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:96px;line-height:1;user-select:none;cursor:pointer;transition:transform .25s;}
   .pet.pulse{transform:scale(1.14) rotate(-4deg);}
   .pet.mega{animation:mega .7s;}
   @keyframes mega{0%,100%{transform:scale(1)}30%{transform:scale(1.3) rotate(6deg)}60%{transform:scale(.9) rotate(-6deg)}}
-
   .pet-title{margin-top:14px;text-align:center;}
   .pet-title h1{font-size:22px;margin:0;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;}
   .edit-btn{background:rgba(255,255,255,.08);border:0;color:var(--hint);font-size:13px;border-radius:8px;padding:4px 8px;cursor:pointer;}
   .pet-sub{color:var(--hint);font-size:13px;margin-top:4px;}
   .pet-mood{font-size:14px;margin-top:8px;min-height:20px;}
   .xp-text{text-align:center;font-size:12px;color:var(--hint);margin-top:6px;font-variant-numeric:tabular-nums;}
-
-  .daily{
-    display:flex;background:linear-gradient(90deg,#ff9f43,#ffcc48);
-    color:#1a1000;font-weight:700;border-radius:14px;
-    padding:12px 16px;margin-bottom:12px;cursor:pointer;
-    justify-content:space-between;align-items:center;
-    box-shadow:0 6px 20px rgba(255,159,67,.35);
-  }
+  .daily{display:flex;background:linear-gradient(90deg,#ff9f43,#ffcc48);color:#1a1000;font-weight:700;border-radius:14px;padding:12px 16px;margin-bottom:12px;cursor:pointer;justify-content:space-between;align-items:center;box-shadow:0 6px 20px rgba(255,159,67,.35);}
   .daily.hidden{display:none;}
-
-  .bank-card{
-    background:linear-gradient(135deg,#1a2a3a,#0f1a26);
-    border:1px solid rgba(255,215,0,.18);
-    border-radius:18px;padding:16px;margin-bottom:12px;
-    position:relative;overflow:hidden;
-  }
+  .bank-card{background:linear-gradient(135deg,#1a2a3a,#0f1a26);border:1px solid rgba(255,215,0,.18);border-radius:18px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden;}
   .bank-card::before{content:'🏦';position:absolute;right:-10px;top:-20px;font-size:110px;opacity:.06;pointer-events:none;}
   .bank-title{font-size:13px;color:var(--hint);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
   .bank-balance{font-size:30px;font-weight:800;color:#ffd23f;line-height:1.1;}
   .bank-balance small{font-size:14px;color:var(--hint);font-weight:600;margin-left:4px;}
   .owner-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
-  .owner-actions button{
-    padding:13px 10px;border:0;border-radius:12px;font-family:inherit;
-    font-size:13px;font-weight:700;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;gap:6px;
-    transition:transform .1s;
-  }
+  .owner-actions button{padding:13px 10px;border:0;border-radius:12px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .1s;}
   .owner-actions button:active{transform:scale(.96);}
   .btn-topup{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
   .btn-salary{background:linear-gradient(135deg,#7a5cff,#00d4ff);color:#fff;}
-
   .card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;border:1px solid rgba(255,255,255,.04);}
   .stat{margin:10px 0;}
   .stat-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;color:var(--hint);}
@@ -94,33 +62,19 @@
   .b-energy{background:linear-gradient(90deg,#2d7cff,#54a0ff);}
   .b-clean{background:linear-gradient(90deg,#00b8d4,#48dbfb);}
   .b-health{background:linear-gradient(90deg,#ff3b5c,#ee5253);}
-
   .actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .action{
-    background:var(--card);border:1px solid rgba(255,255,255,.05);
-    border-radius:16px;padding:14px 10px;cursor:pointer;
-    display:flex;flex-direction:column;align-items:center;gap:6px;
-    position:relative;overflow:hidden;transition:transform .12s;
-    color:var(--text);font-family:inherit;
-  }
+  .action{background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:14px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;overflow:hidden;transition:transform .12s;color:var(--text);font-family:inherit;}
   .action:active:not(:disabled){transform:scale(.96);}
   .action:disabled{opacity:.55;cursor:not-allowed;}
   .action .ic{font-size:26px;}
   .action .lbl{font-size:13px;font-weight:600;}
-  .action .cd{
-    position:absolute;inset:0;background:rgba(0,0,0,.55);
-    display:flex;align-items:center;justify-content:center;
-    font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;
-    backdrop-filter:blur(2px);
-  }
+  .action .cd{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;backdrop-filter:blur(2px);}
   .action .cd:empty{display:none;}
   .action.wide{grid-column:span 2;flex-direction:row;justify-content:center;gap:8px;padding:13px;}
   .action.heal{background:linear-gradient(135deg,#ff3b5c,#ee5253);color:#fff;border:0;}
-
   .score-line{text-align:center;color:var(--hint);font-size:13px;margin-top:12px;}
   .score-line b{color:var(--text);}
   .streak-badge{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:10px;background:rgba(255,120,60,.15);color:#ff8a3c;font-weight:700;}
-
   .events-title{font-size:15px;font-weight:700;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
   .event{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(127,127,127,.1);font-size:13px;}
   .event:last-child{border:0;}
@@ -129,7 +83,6 @@
   .event .txt b{font-weight:600;}
   .event .time{color:var(--hint);font-size:11px;white-space:nowrap;}
   .empty{text-align:center;color:var(--hint);font-size:13px;padding:16px 0;}
-
   h2{font-size:15px;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
   .lb{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(127,127,127,.1);}
   .lb:last-child{border:0;}
@@ -140,45 +93,24 @@
   .lb .name.me{color:#48dbfb;font-weight:700;}
   .lb .pts{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;}
   .lb .badges{display:flex;gap:3px;font-size:14px;}
-
-  .toast{
-    position:fixed;left:50%;bottom:24px;
-    transform:translateX(-50%) translateY(30px);
-    background:rgba(0,0,0,.9);color:#fff;padding:10px 18px;border-radius:12px;
-    font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:100;
-    max-width:82%;text-align:center;font-weight:600;
-  }
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);background:rgba(0,0,0,.9);color:#fff;padding:10px 18px;border-radius:12px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:100;max-width:82%;text-align:center;font-weight:600;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .toast.gold{background:linear-gradient(90deg,#ff9f43,#ffcc48);color:#1a1000;}
-
   .loader{text-align:center;padding:40px;color:var(--hint);}
   .fatal{color:#ff6b6b;font-size:13px;padding:16px;line-height:1.5;word-break:break-word;}
-
   .modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;}
   .modal.show{display:flex;}
   .modal-box{background:var(--card);border-radius:16px;padding:20px;width:100%;max-width:360px;}
   .modal-box h3{margin:0 0 4px;font-size:17px;}
   .modal-box .sub{color:var(--hint);font-size:12px;margin-bottom:14px;}
   .modal-box label{display:block;font-size:12px;color:var(--hint);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px;}
-  .modal-box input{
-    width:100%;padding:12px;border-radius:10px;border:1px solid rgba(127,127,127,.3);
-    background:rgba(0,0,0,.2);color:var(--text);font-size:16px;font-family:inherit;
-    margin-bottom:12px;
-  }
+  .modal-box input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(127,127,127,.3);background:rgba(0,0,0,.2);color:var(--text);font-size:16px;font-family:inherit;margin-bottom:12px;}
   .modal-box input:focus{outline:none;border-color:var(--accent);}
   .preset-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px;}
-  .preset-row button{
-    padding:10px 0;border:1px solid rgba(127,127,127,.25);background:transparent;
-    color:var(--text);border-radius:10px;font-family:inherit;font-size:13px;
-    font-weight:600;cursor:pointer;
-  }
+  .preset-row button{padding:10px 0;border:1px solid rgba(127,127,127,.25);background:transparent;color:var(--text);border-radius:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;}
   .preset-row button.active{background:var(--accent);border-color:var(--accent);color:#fff;}
   .topn-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px;}
-  .topn-row button{
-    padding:10px 0;border:1px solid rgba(127,127,127,.25);background:transparent;
-    color:var(--text);border-radius:10px;font-family:inherit;font-size:13px;
-    font-weight:600;cursor:pointer;
-  }
+  .topn-row button{padding:10px 0;border:1px solid rgba(127,127,127,.25);background:transparent;color:var(--text);border-radius:10px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;}
   .topn-row button.active{background:var(--accent);border-color:var(--accent);color:#fff;}
   .modal-btns{display:flex;gap:8px;}
   .modal-btns button{flex:1;padding:12px;border:0;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;}
@@ -269,7 +201,6 @@
 
 <div class="toast" id="toastEl"></div>
 
-<!-- Модал переименования -->
 <div class="modal" id="renameModal">
   <div class="modal-box">
     <h3>Переименовать питомца</h3>
@@ -281,7 +212,6 @@
   </div>
 </div>
 
-<!-- Модал пополнения -->
 <div class="modal" id="topupModal">
   <div class="modal-box">
     <h3>💳 Пополнить банк</h3>
@@ -302,7 +232,6 @@
   </div>
 </div>
 
-<!-- Модал зарплаты -->
 <div class="modal" id="salaryModal">
   <div class="modal-box">
     <h3>💸 Зарплата</h3>
@@ -327,7 +256,7 @@
 <script>
 const SUPABASE_URL = "https://ripjvcglkcqvyolnewaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_P5IC_YkWUcchuxcQM_THFQ_uOxhPv4Q";
-const BOT_USERNAME = "Aipidik_bot"; // ← без @
+const BOT_USERNAME = "Aipidik_bot";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const tg = window.Telegram?.WebApp;
@@ -750,14 +679,12 @@ async function refreshMe(){
   if (data) { me = data; render(); }
 }
 
-// ===== Обработчики =====
 document.querySelectorAll(".action[data-act]").forEach(btn => {
   btn.addEventListener("click", () => doAction(btn.dataset.act));
 });
 $("petEl").addEventListener("click", () => doAction("pet"));
 $("dailyBtn").addEventListener("click", claimDaily);
 
-// переименование
 $("renameBtn").addEventListener("click", () => {
   if (!pet || Number(pet.owner_id) !== Number(userId)) { toast("Только создатель может переименовать"); return; }
   $("renameInput").value = pet?.name || "";
@@ -772,7 +699,7 @@ $("renameOk").addEventListener("click", async () => {
 });
 $("renameModal").addEventListener("click", (e) => { if (e.target.id === "renameModal") $("renameModal").classList.remove("show"); });
 
-// ===== TOPUP модал =====
+// TOPUP
 let topupAmount = 1;
 $("topupBtn").addEventListener("click", () => {
   if (!isOwner) return;
@@ -800,12 +727,13 @@ $("topupCancel").addEventListener("click", () => $("topupModal").classList.remov
 $("topupOk").addEventListener("click", () => {
   const v = parseFloat($("topupInput").value);
   const amount = (!isNaN(v) && v > 0) ? v : topupAmount;
+  const cents = Math.round(amount * 100);
   $("topupModal").classList.remove("show");
-  openBotLink("https://t.me/" + BOT_USERNAME + "?start=topup_" + petId + "_" + amount);
+  openBotLink("https://t.me/" + BOT_USERNAME + "?start=topup_" + petId + "_" + cents);
 });
 $("topupModal").addEventListener("click", (e) => { if (e.target.id === "topupModal") $("topupModal").classList.remove("show"); });
 
-// ===== SALARY модал =====
+// SALARY
 let topN = 3;
 $("salaryBtn").addEventListener("click", () => {
   if (!isOwner) return;
@@ -830,8 +758,9 @@ $("salaryOk").addEventListener("click", () => {
   const amount = (!isNaN(v) && v > 0) ? v : bank;
   if (amount <= 0) { toast("Банк пуст"); return; }
   if (amount > bank) { toast("Больше банка нельзя"); return; }
+  const cents = Math.round(amount * 100);
   $("salaryModal").classList.remove("show");
-  openBotLink("https://t.me/" + BOT_USERNAME + "?start=salary_" + petId + "_" + amount + "_" + topN);
+  openBotLink("https://t.me/" + BOT_USERNAME + "?start=salary_" + petId + "_" + cents + "_" + topN);
 });
 $("salaryModal").addEventListener("click", (e) => { if (e.target.id === "salaryModal") $("salaryModal").classList.remove("show"); });
 
