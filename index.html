@@ -25,7 +25,6 @@
   }
   .wrap{max-width:480px;margin:0 auto;}
 
-  /* ===== PET CARD ===== */
   .pet-card{
     background:linear-gradient(160deg,#1c2733,#131c26);
     border-radius:22px;padding:20px 16px 18px;margin-bottom:12px;
@@ -36,20 +35,14 @@
     content:'';position:absolute;inset:0;pointer-events:none;
     background:radial-gradient(400px 200px at 50% 0%,rgba(122,92,255,.18),transparent 70%);
   }
-  .pet-stage{
-    width:200px;height:200px;margin:0 auto;position:relative;
-  }
+  .pet-stage{width:200px;height:200px;margin:0 auto;position:relative;}
   .ring{position:absolute;inset:0;transform:rotate(-90deg);}
   .ring circle{fill:none;stroke-linecap:round;}
   .ring .bg{stroke:rgba(255,255,255,.07);stroke-width:8;}
-  .ring .fg{
-    stroke:url(#ringGrad);stroke-width:8;
-    transition:stroke-dashoffset .6s ease;
-  }
+  .ring .fg{stroke:url(#ringGrad);stroke-width:8;transition:stroke-dashoffset .6s ease;}
   .pet{
     position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    font-size:96px;line-height:1;user-select:none;cursor:pointer;
-    transition:transform .25s;
+    font-size:96px;line-height:1;user-select:none;cursor:pointer;transition:transform .25s;
   }
   .pet.pulse{transform:scale(1.14) rotate(-4deg);}
   .pet.mega{animation:mega .7s;}
@@ -67,17 +60,13 @@
   .edit-btn:active{background:rgba(255,255,255,.15);}
   .pet-sub{color:var(--hint);font-size:13px;margin-top:4px;}
   .pet-mood{font-size:14px;margin-top:8px;min-height:20px;}
-  .xp-text{
-    text-align:center;font-size:12px;color:var(--hint);margin-top:6px;
-    font-variant-numeric:tabular-nums;
-  }
+  .xp-text{text-align:center;font-size:12px;color:var(--hint);margin-top:6px;font-variant-numeric:tabular-nums;}
 
-  /* ===== DAILY BONUS ===== */
   .daily{
-    display:none;background:linear-gradient(90deg,#ff9f43,#ffcc48);
+    display:flex;background:linear-gradient(90deg,#ff9f43,#ffcc48);
     color:#1a1000;font-weight:700;border-radius:14px;
     padding:12px 16px;margin-bottom:12px;cursor:pointer;
-    display:flex;justify-content:space-between;align-items:center;
+    justify-content:space-between;align-items:center;
     box-shadow:0 6px 20px rgba(255,159,67,.35);
     animation:dailyPulse 2s ease-in-out infinite;
   }
@@ -85,32 +74,46 @@
   .daily .emoji{font-size:22px;margin-right:8px;}
   @keyframes dailyPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
 
-  /* ===== STATS ===== */
+  .bank-card{
+    background:linear-gradient(135deg,#1a2a3a,#0f1a26);
+    border:1px solid rgba(255,215,0,.18);
+    border-radius:18px;padding:16px;margin-bottom:12px;
+    position:relative;overflow:hidden;
+  }
+  .bank-card::before{
+    content:'🏦';position:absolute;right:-10px;top:-20px;font-size:110px;opacity:.06;
+    pointer-events:none;
+  }
+  .bank-title{font-size:13px;color:var(--hint);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+  .bank-balance{font-size:30px;font-weight:800;color:#ffd23f;letter-spacing:-.8px;line-height:1.1;}
+  .bank-balance small{font-size:14px;color:var(--hint);font-weight:600;margin-left:4px;}
+  .bank-hint{font-size:12px;color:var(--hint);margin-top:6px;}
+  .owner-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
+  .owner-actions button{
+    padding:13px 10px;border:0;border-radius:12px;font-family:inherit;
+    font-size:13px;font-weight:700;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    transition:transform .1s;
+  }
+  .owner-actions button:active{transform:scale(.96);}
+  .btn-topup{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
+  .btn-salary{background:linear-gradient(135deg,#7a5cff,#00d4ff);color:#fff;}
+
   .card{
     background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;
     border:1px solid rgba(255,255,255,.04);
   }
   .stat{margin:10px 0;}
-  .stat-head{
-    display:flex;justify-content:space-between;font-size:13px;
-    margin-bottom:5px;color:var(--hint);
-  }
+  .stat-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;color:var(--hint);}
   .stat-head b{color:var(--text);font-weight:600;}
-  .bar{
-    height:8px;background:rgba(127,127,127,.18);border-radius:6px;
-    overflow:hidden;position:relative;
-  }
-  .bar>i{
-    display:block;height:100%;border-radius:6px;
-    transition:width .5s ease;
-  }
+  .bar{height:8px;background:rgba(127,127,127,.18);border-radius:6px;overflow:hidden;position:relative;}
+  .bar>i{display:block;height:100%;border-radius:6px;transition:width .5s ease;}
   .b-hunger{background:linear-gradient(90deg,#ff7a18,#ff9f43);}
   .b-mood  {background:linear-gradient(90deg,#ffb020,#ffd23f);}
   .b-energy{background:linear-gradient(90deg,#2d7cff,#54a0ff);}
   .b-clean {background:linear-gradient(90deg,#00b8d4,#48dbfb);}
   .b-health{background:linear-gradient(90deg,#ff3b5c,#ee5253);}
 
-  /* ===== ACTIONS ===== */
   .actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .action{
     background:var(--card);border:1px solid rgba(255,255,255,.05);
@@ -131,22 +134,16 @@
   }
   .action .cd:empty{display:none;}
   .action.wide{grid-column:span 2;flex-direction:row;justify-content:center;gap:8px;padding:13px;}
-  .action.heal{
-    background:linear-gradient(135deg,#ff3b5c,#ee5253);
-    color:#fff;border:0;
-  }
+  .action.heal{background:linear-gradient(135deg,#ff3b5c,#ee5253);color:#fff;border:0;}
   .action.wide .lbl{font-size:14px;}
 
-  .score-line{
-    text-align:center;color:var(--hint);font-size:13px;margin-top:12px;
-  }
+  .score-line{text-align:center;color:var(--hint);font-size:13px;margin-top:12px;}
   .score-line b{color:var(--text);}
   .streak-badge{
     display:inline-block;margin-left:6px;padding:2px 8px;border-radius:10px;
     background:rgba(255,120,60,.15);color:#ff8a3c;font-weight:700;
   }
 
-  /* ===== EVENT FEED ===== */
   .events-title{font-size:15px;font-weight:700;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
   .event{
     display:flex;gap:10px;align-items:center;padding:8px 0;
@@ -163,7 +160,6 @@
   .event .time{color:var(--hint);font-size:11px;white-space:nowrap;}
   .empty{text-align:center;color:var(--hint);font-size:13px;padding:16px 0;}
 
-  /* ===== LEADERBOARD ===== */
   h2{font-size:15px;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
   .lb{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(127,127,127,.1);}
   .lb:last-child{border:0;}
@@ -181,7 +177,6 @@
   .lb .pts{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;}
   .lb .badges{display:flex;gap:3px;font-size:14px;}
 
-  /* ===== TOAST ===== */
   .toast{
     position:fixed;left:50%;bottom:24px;
     transform:translateX(-50%) translateY(30px);
@@ -195,29 +190,17 @@
   .loader{text-align:center;padding:40px;color:var(--hint);}
   .fatal{color:#ff6b6b;font-size:13px;padding:16px;line-height:1.5;word-break:break-word;}
 
-  /* ===== MODAL (rename) ===== */
-  .modal{
-    position:fixed;inset:0;background:rgba(0,0,0,.7);
-    display:none;align-items:center;justify-content:center;z-index:200;
-    padding:20px;
-  }
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;}
   .modal.show{display:flex;}
-  .modal-box{
-    background:var(--card);border-radius:16px;padding:20px;
-    width:100%;max-width:340px;
-  }
+  .modal-box{background:var(--card);border-radius:16px;padding:20px;width:100%;max-width:340px;}
   .modal-box h3{margin:0 0 12px;font-size:16px;}
   .modal-box input{
     width:100%;padding:12px;border-radius:10px;border:1px solid rgba(127,127,127,.3);
-    background:rgba(0,0,0,.2);color:var(--text);font-size:15px;font-family:inherit;
-    margin-bottom:12px;
+    background:rgba(0,0,0,.2);color:var(--text);font-size:15px;font-family:inherit;margin-bottom:12px;
   }
   .modal-box input:focus{outline:none;border-color:var(--accent);}
   .modal-btns{display:flex;gap:8px;}
-  .modal-btns button{
-    flex:1;padding:12px;border:0;border-radius:10px;font-family:inherit;
-    font-size:14px;font-weight:600;cursor:pointer;
-  }
+  .modal-btns button{flex:1;padding:12px;border:0;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;}
   .modal-btns .cancel{background:rgba(127,127,127,.15);color:var(--text);}
   .modal-btns .ok{background:var(--accent);color:#fff;}
 </style>
@@ -259,6 +242,19 @@
         <div class="pet-mood" id="moodEl"></div>
       </div>
       <div class="xp-text" id="xpEl">XP: 0 / 50</div>
+    </div>
+
+    <div class="bank-card" id="bankCard" style="display:none">
+      <div class="bank-title">🏦 Банк питомца</div>
+      <div class="bank-balance">
+        <span id="bankBalance">0.00</span>
+        <small id="bankCurrency">USDT</small>
+      </div>
+      <div class="bank-hint" id="bankHint">Пополни банк и раздай зарплату активным участникам</div>
+      <div class="owner-actions">
+        <button class="btn-topup" id="topupBtn">💳 Пополнить</button>
+        <button class="btn-salary" id="salaryBtn">💸 Зарплата</button>
+      </div>
     </div>
 
     <div class="card">
@@ -309,6 +305,7 @@
 <script>
 const SUPABASE_URL = "https://ripjvcglkcqvyolnewaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_P5IC_YkWUcchuxcQM_THFQ_uOxhPv4Q";
+const BOT_USERNAME = "твой_бот_username"; // ← ЗАМЕНИ на username своего бота (без @)
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const tg = window.Telegram?.WebApp;
@@ -378,6 +375,7 @@ let pet = null;
 let me  = null;
 let cooldowns = {};
 let myWriteAt = 0;
+let isOwner = false;
 
 const $ = id => document.getElementById(id);
 const clamp = (v,min=0,max=100) => Math.max(min, Math.min(max, Math.round(v)));
@@ -457,7 +455,7 @@ function render(){
   $("petEl").style.filter = "drop-shadow(" + petGlow(pet) + ")";
   $("nameEl").textContent = pet.name;
 
-  const isOwner = pet.owner_id === userId;
+  isOwner = Number(pet.owner_id) === Number(userId);
   $("renameBtn").style.display = isOwner ? "" : "none";
 
   $("stageEl").textContent = STAGE_NAMES[stage] + " · Ур. " + lvl;
@@ -474,6 +472,16 @@ function render(){
   $("ringFg").style.strokeDasharray = RING_CIRC;
   $("ringFg").style.strokeDashoffset = RING_CIRC * (1 - progress);
   $("xpEl").textContent = lvl >= MAX_LEVEL ? "МАКС. УРОВЕНЬ" : ("XP: " + cur + " / " + XP_PER_LEVEL);
+
+  // Банк
+  const bankCard = $("bankCard");
+  if (isOwner) {
+    bankCard.style.display = "";
+    $("bankBalance").textContent = Number(pet.bank_balance || 0).toFixed(2);
+    $("bankCurrency").textContent = pet.currency || "USDT";
+  } else {
+    bankCard.style.display = "none";
+  }
 
   document.querySelectorAll(".action[data-act]").forEach(btn => {
     const a = btn.dataset.act;
@@ -552,7 +560,7 @@ async function loadMe(){
 
 async function loadLeaderboard(){
   const { data, error } = await sb.from("members")
-    .select("user_id,first_name,username,score,streak")
+    .select("user_id,first_name,username,score,streak,today_score")
     .eq("pet_id", petId).order("score", { ascending: false }).limit(10);
   if (error) { console.error(error); return; }
   const el = $("lbEl");
@@ -631,7 +639,16 @@ async function doAction(act){
     hunger: newPet.hunger, mood: newPet.mood, energy: newPet.energy,
     clean: newPet.clean, health: newPet.health, xp: newPet.xp
   };
+
+  // Дневной счёт для зарплаты
+  const today = new Date().toISOString().slice(0,10);
   const memberUpdate = { score: me.score + cfg.score, ["last_" + act + "_at"]: iso };
+  if (me.today_date === today) {
+    memberUpdate.today_score = (me.today_score || 0) + Math.max(cfg.score, 0);
+  } else {
+    memberUpdate.today_score = Math.max(cfg.score, 0);
+    memberUpdate.today_date = today;
+  }
 
   myWriteAt = Date.now();
   const [{ error: e1 }, { error: e2 }] = await Promise.all([
@@ -685,7 +702,7 @@ async function claimDaily(){
 
 async function renamePet(newName){
   if (!pet) return;
-  if (pet.owner_id !== userId) { toast("Только создатель может переименовать"); return; }
+  if (Number(pet.owner_id) !== Number(userId)) { toast("Только создатель может переименовать"); return; }
   newName = newName.trim().slice(0, 20);
   if (!newName) return;
   myWriteAt = Date.now();
@@ -725,7 +742,7 @@ $("petEl").addEventListener("click", () => doAction("pet"));
 $("dailyBtn").addEventListener("click", claimDaily);
 
 $("renameBtn").addEventListener("click", () => {
-  if (!pet || pet.owner_id !== userId) {
+  if (!pet || Number(pet.owner_id) !== Number(userId)) {
     toast("Только создатель может переименовать");
     return;
   }
@@ -748,6 +765,26 @@ $("renameInput").addEventListener("keydown", async (e) => {
 });
 $("renameModal").addEventListener("click", (e) => {
   if (e.target.id === "renameModal") $("renameModal").classList.remove("show");
+});
+
+// Кнопка "Пополнить" — открывает бота с deep link
+$("topupBtn").addEventListener("click", () => {
+  if (!isOwner) return;
+  const url = "https://t.me/" + BOT_USERNAME + "?start=topup_" + petId;
+  try {
+    if (tg?.openTelegramLink) tg.openTelegramLink(url);
+    else window.open(url, "_blank");
+  } catch(e) { window.open(url, "_blank"); }
+});
+
+// Кнопка "Зарплата" — открывает бота с командой /salary
+$("salaryBtn").addEventListener("click", () => {
+  if (!isOwner) return;
+  const url = "https://t.me/" + BOT_USERNAME + "?start=salary";
+  try {
+    if (tg?.openTelegramLink) tg.openTelegramLink(url);
+    else window.open(url, "_blank");
+  } catch(e) { window.open(url, "_blank"); }
 });
 
 setInterval(render, 1000);
