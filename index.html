@@ -65,6 +65,7 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .hint{font-size:12px;color:var(--hint);text-align:center;margin-top:10px;}
   .loader{text-align:center;padding:40px;color:var(--hint);}
+  .fatal{color:#ff6b6b;font-size:13px;padding:16px;text-align:left;line-height:1.5;word-break:break-word;}
 </style>
 </head>
 <body>
@@ -110,7 +111,7 @@
 
 <script>
 const SUPABASE_URL = "https://ripjvcglkcqvyolnewaj.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpcGp2Y2dsa2NxdnlvbG5ld2FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3MDU4MzYsImV4cCI6MjEwNTI4MTgzNn0.MiNeuueI9FRvokdVX6AA133zIBqN83oB3UlMFLjK70Q";
+const SUPABASE_KEY = "sb_publishable_P5IC_YkWUcchuxcQM_THFQ_uOxhPv4Q";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const tg = window.Telegram?.WebApp;
@@ -165,6 +166,20 @@ function haptic(type){
     if (type === "success") tg?.HapticFeedback?.notificationOccurred("success");
     else tg?.HapticFeedback?.impactOccurred("light");
   } catch(e){}
+}
+
+function showFatal(title, err){
+  const box = $("loader");
+  box.style.display = "block";
+  box.innerHTML =
+    "<div class='fatal'>" +
+    "<b>" + title + "</b><br><br>" +
+    "code: " + (err?.code || "—") + "<br>" +
+    "message: " + (err?.message || err) + "<br>" +
+    "details: " + (err?.details || "—") + "<br>" +
+    "hint: " + (err?.hint || "—") +
+    "</div>";
+  $("app").style.display = "none";
 }
 
 function petMoodText(p){
@@ -239,11 +254,11 @@ function render(){
 
 async function loadPet(){
   const { data, error } = await sb.from("pets").select("*").eq("chat_id", chatId).maybeSingle();
-  if (error) { console.error(error); toast("Ошибка загрузки"); return; }
+  if (error) { console.error("SELECT pets:", error); showFatal("Ошибка SELECT pets", error); return; }
 
   if (!data) {
     const { data: created, error: e2 } = await sb.from("pets").insert({ chat_id: chatId }).select().single();
-    if (e2) { console.error(e2); toast("Ошибка создания"); return; }
+    if (e2) { console.error("INSERT pets:", e2); showFatal("Ошибка INSERT pets", e2); return; }
     pet = created;
   } else {
     pet = data;
@@ -266,13 +281,13 @@ async function loadPet(){
 
 async function loadMe(){
   const { data, error } = await sb.from("members").select("*").eq("chat_id", chatId).eq("user_id", userId).maybeSingle();
-  if (error) { console.error(error); return; }
+  if (error) { console.error("SELECT members:", error); showFatal("Ошибка SELECT members", error); return; }
 
   if (!data) {
     const { data: created, error: e2 } = await sb.from("members").insert({
       chat_id: chatId, user_id: userId, username, first_name: firstName, score: 0
     }).select().single();
-    if (e2) { console.error(e2); return; }
+    if (e2) { console.error("INSERT members:", e2); showFatal("Ошибка INSERT members", e2); return; }
     me = created;
   } else {
     me = data;
@@ -291,7 +306,7 @@ async function loadLeaderboard(){
     .eq("chat_id", chatId)
     .order("score", { ascending: false })
     .limit(5);
-  if (error) { console.error(error); return; }
+  if (error) { console.error("leaderboard:", error); return; }
 
   const el = $("lbEl");
   if (!data || !data.length) { el.innerHTML = '<div class="sub">Пока никого</div>'; return; }
@@ -382,7 +397,13 @@ setInterval(render, 1000);
 
 (async () => {
   try {
+    console.log("URL:", SUPABASE_URL);
+    console.log("KEY:", SUPABASE_KEY.slice(0, 30) + "...");
+    console.log("chatId:", chatId, "userId:", userId);
+
     await loadPet();
+    if (!pet) return;
+
     await loadMe();
     await loadLeaderboard();
     subscribe();
@@ -390,7 +411,7 @@ setInterval(render, 1000);
     $("app").style.display = "block";
   } catch (e) {
     console.error(e);
-    $("loader").textContent = "Что-то сломалось :(";
+    showFatal("Общая ошибка", e);
   }
 })();
 </script>
