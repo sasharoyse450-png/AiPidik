@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>Питомец чата</title>
+<title>Питомец</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -30,8 +30,6 @@
     filter:drop-shadow(0 6px 10px rgba(0,0,0,.25));
   }
   .pet.pulse{transform:scale(1.18) rotate(-4deg);}
-  .pet.shake{animation:shake .4s;}
-  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
   h1{font-size:20px;margin:6px 0 0;text-align:center;}
   .sub{text-align:center;color:var(--hint);font-size:13px;margin-top:6px;}
   .mood{text-align:center;font-size:14px;margin-top:8px;min-height:20px;}
@@ -66,6 +64,8 @@
   .hint{font-size:12px;color:var(--hint);text-align:center;margin-top:10px;}
   .loader{text-align:center;padding:40px;color:var(--hint);}
   .fatal{color:#ff6b6b;font-size:13px;padding:16px;text-align:left;line-height:1.5;word-break:break-word;}
+  .empty{text-align:center;padding:40px;line-height:1.6;}
+  .empty .big{font-size:64px;margin-bottom:8px;}
 </style>
 </head>
 <body>
@@ -120,13 +120,34 @@ tg?.expand();
 try { tg?.setHeaderColor?.("secondary_bg_color"); } catch(e){}
 try { tg?.setBackgroundColor?.("bg_color"); } catch(e){}
 
+const params = new URLSearchParams(location.search);
+const petId = params.get("pet");
+
 const init = tg?.initDataUnsafe || {};
-const user = init.user || { id: 1, first_name: "Гость" };
-const chat = init.chat;
-const chatId = chat?.id ?? user.id;
+const user = init.user || { id: 0, first_name: "Гость" };
 const userId = user.id;
 const firstName = user.first_name || "Гость";
 const username = user.username || null;
+
+if (!petId) {
+  document.getElementById("loader").innerHTML =
+    "<div class='empty'>" +
+    "<div class='big'>🐾</div>" +
+    "<b>Открой меня из бота</b><br><br>" +
+    "Зайди в бота, создай питомца<br>и нажми «Открыть питомца»" +
+    "</div>";
+  throw new Error("no pet");
+}
+
+if (!userId) {
+  document.getElementById("loader").innerHTML =
+    "<div class='empty'>" +
+    "<div class='big'>🔒</div>" +
+    "<b>Открой через Telegram</b><br><br>" +
+    "Эта игра работает только внутри Telegram." +
+    "</div>";
+  throw new Error("no user");
+}
 
 const STAGES      = ["🥚","🐣","🐥","🐓","🦅"];
 const STAGE_NAMES = ["Яйцо","Птенец","Юнец","Взрослый","Старейшина"];
@@ -134,11 +155,11 @@ const MAX_LEVEL   = 30;
 const XP_PER_LEVEL = 50;
 
 const ACTIONS = {
-  feed: { emoji:"🍖", label:"Покормить",       cd: 5*60,  xp: 2, effects:{ hunger:+25 },              score:+1, msg:"+25 сытости" },
-  pet:  { emoji:"✋", label:"Погладить",       cd: 60,    xp: 1, effects:{ mood:+10 },                score:+1, msg:"+10 настроения" },
-  play: { emoji:"🎾", label:"Играть",          cd: 10*60, xp: 5, effects:{ mood:+20, energy:-15 },    score:+2, msg:"+20 настроения, −15 энергии" },
-  wash: { emoji:"🧼", label:"Помыть",          cd: 15*60, xp: 2, effects:{ clean:+30 },               score:+1, msg:"+30 чистоты" },
-  heal: { emoji:"💊", label:"Лечить",          cd: 60*60, xp: 3, effects:{ health:+20 },              score:-30, cost:30, msg:"+20 здоровья" }
+  feed: { emoji:"🍖", label:"Покормить", cd: 5*60,  xp: 2, effects:{ hunger:+25 },           score:+1, msg:"+25 сытости" },
+  pet:  { emoji:"✋", label:"Погладить", cd: 60,    xp: 1, effects:{ mood:+10 },             score:+1, msg:"+10 настроения" },
+  play: { emoji:"🎾", label:"Играть",    cd: 10*60, xp: 5, effects:{ mood:+20, energy:-15 }, score:+2, msg:"+20 настроения, −15 энергии" },
+  wash: { emoji:"🧼", label:"Помыть",    cd: 15*60, xp: 2, effects:{ clean:+30 },            score:+1, msg:"+30 чистоты" },
+  heal: { emoji:"💊", label:"Лечить",    cd: 60*60, xp: 3, effects:{ health:+20 },           score:-30, cost:30, msg:"+20 здоровья" }
 };
 
 let pet = null;
@@ -172,12 +193,10 @@ function showFatal(title, err){
   const box = $("loader");
   box.style.display = "block";
   box.innerHTML =
-    "<div class='fatal'>" +
-    "<b>" + title + "</b><br><br>" +
+    "<div class='fatal'><b>" + title + "</b><br><br>" +
     "code: " + (err?.code || "—") + "<br>" +
     "message: " + (err?.message || err) + "<br>" +
-    "details: " + (err?.details || "—") + "<br>" +
-    "hint: " + (err?.hint || "—") +
+    "details: " + (err?.details || "—") +
     "</div>";
   $("app").style.display = "none";
 }
@@ -253,46 +272,35 @@ function render(){
 }
 
 async function loadPet(){
-  const { data, error } = await sb.from("pets").select("*").eq("chat_id", chatId).maybeSingle();
-  if (error) { console.error("SELECT pets:", error); showFatal("Ошибка SELECT pets", error); return; }
-
-  if (!data) {
-    const { data: created, error: e2 } = await sb.from("pets").insert({ chat_id: chatId }).select().single();
-    if (e2) { console.error("INSERT pets:", e2); showFatal("Ошибка INSERT pets", e2); return; }
-    pet = created;
-  } else {
-    pet = data;
-    const ticked = applyTick(pet);
-    if (ticked.last_tick_at !== pet.last_tick_at) {
-      myWriteAt = Date.now();
-      await sb.from("pets").update({
-        hunger: ticked.hunger,
-        mood:   ticked.mood,
-        energy: ticked.energy,
-        clean:  ticked.clean,
-        health: ticked.health,
-        last_tick_at: ticked.last_tick_at
-      }).eq("chat_id", chatId);
-    }
-    pet = ticked;
+  const { data, error } = await sb.from("pets").select("*").eq("id", petId).maybeSingle();
+  if (error) { console.error(error); showFatal("Ошибка загрузки питомца", error); return; }
+  if (!data) { showFatal("Питомец не найден", { message: "Возможно, ссылка устарела" }); return; }
+  pet = data;
+  const ticked = applyTick(pet);
+  if (ticked.last_tick_at !== pet.last_tick_at) {
+    myWriteAt = Date.now();
+    await sb.from("pets").update({
+      hunger: ticked.hunger, mood: ticked.mood, energy: ticked.energy,
+      clean: ticked.clean, health: ticked.health, last_tick_at: ticked.last_tick_at
+    }).eq("id", petId);
   }
+  pet = ticked;
   render();
 }
 
 async function loadMe(){
-  const { data, error } = await sb.from("members").select("*").eq("chat_id", chatId).eq("user_id", userId).maybeSingle();
-  if (error) { console.error("SELECT members:", error); showFatal("Ошибка SELECT members", error); return; }
-
+  const { data, error } = await sb.from("members").select("*")
+    .eq("pet_id", petId).eq("user_id", userId).maybeSingle();
+  if (error) { console.error(error); return; }
   if (!data) {
     const { data: created, error: e2 } = await sb.from("members").insert({
-      chat_id: chatId, user_id: userId, username, first_name: firstName, score: 0
+      pet_id: petId, user_id: userId, username, first_name: firstName, score: 0
     }).select().single();
-    if (e2) { console.error("INSERT members:", e2); showFatal("Ошибка INSERT members", e2); return; }
+    if (e2) { console.error(e2); showFatal("Ошибка регистрации", e2); return; }
     me = created;
   } else {
     me = data;
   }
-
   for (const k of Object.keys(ACTIONS)) {
     const t = me["last_" + k + "_at"];
     if (t) cooldowns[k] = new Date(t).getTime() + ACTIONS[k].cd * 1000;
@@ -303,14 +311,12 @@ async function loadMe(){
 async function loadLeaderboard(){
   const { data, error } = await sb.from("members")
     .select("user_id,first_name,username,score")
-    .eq("chat_id", chatId)
+    .eq("pet_id", petId)
     .order("score", { ascending: false })
     .limit(5);
-  if (error) { console.error("leaderboard:", error); return; }
-
+  if (error) { console.error(error); return; }
   const el = $("lbEl");
   if (!data || !data.length) { el.innerHTML = '<div class="sub">Пока никого</div>'; return; }
-
   const medals = ["🥇","🥈","🥉","4.","5."];
   el.innerHTML = data.map((m, i) => {
     const name = escapeHtml(m.first_name || m.username || ("#" + m.user_id));
@@ -344,47 +350,41 @@ async function doAction(act){
 
   myWriteAt = Date.now();
   const [{ error: e1 }, { error: e2 }] = await Promise.all([
-    sb.from("pets").update(petUpdate).eq("chat_id", chatId),
-    sb.from("members").update(memberUpdate).eq("chat_id", chatId).eq("user_id", userId)
+    sb.from("pets").update(petUpdate).eq("id", petId),
+    sb.from("members").update(memberUpdate).eq("pet_id", petId).eq("user_id", userId)
   ]);
-  if (e1 || e2) { console.error(e1 || e2); toast("Ошибка, попробуй ещё"); return; }
+  if (e1 || e2) { console.error(e1 || e2); toast("Ошибка"); return; }
 
   pet = { ...pet, ...petUpdate };
   me  = { ...me,  ...memberUpdate };
-
-  const pe = $("petEl");
-  pe.classList.add("pulse");
-  setTimeout(() => pe.classList.remove("pulse"), 220);
+  $("petEl").classList.add("pulse");
+  setTimeout(() => $("petEl").classList.remove("pulse"), 220);
 
   toast(`${cfg.emoji} ${cfg.msg}`);
   haptic(newStage > oldStage ? "success" : "light");
-  if (newStage > oldStage) {
-    setTimeout(() => toast(`✨ Эволюция! Теперь это ${STAGE_NAMES[newStage]}`), 900);
-  }
+  if (newStage > oldStage) setTimeout(() => toast(`✨ Эволюция! ${STAGE_NAMES[newStage]}`), 900);
 
   render();
   loadLeaderboard();
 }
 
 function subscribe(){
-  sb.channel("pet-" + chatId)
-    .on("postgres_changes",
-      { event: "UPDATE", schema: "public", table: "pets", filter: "chat_id=eq." + chatId },
+  sb.channel("pet-" + petId)
+    .on("postgres_changes", { event: "UPDATE", schema: "public", table: "pets", filter: "id=eq." + petId },
       (payload) => {
         if (Date.now() - myWriteAt < 1200) return;
         if (!pet) return;
-        if (payload.new.xp === pet.xp && payload.new.hunger === pet.hunger && payload.new.mood === pet.mood) return;
+        if (payload.new.xp === pet.xp && payload.new.hunger === pet.hunger) return;
         pet = { ...pet, ...payload.new };
         render();
       })
-    .on("postgres_changes",
-      { event: "*", schema: "public", table: "members", filter: "chat_id=eq." + chatId },
+    .on("postgres_changes", { event: "*", schema: "public", table: "members", filter: "pet_id=eq." + petId },
       () => { loadLeaderboard(); if (Date.now() - myWriteAt > 1200) refreshMe(); })
     .subscribe();
 }
 
 async function refreshMe(){
-  const { data } = await sb.from("members").select("*").eq("chat_id", chatId).eq("user_id", userId).maybeSingle();
+  const { data } = await sb.from("members").select("*").eq("pet_id", petId).eq("user_id", userId).maybeSingle();
   if (data) { me = data; render(); }
 }
 
@@ -397,13 +397,8 @@ setInterval(render, 1000);
 
 (async () => {
   try {
-    console.log("URL:", SUPABASE_URL);
-    console.log("KEY:", SUPABASE_KEY.slice(0, 30) + "...");
-    console.log("chatId:", chatId, "userId:", userId);
-
     await loadPet();
     if (!pet) return;
-
     await loadMe();
     await loadLeaderboard();
     subscribe();
@@ -411,9 +406,10 @@ setInterval(render, 1000);
     $("app").style.display = "block";
   } catch (e) {
     console.error(e);
-    showFatal("Общая ошибка", e);
+    showFatal("Ошибка", e);
   }
 })();
 </script>
 </body>
+</html>
 </html>
