@@ -142,13 +142,13 @@
   .pet-fig.pulse{transform:scale(1.08);}
   .pet-fig.mega{animation:mega .5s;}
   @keyframes mega{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
-  .pet-body{position:absolute;inset:20px;display:flex;align-items:center;justify-content:center;}
+  .pet-body{position:absolute;inset:20px;display:flex;align-items:center;justify-content:center;font-size:90px;}
   .pet-body img{width:100%;height:100%;object-fit:contain;
     filter:drop-shadow(0 6px 12px rgba(0,0,0,.5));}
   .pet-acc{position:absolute;left:50%;pointer-events:none;
     filter:drop-shadow(0 3px 6px rgba(0,0,0,.5));
-    transition:transform .3s;}
-  .pet-acc img{width:100%;height:100%;display:block;}
+    transition:transform .3s;display:flex;align-items:center;justify-content:center;}
+  .pet-acc img{width:100%;height:100%;object-fit:contain;display:block;}
   .pet-acc[data-slot="head"]{top:2px;width:60px;height:60px;transform:translateX(-50%);}
   .pet-acc[data-slot="eyes"]{top:62px;width:70px;height:70px;transform:translateX(-50%);}
   .pet-acc[data-slot="neck"]{top:110px;width:60px;height:60px;transform:translateX(-50%);}
@@ -310,7 +310,8 @@
   .acc-opt:active{transform:scale(.97);}
   .acc-opt.equipped{border-color:#48d98e;background:rgba(72,217,142,.10);}
   .acc-opt.owned{border-color:rgba(72,217,142,.4);}
-  .acc-opt .em{width:38px;height:38px;margin:0 auto;display:block;}
+  .acc-opt .em{width:38px;height:38px;margin:0 auto;display:flex;align-items:center;justify-content:center;
+    font-size:28px;line-height:1;}
   .acc-opt .em img{width:100%;height:100%;object-fit:contain;}
   .acc-opt .nm{font-size:11px;color:#c0c8d0;margin-top:6px;font-weight:600;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -372,10 +373,10 @@
           <circle cx="100" cy="100" r="90" class="fg" id="ringFg"/>
         </svg>
         <div class="pet-fig" id="petFig">
-          <div class="pet-body"><img id="petBodyImg" alt="" /></div>
-          <div class="pet-acc hidden" id="accHead" data-slot="head"><img alt=""/></div>
-          <div class="pet-acc hidden" id="accEyes" data-slot="eyes"><img alt=""/></div>
-          <div class="pet-acc hidden" id="accNeck" data-slot="neck"><img alt=""/></div>
+          <div class="pet-body" id="petBody">🐱</div>
+          <div class="pet-acc hidden" id="accHead" data-slot="head"></div>
+          <div class="pet-acc hidden" id="accEyes" data-slot="eyes"></div>
+          <div class="pet-acc hidden" id="accNeck" data-slot="neck"></div>
         </div>
       </div>
       <div class="pet-title">
@@ -573,9 +574,6 @@ if(!userId){
   throw 0;
 }
 
-/* ============================================================
-   API BOT
-============================================================ */
 async function api(path, body){
   const r = await fetch(BOT_API + path, {
     method: "POST",
@@ -598,10 +596,23 @@ async function api(path, body){
 }
 
 /* ============================================================
-   Noto Emoji SVG — питомцы
+   Twemoji SVG — питомцы
 ============================================================ */
-const NOTO_BASE = "https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@main/svg/";
-function noto(cp){ return NOTO_BASE + "emoji_u" + cp + ".svg"; }
+const TWEMOJI_BASE = "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/";
+function twemoji(cp){
+  let clean = String(cp).replace(/_fe0f$/i, "").toLowerCase();
+  clean = clean.replace(/_/g, "-");
+  return TWEMOJI_BASE + clean + ".svg";
+}
+
+/* картинка с fallback на эмодзи */
+function emojiImg(cp, size, emojiFallback){
+  const sz = size || 32;
+  const fb = emojiFallback || "";
+  const safeFb = String(fb).replace(/'/g, "");
+  return `<img src="${twemoji(cp)}" style="width:${sz}px;height:${sz}px;object-fit:contain;vertical-align:middle;"
+    onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span style=\\'font-size:${Math.round(sz*0.8)}px;line-height:1;vertical-align:middle\\'>${safeFb}</span>')" />`;
+}
 
 const SKINS = {
   classic: {
@@ -612,13 +623,13 @@ const SKINS = {
   },
   cat: {
     name: "Котик",
-    cps: ["1f95a","1f431","1f408","1f408_200d_2b1b","1f406","1f405","1f981","1f42f"],
+    cps: ["1f95a","1f431","1f408","1f408-200d-2b1b","1f406","1f405","1f981","1f42f"],
     stages: ["🥚","🐱","🐈","🐈‍⬛","🐆","🐅","🦁","🐯"],
     stageNames: ["Яйцо","Котёнок","Котик","Чёрный кот","Леопард","Тигр","Лев","Царь зверей"],
   },
   space: {
     name: "Космос",
-    cps: ["1f32b_fe0f","1f319","2b50","1f31f","2728","2604_fe0f","1f320","2600_fe0f"],
+    cps: ["1f32b","1f319","2b50","1f31f","2728","2604","1f320","2600"],
     stages: ["🌫","🌙","⭐","🌟","✨","☄️","🌠","☀️"],
     stageNames: ["Туманность","Луна","Звезда","Яркая звезда","Созвездие","Комета","Сверхновая","Солнце"],
   },
@@ -634,12 +645,24 @@ function stagesFor(k){ return (SKINS[k] || SKINS.classic).stages; }
 function cpsFor(k){ return (SKINS[k] || SKINS.classic).cps; }
 function stageNamesFor(k){ return (SKINS[k] || SKINS.classic).stageNames; }
 
-/* Аксессуары (id → emoji codepoint) */
+/* Аксессуары — codepoint + эмодзи-fallback */
 const ACC_CP = {
-  crown: "1f451", tophat: "1f3a9", cap: "1f9e2", grad: "1f393",
-  sunhat: "1f452", helmet: "26d1_fe0f", pumpkin: "1f383", party: "1f389",
-  sunglasses: "1f576_fe0f", nerd: "1f453", goggles: "1f97d",
-  bow: "1f380", scarf: "1f9e3", medal: "1f3c5", beads: "1f4ff", ribbon: "1f397_fe0f",
+  crown:      { cp: "1f451", emoji: "👑" },
+  tophat:     { cp: "1f3a9", emoji: "🎩" },
+  cap:        { cp: "1f9e2", emoji: "🧢" },
+  grad:       { cp: "1f393", emoji: "🎓" },
+  sunhat:     { cp: "1f452", emoji: "👒" },
+  helmet:     { cp: "26d1",  emoji: "⛑" },
+  pumpkin:    { cp: "1f383", emoji: "🎃" },
+  party:      { cp: "1f389", emoji: "🎉" },
+  sunglasses: { cp: "1f576", emoji: "🕶" },
+  nerd:       { cp: "1f453", emoji: "👓" },
+  goggles:    { cp: "1f97d", emoji: "🥽" },
+  bow:        { cp: "1f380", emoji: "🎀" },
+  scarf:      { cp: "1f9e3", emoji: "🧣" },
+  medal:      { cp: "1f3c5", emoji: "🏅" },
+  beads:      { cp: "1f4ff", emoji: "📿" },
+  ribbon:     { cp: "1f397", emoji: "🎗" },
 };
 
 const SEASONS = {
@@ -673,7 +696,7 @@ let pet=null, me=null, cooldowns={}, isOwner=false;
 let renderIntervalId = null;
 let handlersBound = false;
 let realtimeChannel = null;
-let accCatalog = []; // список аксессуаров с бэка
+let accCatalog = [];
 let accTabSlot = "head";
 
 const $ = id => document.getElementById(id);
@@ -696,7 +719,6 @@ function unsubscribeFromPet(){
 function subscribeToPet(){
   unsubscribeFromPet();
   if (!petId) return;
-
   realtimeChannel = sb.channel("pet-" + petId)
     .on("postgres_changes",
         { event: "UPDATE", schema: "public", table: "pets", filter: "id=eq." + petId },
@@ -752,9 +774,7 @@ let bgSetMode = null;
   }
   function seed(){
     bgParticles = [];
-    for (let i = 0; i < COUNT; i++){
-      bgParticles.push(bgMode === "stars" ? spawnStar() : spawnParticle());
-    }
+    for (let i = 0; i < COUNT; i++) bgParticles.push(bgMode === "stars" ? spawnStar() : spawnParticle());
   }
   seed();
   bgSetMode = function(mode){ if (mode === bgMode) return; bgMode = mode; seed(); };
@@ -832,10 +852,6 @@ function renderWeather(){
   const w = weatherFor(d);
   $("weatherEl").innerHTML = s.emoji + " " + s.name + " · <b>" + w + "</b>";
 }
-function emojiImg(cp, size){
-  const sz = size || 32;
-  return `<img src="${noto(cp)}" style="width:${sz}px;height:${sz}px;" onerror="this.style.display='none'" />`;
-}
 
 /* ============================================================
    МЕНЮ
@@ -880,12 +896,13 @@ async function initMenu(){
       const lvl = Math.min(30, Math.floor((p.xp||0)/XP_PER_LEVEL)+1);
       const st = stageFromLevel(lvl);
       const cps = cpsFor(p.skin);
+      const stages = stagesFor(p.skin);
       const names = stageNamesFor(p.skin);
       const isOwn = Number(p.owner_id) === Number(userId);
       const dead = p.dead ? " 💀" : "";
       const own = isOwn ? `<span class="owned"> · твой</span>` : "";
       return `<div class="pet-list-item ${p.dead?'dead':''}" data-pet="${p.id}">
-        <div class="ic">${emojiImg(cps[st] || cps[0], 40)}</div>
+        <div class="ic">${emojiImg(cps[st] || cps[0], 40, stages[st])}</div>
         <div class="info">
           <div class="nm">${esc(p.name)}${dead}</div>
           <div class="st">Ур. ${lvl} · ${names[st]}${own}</div>
@@ -971,8 +988,8 @@ async function createPet(){
 async function renderDead(){
   $("aliveContent").style.display = "none";
   $("deadCard").style.display = "block";
-  $("petBodyImg").src = noto("1f480");
-  $("petBodyImg").style.filter = "grayscale(.4)";
+  $("petBody").innerHTML = emojiImg("1f480", 90, "💀");
+  $("petBody").style.filter = "grayscale(.4)";
   ["accHead","accEyes","accNeck"].forEach(id=>$(id).classList.add("hidden"));
   $("nameEl").textContent = pet.name;
   $("stageEl").textContent = "Умер";
@@ -1054,11 +1071,12 @@ async function loadGlobalRating(){
     const lvl = Math.min(30, Math.floor((p.xp||0)/XP_PER_LEVEL)+1);
     const st = stageFromLevel(lvl);
     const cps = cpsFor(p.skin);
+    const stages = stagesFor(p.skin);
     const names = stageNamesFor(p.skin);
     const isMe = p.id === petId;
     return "<div class='pet-row "+(isMe?"me":"")+"'>"+
       "<div class='place "+(i<3?["g","s","b"][i]:"")+"'>"+(medals[i]||(i+1))+"</div>"+
-      "<div class='ic'>"+emojiImg(cps[st] || cps[0], 32)+"</div>"+
+      "<div class='ic'>"+emojiImg(cps[st] || cps[0], 32, stages[st])+"</div>"+
       "<div class='pn'><div class='pname'>"+esc(p.name)+(isMe?" · твой":"")+"</div>"+
       "<div class='psub'>Ур. "+lvl+" · "+names[st]+" · 👤 <span class='owner'>"+esc(ownerName(p))+"</span></div></div>"+
       "<div class='xp'>"+ (p.xp||0) +"</div></div>";
@@ -1088,13 +1106,13 @@ function renderAccessories(){
   const slots = { head: "accHead", eyes: "accEyes", neck: "accNeck" };
   for (const [slot, elId] of Object.entries(slots)){
     const el = $(elId);
-    const img = el.querySelector("img");
     const accId = eq[slot];
-    const cp = accId && ACC_CP[accId];
-    if (cp){
-      img.src = noto(cp);
+    const data = accId && ACC_CP[accId];
+    if (data){
+      el.innerHTML = emojiImg(data.cp, 60, data.emoji);
       el.classList.remove("hidden");
     } else {
+      el.innerHTML = "";
       el.classList.add("hidden");
     }
   }
@@ -1107,10 +1125,11 @@ function render(){
   const lvl = levelFromXp(pet.xp);
   const st = stageFromLevel(lvl);
   const cps = cpsFor(pet.skin);
+  const stages = stagesFor(pet.skin);
   const names = stageNamesFor(pet.skin);
 
-  $("petBodyImg").style.filter = "";
-  $("petBodyImg").src = noto(cps[st] || cps[0]);
+  $("petBody").style.filter = "";
+  $("petBody").innerHTML = emojiImg(cps[st] || cps[0], 90, stages[st] || stages[0]);
   renderAccessories();
 
   $("nameEl").textContent = pet.name;
@@ -1383,9 +1402,10 @@ async function openSkinModal(){
     const isActive = pet.skin === key;
     const cls = "skin-opt" + (isActive?" active":"") + (isActive?" owned":"");
     const previewCp = s.cps[4] || s.cps[0];
+    const previewEmoji = s.stages[4] || s.stages[0];
     const priceLabel = isActive ? "✓ выбрано" : (SKIN_PRICE + " ⭐");
     return "<div class='"+cls+"' data-skin='"+key+"'>"+
-      "<div class='em'>"+emojiImg(previewCp, 44)+"</div>"+
+      "<div class='em'>"+emojiImg(previewCp, 44, previewEmoji)+"</div>"+
       "<div class='nm'>"+s.name+"</div>"+
       "<div class='pr'>"+priceLabel+"</div></div>";
   }).join("");
@@ -1457,13 +1477,14 @@ function renderAccGrid(){
     let cls = "acc-opt";
     if (isEq) cls += " equipped";
     else if (isOwned) cls += " owned";
+    const accData = ACC_CP[it.id] || { cp: "2728", emoji: "✨" };
     let priceTxt = "";
     if (isEq) priceTxt = '<div class="pr equipped">надето</div>';
     else if (isOwned) priceTxt = '<div class="pr owned">надеть</div>';
     else priceTxt = '<div class="pr">' + it.price + ' ⭐</div>';
     return `<div class="${cls}" data-acc="${it.id}" data-owned="${isOwned?1:0}">
       ${isEq ? '<div class="badge">✓</div>' : ''}
-      <div class="em"><img src="${noto(ACC_CP[it.id] || '2728')}" alt="" /></div>
+      <div class="em">${emojiImg(accData.cp, 38, accData.emoji)}</div>
       <div class="nm">${esc(it.name)}</div>
       ${priceTxt}
     </div>`;
@@ -1478,7 +1499,7 @@ async function onAccClick(accId, owned){
   if (!pet || !isOwner) return;
   const equipped = pet.accessories_equipped || {};
   const slot = accCatalog.find(x => x.id === accId)?.slot;
-  // если уже надет — снимаем
+
   if (equipped[slot] === accId){
     try {
       const res = await api("/api/acc/unequip", { pet_id: petId, slot });
@@ -1488,7 +1509,6 @@ async function onAccClick(accId, owned){
     } catch(e){ toast("Ошибка: " + (e.message||e)); }
     return;
   }
-  // если куплен — надеваем
   if (owned){
     try {
       const res = await api("/api/acc/equip", { pet_id: petId, accessory_id: accId });
@@ -1499,7 +1519,6 @@ async function onAccClick(accId, owned){
     } catch(e){ toast("Ошибка: " + (e.message||e)); }
     return;
   }
-  // не куплен — открываем Stars
   try {
     const res = await api("/api/acc/buy", { pet_id: petId, accessory_id: accId });
     const url = res.invoice_url;
@@ -1509,7 +1528,6 @@ async function onAccClick(accId, owned){
         if (status === "paid"){
           toast("✨ Аксессуар куплен!", true);
           haptic("success");
-          // перечитаем питомца через open — самый простой путь
           setTimeout(async () => {
             try {
               const r = await api("/api/open", { pet_id: petId });
