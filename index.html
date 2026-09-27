@@ -815,18 +815,12 @@ async function openPet(id){
   pet = null; me = null; cooldowns = {}; isOwner = false;
 
   try {
-    // join — гарантирует, что я участник; возвращает pet + me
-    const joinRes = await api("/api/join", { pet_id: id });
-    pet = joinRes.pet;
-    me = joinRes.me;
+    // ОДИН запрос: pet + me + join (если надо) + tick — всё внутри
+    const res = await api("/api/open", { pet_id: id });
+    pet = res.pet;
+    me = res.me;
 
-    // тик, если питомец жив
-    if (pet && !pet.dead) {
-      try {
-        const tickRes = await api("/api/tick", { pet_id: id });
-        pet = tickRes.pet;
-      } catch(e) { /* tick может упасть, это ок */ }
-    }
+    if (!pet) { toast("Питомец не найден"); await goMenu(); return; }
 
     if (bgSetMode) bgSetMode(pet.skin === "space" ? "stars" : "particles");
 
@@ -1127,7 +1121,6 @@ async function doAction(act){
     render();
     loadLeaderboard(); loadEvents();
   } catch(e) {
-    // сбрасываем оптимистичный кулдаун при ошибке
     delete cooldowns[act];
     if (e.status === 429) toast("Ещё рано ⌛");
     else toast("Ошибка: " + (e.message || e));
