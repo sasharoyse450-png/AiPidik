@@ -343,7 +343,6 @@
 
 <div class="toast" id="toastEl"></div>
 
-<!-- модалы: rename, delete, skin, topup, salary -->
 <div class="modal" id="renameModal">
   <div class="modal-box">
     <h3>Переименовать</h3>
@@ -419,9 +418,6 @@
 </div>
 
 <script>
-/* ============================================================
-   index.html — продолжение (скрипт)
-   ============================================================ */
 const SUPABASE_URL = "https://ripjvcglkcqvyolnewaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_P5IC_YkWUcchuxcQM_THFQ_uOxhPv4Q";
 const BOT_USERNAME = "Aipidik_bot";
@@ -556,11 +552,16 @@ async function initMenu(){
   $("menuView").style.display = "none";
   $("petView").style.display = "none";
 
-  const { count: aliveCount } = await sb.from("pets").select("*", { count: "exact", head: true }).eq("dead", false);
+  // Считаем живых питомцев
+  const { count: aliveCount, error: cntErr } = await sb.from("pets")
+    .select("*", { count: "exact", head: true }).eq("dead", false);
+  if (cntErr) console.warn("count error:", cntErr);
 
-  const { data: members } = await sb.from("members")
+  // Мои питомцы
+  const { data: members, error: mErr } = await sb.from("members")
     .select("pet_id, pets!inner(id, name, xp, skin, dead, owner_id)")
     .eq("user_id", userId);
+  if (mErr) console.warn("members error:", mErr);
 
   const list = (members || []).map(m => m.pets).filter(Boolean);
   const owned = list.filter(p => Number(p.owner_id) === Number(userId));
@@ -625,7 +626,7 @@ async function createPet(){
     await sb.from("members").insert({
       pet_id: pet.id, user_id: userId,
       first_name: firstName, username: username, score: 0
-    }).execute();
+    });
     toast("🐣 Питомец создан!", true);
     haptic("success");
     setTimeout(() => { location.href = "?pet=" + pet.id; }, 600);
@@ -698,15 +699,13 @@ async function revivePet(){
   const btn = $("reviveBtn"); btn.disabled = true; btn.textContent = "Возрождаю…";
   try {
     const now = new Date().toISOString();
-    const [{ error: e1 }, { error: e2 }] = await Promise.all([
-      sb.from("pets").update({
-        dead: false, dead_at: null,
-        health: 50, hunger: 50, mood: 50, clean: 50, energy: 50, last_tick_at: now
-      }).eq("id", petId),
-      sb.from("members").update({ score: me.score - 100 })
-        .eq("pet_id", petId).eq("user_id", userId)
-    ]);
-    if (e1 || e2) throw (e1 || e2);
+    const r1 = await sb.from("pets").update({
+      dead: false, dead_at: null,
+      health: 50, hunger: 50, mood: 50, clean: 50, energy: 50, last_tick_at: now
+    }).eq("id", petId);
+    const r2 = await sb.from("members").update({ score: me.score - 100 })
+      .eq("pet_id", petId).eq("user_id", userId);
+    if (r1.error || r2.error) throw (r1.error || r2.error);
     toast("💖 Питомец возрождён!", true);
     haptic("success");
     setTimeout(() => location.reload(), 800);
@@ -837,7 +836,6 @@ function render(){
   const petEl = $("petEl");
   const lottieContainer = $("lottieContainer");
 
-  // NFT lottie
   const nftStages = [6, 7];
   const skinData = SKINS[pet.skin] || SKINS.classic;
   const useLottie = skinData.nftUrl && nftStages.includes(st);
@@ -907,7 +905,6 @@ function render(){
 
   if(me) $("scoreEl").innerHTML = "Твои очки: <b>"+me.score+"</b>";
 
-  // daily
   if(me){
     const last = me.last_daily_at ? new Date(me.last_daily_at).getTime() : 0;
     const can = Date.now()-last > 24*60*60*1000;
@@ -940,11 +937,11 @@ async function doAction(act){
   else { mUpdate.today_score = Math.max(cfg.score,0); mUpdate.today_date = today; }
 
   myWriteAt = Date.now();
-  const [{error:e1},{error:e2}] = await Promise.all([
+  const [r1, r2] = await Promise.all([
     sb.from("pets").update(petUpdate).eq("id", petId),
     sb.from("members").update(mUpdate).eq("pet_id", petId).eq("user_id", userId)
   ]);
-  if(e1||e2){ toast("Ошибка"); return; }
+  if(r1.error || r2.error){ toast("Ошибка"); return; }
 
   pet = {...pet, ...petUpdate};
   me = {...me, ...mUpdate};
@@ -972,25 +969,21 @@ async function makeCard(){
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext("2d");
 
-  // Фон
   const grad = ctx.createLinearGradient(0, 0, W, H);
   grad.addColorStop(0, "#151515");
   grad.addColorStop(1, "#0a0a0a");
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, H);
 
-  // Рамка
   ctx.strokeStyle = "rgba(255,255,255,.06)";
   ctx.lineWidth = 2;
   ctx.strokeRect(20, 20, W-40, H-40);
 
-  // Верх
   ctx.fillStyle = "#ffb347";
   ctx.font = "bold 26px -apple-system,sans-serif";
   ctx.textAlign = "center";
   ctx.fillText("🐾 ПИТОМЕЦ ЧАТА", W/2, 90);
 
-  // Питомец (эмодзи)
   const lvl = levelFromXp(pet.xp);
   const st = stageFromLevel(lvl);
   const stages = stagesFor(pet.skin);
@@ -998,17 +991,14 @@ async function makeCard(){
   ctx.font = "240px serif";
   ctx.fillText(stages[st] || stages[0], W/2, 400);
 
-  // Имя
   ctx.fillStyle = "#fff";
   ctx.font = "bold 52px -apple-system,sans-serif";
   ctx.fillText(pet.name, W/2, 500);
 
-  // Стадия
   ctx.fillStyle = "#7d8b99";
   ctx.font = "28px -apple-system,sans-serif";
   ctx.fillText(names[st] + " · Ур. " + lvl, W/2, 550);
 
-  // Статы
   const stats = [
     { ic:"🍖", v:pet.hunger, c:"#ff9f43" },
     { ic:"😊", v:pet.mood,   c:"#ffd23f" },
@@ -1016,33 +1006,27 @@ async function makeCard(){
     { ic:"🧼", v:pet.clean,  c:"#48dbfb" },
     { ic:"❤️", v:pet.health, c:"#ff6b7a" },
   ];
-  const startY = 610;
-  const rowH = 56;
+  const startY = 610, rowH = 56;
   stats.forEach((s, i) => {
     const y = startY + i * rowH;
     ctx.fillStyle = "#9ba5ae";
     ctx.font = "24px -apple-system,sans-serif";
     ctx.textAlign = "left";
     ctx.fillText(s.ic, 60, y);
-    // фон
     ctx.fillStyle = "rgba(255,255,255,.06)";
     ctx.fillRect(110, y-14, 480, 16);
-    // заполнен
     ctx.fillStyle = s.c;
     ctx.fillRect(110, y-14, 480 * (s.v/100), 16);
-    // число
     ctx.fillStyle = "#fff";
     ctx.textAlign = "right";
     ctx.fillText(s.v + "%", 660, y);
   });
 
-  // Низ
   ctx.fillStyle = "#5a6470";
   ctx.font = "20px -apple-system,sans-serif";
   ctx.textAlign = "center";
   ctx.fillText("t.me/" + BOT_USERNAME, W/2, 940);
 
-  // Скачивание
   canvas.toBlob(blob => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1052,8 +1036,6 @@ async function makeCard(){
     setTimeout(() => URL.revokeObjectURL(url), 5000);
     toast("📸 Карточка сохранена", true);
     haptic("success");
-
-    // Попробовать поделиться через нативный share
     if (navigator.share && navigator.canShare) {
       const file = new File([blob], pet.name + ".png", { type: "image/png" });
       if (navigator.canShare({ files: [file] })) {
@@ -1079,7 +1061,6 @@ function bindCommon(){
     $("deleteModal").classList.add("show");
   });
 
-  // rename
   $("renameBtn").addEventListener("click", ()=>{
     if(!pet || Number(pet.owner_id)!==Number(userId)) return;
     $("renamePid").textContent = "ID: " + petId;
@@ -1097,7 +1078,6 @@ function bindCommon(){
     pet.name = v; render(); toast("📛 Имя изменено");
   });
 
-  // delete
   $("deleteBtn").addEventListener("click", ()=>{
     if(!pet || Number(pet.owner_id)!==Number(userId)) return;
     $("deletePid").textContent = "ID: " + petId;
@@ -1114,11 +1094,9 @@ function bindCommon(){
     setTimeout(()=>{ try { tg?.close(); } catch(e){} location.href = location.pathname; }, 900);
   });
 
-  // skin
   $("skinBtn").addEventListener("click", openSkinModal);
   $("skinCancel").addEventListener("click", ()=>$("skinModal").classList.remove("show"));
 
-  // topup
   let topupAmount = 1;
   $("topupBtn").addEventListener("click", ()=>{
     if(!isOwner){ toast("Только владелец"); return; }
@@ -1153,7 +1131,6 @@ function bindCommon(){
     } catch(e){ window.open(url, "_blank"); }
   });
 
-  // salary
   let topN = 3;
   $("salaryBtn").addEventListener("click", ()=>{
     if(!isOwner){ toast("Только владелец"); return; }
@@ -1237,11 +1214,11 @@ async function changeSkin(newSkin){
 
   myWriteAt = Date.now();
   const newScore = me.score - SKIN_PRICE;
-  const [{error:e1},{error:e2}] = await Promise.all([
+  const [r1, r2] = await Promise.all([
     sb.from("pets").update({skin: newSkin}).eq("id", petId),
     sb.from("members").update({score: newScore}).eq("pet_id", petId).eq("user_id", userId)
   ]);
-  if(e1||e2){ toast("Ошибка"); return; }
+  if(r1.error || r2.error){ toast("Ошибка"); return; }
   pet = {...pet, skin: newSkin};
   me = {...me, score: newScore};
   render(); toast("🎨 Скин «"+SKINS[newSkin].name+"»", true);
