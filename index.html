@@ -29,8 +29,6 @@
   .btn-primary{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
   .btn-blue{background:linear-gradient(135deg,#7a5cff,#00d4ff);color:#fff;}
   .btn-red{background:linear-gradient(135deg,#ee5253,#c73a3b);color:#fff;}
-  .btn-ghost{background:rgba(255,255,255,.06);color:#7d8b99;border:1px solid rgba(255,255,255,.08);}
-  .btn-ghost:active{color:#fff;}
 
   .topnav{
     display:flex;align-items:center;justify-content:space-between;
@@ -530,6 +528,7 @@ const avColor = id => AVATAR_COLORS[Math.abs(Number(id)||0) % AVATAR_COLORS.leng
 const initial = n => (n||"?").trim().charAt(0).toUpperCase();
 
 let pet=null, me=null, cooldowns={}, myWriteAt=0, isOwner=false, lottieAnim=null;
+let renderIntervalId = null;
 
 const $ = id => document.getElementById(id);
 const clamp = (v,mn=0,mx=100) => Math.max(mn, Math.min(mx, Math.round(v)));
@@ -549,9 +548,18 @@ function fatal(t,e){ $("loader").style.display="block";
   $("loader").innerHTML="<div class='fatal'><b>"+t+"</b><br>"+(e?.message||e)+"</div>";
   $("menuView").style.display="none"; $("petView").style.display="none"; }
 
-function goMenu(){
-  try { tg?.close(); } catch(e){}
-  location.href = location.pathname;
+/* ===== Переход в меню без закрытия WebApp ===== */
+async function goMenu(){
+  // Останавливаем рендер-интервал
+  if (renderIntervalId) { clearInterval(renderIntervalId); renderIntervalId = null; }
+  // Сбрасываем состояние питомца
+  pet = null; me = null; cooldowns = {}; isOwner = false; myWriteAt = 0;
+  if (lottieAnim) { try { lottieAnim.destroy(); } catch(e){} lottieAnim = null; }
+  // Очищаем URL без перезагрузки
+  try { history.replaceState({}, "", location.pathname); } catch(e){}
+  // Прячем экран питомца, показываем меню
+  $("petView").style.display = "none";
+  await initMenu();
 }
 
 function tick(p){
@@ -612,7 +620,7 @@ async function initMenu(){
   const area = $("createArea");
   if (aliveOwned.length > 0) {
     area.innerHTML = `<button class="btn btn-blue" id="openMineBtn">🐾 Открыть моего питомца</button>`;
-    $("openMineBtn").addEventListener("click", () => { location.href = "?pet=" + aliveOwned[0].id; });
+    $("openMineBtn").addEventListener("click", () => { openPet(aliveOwned[0].id); });
   } else if ((aliveCount||0) >= GLOBAL_PET_LIMIT) {
     area.innerHTML = `<button class="btn" disabled style="background:rgba(255,255,255,.08);color:#7d8b99">🚫 Все ${GLOBAL_PET_LIMIT} заняты</button>`;
   } else {
@@ -642,12 +650,76 @@ async function initMenu(){
       </div>`;
     }).join("");
     listEl.querySelectorAll("[data-pet]").forEach(el => {
-      el.addEventListener("click", () => { location.href = "?pet=" + el.dataset.pet; });
+      el.addEventListener("click", () => { openPet(el.dataset.pet); });
     });
   }
 
   $("loader").style.display = "none";
   $("menuView").style.display = "block";
+}
+
+/* Открыть питомца без перезагрузки */
+async function openPet(id){
+  try { history.replaceState({}, "", location.pathname + "?pet=" + id); } catch(e){}
+  $("menuView").style.display = "none";
+  $("petView").style.display = "none";
+  pet = null; me = null; cooldowns = {}; isOwner = false; myWriteAt = 0;
+
+  try {
+    // Загружаем питомца по новому ID
+    const {data, error} = await sb.from("pets").select("*").eq("id", id).maybeSingle();
+    if(error || !data){
+      toast("Питомец не найден");
+      await goMenu();
+      return;
+    }
+    pet = data;
+    if (!pet.dead) {
+      const t = tick(pet);
+      if (t.last_tick_at !== pet.last_tick_at) {
+        myWriteAt = Date.now();
+        await sb.from("pets").update({
+          hunger:t.hunger, mood:t.mood, energy:t.energy, clean:t.clean,
+          health:t.health, last_tick_at:t.last_tick_at
+        }).eq("id", id);
+      }
+      pet = t;
+    }
+
+    // Загружаем участника
+    const {data: m} = await sb.from("members").select("*")
+      .eq("pet_id", id).eq("user_id", userId).maybeSingle();
+    if (!m) {
+      const {data: c, error: e2} = await sb.from("members").insert({
+        pet_id: id, user_id: userId, username, first_name: firstName, score: 0
+      }).select().single();
+      if (e2) { toast("Ошибка регистрации"); return; }
+      me = c;
+    } else me = m;
+    for (const k of Object.keys(ACTIONS)) {
+      const t = me["last_" + k + "_at"];
+      if (t) cooldowns[k] = new Date(t).getTime() + ACTIONS[k].cd * 1000;
+    }
+
+    $("loader").style.display = "none";
+    $("petView").style.display = "block";
+
+    if (pet.dead) {
+      await renderDead();
+    } else {
+      $("deadCard").style.display = "none";
+      $("aliveContent").style.display = "block";
+      await Promise.all([loadLeaderboard(), loadEvents(), loadGlobalRating()]);
+    }
+
+    bindCommonOnce();
+    render();
+    if (renderIntervalId) clearInterval(renderIntervalId);
+    renderIntervalId = setInterval(render, 1000);
+  } catch(e) {
+    console.error(e);
+    fatal("Ошибка", e);
+  }
 }
 
 async function createPet(){
@@ -667,7 +739,7 @@ async function createPet(){
     });
     toast("🐣 Питомец создан!", true);
     haptic("success");
-    setTimeout(() => { location.href = "?pet=" + pet.id; }, 600);
+    setTimeout(() => { openPet(pet.id); }, 500);
   } catch(e) {
     toast("Ошибка: " + (e.message || e));
     if (btn) { btn.disabled = false; btn.textContent = "➕ Создать питомца"; }
@@ -677,30 +749,6 @@ async function createPet(){
 /* ============================================================
    ПИТОМЕЦ
 ============================================================ */
-async function initPet(){
-  try {
-    await loadPet();
-    if(!pet) return;
-    await loadMe();
-    if(!pet) return;
-
-    $("loader").style.display = "none";
-    $("petView").style.display = "block";
-
-    if (pet.dead) {
-      await renderDead();
-    } else {
-      $("deadCard").style.display = "none";
-      $("aliveContent").style.display = "block";
-      await Promise.all([loadLeaderboard(), loadEvents(), loadGlobalRating()]);
-    }
-    render();
-    setInterval(render, 1000);
-  } catch(e){
-    console.error(e); fatal("Ошибка", e);
-  }
-}
-
 async function renderDead(){
   $("aliveContent").style.display = "none";
   $("deadCard").style.display = "block";
@@ -728,7 +776,6 @@ async function renderDead(){
   $("skinBtn").style.display = "none";
   $("renameBtn").style.display = "none";
   $("deleteBtn").style.display = "none";
-  // кнопка «Выйти» — только для не-владельца
   $("leaveBtn").style.display = isOwner ? "none" : "block";
 }
 
@@ -748,43 +795,10 @@ async function revivePet(){
     if (r1.error || r2.error) throw (r1.error || r2.error);
     toast("💖 Питомец возрождён!", true);
     haptic("success");
-    setTimeout(() => location.reload(), 800);
+    setTimeout(() => { pet.dead = false; render(); location.reload(); }, 800);
   } catch(e) {
     toast("Ошибка: " + (e.message || e));
     btn.disabled = false; btn.textContent = "💖 Возродить за 100 очков";
-  }
-}
-
-async function loadPet(){
-  const {data, error} = await sb.from("pets").select("*").eq("id", petId).maybeSingle();
-  if(error){ fatal("Ошибка загрузки", error); return; }
-  if(!data){ fatal("Питомец не найден", "Возможно удалён"); return; }
-  pet = data;
-  if (pet.dead) return;
-  const t = tick(pet);
-  if(t.last_tick_at !== pet.last_tick_at){
-    myWriteAt = Date.now();
-    await sb.from("pets").update({
-      hunger:t.hunger, mood:t.mood, energy:t.energy, clean:t.clean,
-      health:t.health, last_tick_at:t.last_tick_at
-    }).eq("id", petId);
-  }
-  pet = t;
-}
-
-async function loadMe(){
-  const {data} = await sb.from("members").select("*")
-    .eq("pet_id", petId).eq("user_id", userId).maybeSingle();
-  if(!data){
-    const {data:c, error} = await sb.from("members").insert({
-      pet_id: petId, user_id: userId, username, first_name: firstName, score: 0
-    }).select().single();
-    if(error){ fatal("Ошибка регистрации", error); return; }
-    me = c;
-  } else me = data;
-  for(const k of Object.keys(ACTIONS)){
-    const t = me["last_"+k+"_at"];
-    if(t) cooldowns[k] = new Date(t).getTime() + ACTIONS[k].cd*1000;
   }
 }
 
@@ -1087,12 +1101,18 @@ async function makeCard(){
 }
 
 /* ============================================================
-   Обработчики
+   Обработчики (навешиваем один раз)
 ============================================================ */
-function bindCommon(){
+let handlersBound = false;
+
+function bindCommonOnce(){
+  if (handlersBound) return;
+  handlersBound = true;
+
   $("backBtn").addEventListener("click", goMenu);
 
   $("leaveBtn").addEventListener("click", ()=>{
+    if (!pet) return;
     if (isOwner) return;
     $("leavePid").textContent = "Питомец: " + pet.name + " · ID: " + petId;
     $("leaveModal").classList.add("show");
@@ -1106,7 +1126,7 @@ function bindCommon(){
     if (error) { toast("Ошибка: " + error.message); return; }
     toast("🚪 Ты вышел из питомца", true);
     haptic("success");
-    setTimeout(goMenu, 600);
+    setTimeout(goMenu, 500);
   });
 
   document.querySelectorAll(".action[data-act]").forEach(b=>{
@@ -1117,6 +1137,7 @@ function bindCommon(){
   $("cardBtn").addEventListener("click", makeCard);
   $("reviveBtn").addEventListener("click", revivePet);
   $("deleteDeadBtn").addEventListener("click", () => {
+    if (!pet) return;
     $("deletePid").textContent = "ID: " + petId;
     $("deleteModal").classList.add("show");
   });
@@ -1151,7 +1172,7 @@ function bindCommon(){
     const { error } = await sb.from("pets").delete().eq("id", petId);
     if (error) return toast("Ошибка");
     toast("🗑 Удалено", true);
-    setTimeout(goMenu, 900);
+    setTimeout(goMenu, 700);
   });
 
   $("skinBtn").addEventListener("click", openSkinModal);
@@ -1291,9 +1312,10 @@ async function changeSkin(newSkin){
 (async ()=>{
   try {
     if (petId) {
-      await initPet();
-      bindCommon();
+      // Открыли конкретного питомца — сразу он
+      await openPet(petId);
     } else {
+      // Меню
       await initMenu();
     }
   } catch(e){
