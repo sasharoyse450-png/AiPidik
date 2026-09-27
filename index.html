@@ -14,13 +14,9 @@
     background:#0d0d0d;color:#fff;padding:16px 14px 40px;min-height:100vh;
     -webkit-font-smoothing:antialiased;font-size:14px;position:relative;}
   .wrap{max-width:440px;margin:0 auto;position:relative;z-index:1;}
-
-  /* ===== SPLASH ===== */
-  .splash{
-    position:fixed;inset:0;z-index:9999;background:#0d0d0d;
+  .splash{position:fixed;inset:0;z-index:9999;background:#0d0d0d;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
-    transition:opacity .7s ease, visibility .7s ease;
-  }
+    transition:opacity .7s ease, visibility .7s ease;}
   .splash.hide{opacity:0;visibility:hidden;pointer-events:none;}
   .splash-text{font-size:32px;font-weight:800;letter-spacing:-.6px;color:#fff;
     opacity:0;transform:translateY(18px);
@@ -29,35 +25,19 @@
     opacity:0;transform:translateY(12px);
     animation:splashIn .9s ease forwards;animation-delay:.55s;}
   @keyframes splashIn{to{opacity:1;transform:translateY(0);}}
-
-  /* ===== LOADER (эффект 19) ===== */
   .loader{text-align:center;padding:60px 20px;color:#7d8b99;font-size:13px;}
-  .loader-dots{
-    display:inline-flex;align-items:center;justify-content:center;
-    gap:10px;margin-bottom:14px;
-  }
-  .loader-dots span{
-    width:12px;height:12px;border-radius:50%;
+  .loader-dots{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;}
+  .loader-dots span{width:12px;height:12px;border-radius:50%;
     background:linear-gradient(135deg,#ffd23f,#ff9f43);
-    animation:dotBounce 1.2s ease-in-out infinite;
-  }
+    animation:dotBounce 1.2s ease-in-out infinite;}
   .loader-dots span:nth-child(2){animation-delay:.15s;background:linear-gradient(135deg,#7a5cff,#00d4ff);}
   .loader-dots span:nth-child(3){animation-delay:.3s;background:linear-gradient(135deg,#48dbfb,#ffcc48);}
-  @keyframes dotBounce{
-    0%,80%,100%{transform:translateY(0) scale(1);opacity:.6;}
-    40%{transform:translateY(-14px) scale(1.3);opacity:1;}
-  }
+  @keyframes dotBounce{0%,80%,100%{transform:translateY(0) scale(1);opacity:.6;}40%{transform:translateY(-14px) scale(1.3);opacity:1;}}
   .loader-text{font-size:13px;color:#7d8b99;letter-spacing:.4px;}
-
   .fatal{color:#ff6b6b;font-size:13px;padding:16px;line-height:1.5;word-break:break-word;
     border:1px solid rgba(255,60,90,.25);border-radius:14px;background:rgba(255,60,90,.06);}
-
-  /* ===== ПЛАВНЫЕ ПЕРЕХОДЫ ===== */
   .fade-in{animation:fadeIn .35s ease both;}
-  @keyframes fadeIn{
-    from{opacity:0;transform:translateY(10px);}
-    to{opacity:1;transform:translateY(0);}
-  }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
   .stagger > *{opacity:0;animation:fadeIn .4s ease both;}
   .stagger > *:nth-child(1){animation-delay:.03s;}
   .stagger > *:nth-child(2){animation-delay:.08s;}
@@ -67,18 +47,10 @@
   .stagger > *:nth-child(6){animation-delay:.28s;}
   .stagger > *:nth-child(7){animation-delay:.33s;}
   .stagger > *:nth-child(8){animation-delay:.38s;}
-
   #menuView, #petView{animation:screenIn .45s cubic-bezier(.2,.9,.3,1) both;}
-  @keyframes screenIn{
-    from{opacity:0;transform:translateY(14px);}
-    to{opacity:1;transform:translateY(0);}
-  }
-
-  /* Лента событий — приезд справа (эффект 15) */
-  .event{
-    display:flex;gap:11px;align-items:center;padding:9px 0;font-size:13px;
-    animation:eventSlide .5s cubic-bezier(.2,.9,.3,1.1) both;
-  }
+  @keyframes screenIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  .event{display:flex;gap:11px;align-items:center;padding:9px 0;font-size:13px;
+    animation:eventSlide .5s cubic-bezier(.2,.9,.3,1.1) both;}
   .event:nth-child(1){animation-delay:.03s;}
   .event:nth-child(2){animation-delay:.08s;}
   .event:nth-child(3){animation-delay:.13s;}
@@ -87,51 +59,30 @@
   .event:nth-child(6){animation-delay:.28s;}
   .event:nth-child(7){animation-delay:.33s;}
   .event:nth-child(8){animation-delay:.38s;}
-  @keyframes eventSlide{
-    from{opacity:0;transform:translateX(30px);}
-    to{opacity:1;transform:translateX(0);}
-  }
-
+  @keyframes eventSlide{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
   .lb, .pet-row, .pet-list-item{animation:fadeIn .35s ease both;}
   .lb:nth-child(1), .pet-row:nth-child(1), .pet-list-item:nth-child(1){animation-delay:.05s;}
   .lb:nth-child(2), .pet-row:nth-child(2), .pet-list-item:nth-child(2){animation-delay:.1s;}
   .lb:nth-child(3), .pet-row:nth-child(3), .pet-list-item:nth-child(3){animation-delay:.15s;}
   .lb:nth-child(4), .pet-row:nth-child(4), .pet-list-item:nth-child(4){animation-delay:.2s;}
   .lb:nth-child(5), .pet-row:nth-child(5), .pet-list-item:nth-child(5){animation-delay:.25s;}
-
-  /* Питомец — плавное появление */
   .pet{animation:petIn .5s cubic-bezier(.2,.9,.3,1.2) both;}
-  @keyframes petIn{
-    from{opacity:0;transform:scale(.7);}
-    to{opacity:1;transform:scale(1);}
-  }
-
-  /* Плавная смена скина (эффект 14) */
-  .pet.skin-dissolve{
-    animation:skinDissolve .8s cubic-bezier(.2,.9,.3,1) both;
-  }
+  @keyframes petIn{from{opacity:0;transform:scale(.7);}to{opacity:1;transform:scale(1);}}
+  .pet.skin-dissolve{animation:skinDissolve .8s cubic-bezier(.2,.9,.3,1) both;}
   @keyframes skinDissolve{
     0%{opacity:1;transform:scale(1) rotate(0deg);filter:blur(0);}
     40%{opacity:.3;transform:scale(1.4) rotate(8deg);filter:blur(6px);}
     60%{opacity:0;transform:scale(.5) rotate(-8deg);filter:blur(8px);}
     80%{opacity:.7;transform:scale(1.15) rotate(3deg);filter:blur(2px);}
-    100%{opacity:1;transform:scale(1) rotate(0deg);filter:blur(0);}
-  }
-
-  /* Вспышка при смене скина (эффект 14) */
-  .skin-flash{
-    position:fixed;inset:0;z-index:850;pointer-events:none;
+    100%{opacity:1;transform:scale(1) rotate(0deg);filter:blur(0);}}
+  .skin-flash{position:fixed;inset:0;z-index:850;pointer-events:none;
     background:radial-gradient(circle at center, rgba(122,92,255,.7), transparent 65%);
-    animation:flashOut .9s ease forwards;
-  }
+    animation:flashOut .9s ease forwards;}
   @keyframes flashOut{0%{opacity:1;}100%{opacity:0;}}
-
-  .card{background:#151515;border-radius:18px;padding:16px 18px;margin-bottom:12px;
-    position:relative;overflow:hidden;}
+  .card{background:#151515;border-radius:18px;padding:16px 18px;margin-bottom:12px;position:relative;overflow:hidden;}
   .card::before{content:attr(data-wm);position:absolute;right:-14px;top:-22px;
     font-size:110px;opacity:.06;pointer-events:none;line-height:1;user-select:none;}
   .card > *{position:relative;z-index:1;}
-
   .btn{width:100%;padding:14px;border:0;border-radius:12px;font-family:inherit;
     font-size:14px;font-weight:700;cursor:pointer;transition:transform .1s;}
   .btn:active{transform:scale(.97);}
@@ -139,7 +90,6 @@
   .btn-primary{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
   .btn-blue{background:linear-gradient(135deg,#7a5cff,#00d4ff);color:#fff;}
   .btn-red{background:linear-gradient(135deg,#ee5253,#c73a3b);color:#fff;}
-
   .topnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
   .back-btn{background:transparent;border:0;color:#7d8b99;font-family:inherit;font-size:14px;
     font-weight:600;padding:6px 0;cursor:pointer;display:flex;align-items:center;gap:4px;}
@@ -147,7 +97,6 @@
   .leave-btn{background:transparent;border:0;color:#c96d6d;font-family:inherit;
     font-size:13px;font-weight:600;padding:6px 0;cursor:pointer;}
   .leave-btn:active{color:#ff6b6b;}
-
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
     background:#2a2a2c;color:#fff;border:1px solid rgba(255,255,255,.08);
     padding:11px 18px;border-radius:12px;font-size:13.5px;opacity:0;
@@ -155,7 +104,6 @@
     font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,.5);}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .toast.gold{background:linear-gradient(90deg,#ff9f43,#ffcc48);border-color:transparent;color:#1a1000;}
-
   .menu-title{text-align:center;font-size:28px;font-weight:800;margin:20px 0 4px;letter-spacing:-.6px;}
   .menu-sub{text-align:center;color:#7d8b99;font-size:13px;margin-bottom:24px;}
   .counter{background:#151515;border-radius:18px;padding:18px;margin-bottom:12px;
@@ -169,7 +117,6 @@
   .counter-bar{height:6px;background:rgba(255,255,255,.06);border-radius:3px;margin-top:10px;overflow:hidden;}
   .counter-bar > i{display:block;height:100%;background:linear-gradient(90deg,#ffd23f,#ff9f43);
     border-radius:3px;transition:width .5s;}
-
   .pet-list-item{display:flex;align-items:center;gap:12px;padding:14px 4px;
     border-bottom:1px solid rgba(127,127,127,.1);cursor:pointer;}
   .pet-list-item:last-child{border:0;}
@@ -180,11 +127,9 @@
   .pet-list-item .st .owned{color:#48dbfb;font-weight:600;}
   .pet-list-item.dead .nm{color:#7d8b99;}
   .pet-list-item .arrow{color:#5a6470;font-size:18px;}
-
   .pet-card{background:#151515;border-radius:18px;padding:24px 20px 20px;margin-bottom:12px;
     text-align:center;position:relative;overflow:hidden;}
-  .pet-card::before{content:'✨';position:absolute;right:-20px;top:-30px;font-size:140px;
-    opacity:.05;pointer-events:none;}
+  .pet-card::before{content:'✨';position:absolute;right:-20px;top:-30px;font-size:140px;opacity:.05;pointer-events:none;}
   .pet-card > *{position:relative;z-index:1;}
   .pet-stage{width:150px;height:150px;margin:0 auto;position:relative;}
   .ring{position:absolute;inset:0;transform:rotate(-90deg);}
@@ -206,59 +151,44 @@
     word-break:break-all;padding:0 12px;opacity:.55;}
   .pet-mood{font-size:15px;margin-top:10px;font-weight:500;}
   .weather{font-size:12px;color:#7d8b99;margin-top:5px;}
-  .xp-text{text-align:center;font-size:12px;color:#7d8b99;margin-top:12px;
-    font-variant-numeric:tabular-nums;}
-
+  .xp-text{text-align:center;font-size:12px;color:#7d8b99;margin-top:12px;font-variant-numeric:tabular-nums;}
   .daily{display:flex;background:linear-gradient(90deg,#ff9f43,#ffcc48);color:#1a1000;
     border-radius:14px;padding:13px 16px;margin-bottom:12px;cursor:pointer;
     justify-content:space-between;align-items:center;font-weight:700;font-size:14px;
     box-shadow:0 6px 18px rgba(255,159,67,.25);}
   .daily.hidden{display:none;}
-
   .bank-card{background:#151515;border:1px solid rgba(255,215,0,.15);border-radius:18px;
     padding:16px;margin-bottom:12px;position:relative;overflow:hidden;}
-  .bank-card::before{content:'🏦';position:absolute;right:-14px;top:-22px;font-size:110px;
-    opacity:.08;pointer-events:none;}
+  .bank-card::before{content:'🏦';position:absolute;right:-14px;top:-22px;font-size:110px;opacity:.08;pointer-events:none;}
   .bank-card > *{position:relative;z-index:1;}
-  .bank-title{font-size:12px;color:#7d8b99;text-transform:uppercase;letter-spacing:.7px;
-    font-weight:600;margin-bottom:8px;}
-  .bank-balance{font-size:30px;font-weight:800;line-height:1.1;color:#ffd23f;
-    font-variant-numeric:tabular-nums;}
+  .bank-title{font-size:12px;color:#7d8b99;text-transform:uppercase;letter-spacing:.7px;font-weight:600;margin-bottom:8px;}
+  .bank-balance{font-size:30px;font-weight:800;line-height:1.1;color:#ffd23f;font-variant-numeric:tabular-nums;}
   .bank-balance small{font-size:14px;color:#7d8b99;font-weight:600;margin-left:5px;}
-  .bank-pet-id{font-size:10px;color:#5a6470;margin-top:8px;font-family:monospace;
-    word-break:break-all;opacity:.6;}
+  .bank-pet-id{font-size:10px;color:#5a6470;margin-top:8px;font-family:monospace;word-break:break-all;opacity:.6;}
   .bank-not-owner{color:#ff8a3c;font-size:12px;margin-top:10px;line-height:1.5;}
   .owner-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
-  .owner-actions button{padding:13px 10px;border:0;border-radius:12px;font-family:inherit;
-    font-size:13px;font-weight:700;cursor:pointer;}
+  .owner-actions button{padding:13px 10px;border:0;border-radius:12px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;}
   .btn-topup{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
   .btn-salary{background:linear-gradient(135deg,#7a5cff,#00d4ff);color:#fff;}
-
-  .stats-card{background:#151515;border-radius:18px;padding:16px 18px 14px;margin-bottom:12px;
-    position:relative;overflow:hidden;}
-  .stats-card::before{content:'🐾';position:absolute;right:-14px;top:-22px;font-size:110px;
-    opacity:.05;pointer-events:none;}
+  .stats-card{background:#151515;border-radius:18px;padding:16px 18px 14px;margin-bottom:12px;position:relative;overflow:hidden;}
+  .stats-card::before{content:'🐾';position:absolute;right:-14px;top:-22px;font-size:110px;opacity:.05;pointer-events:none;}
   .stats-card > *{position:relative;z-index:1;}
   .stat{margin:12px 0;}
   .stat:first-child{margin-top:2px;}
-  .stats-head{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;
-    margin-bottom:6px;color:#e6e8ea;}
+  .stats-head{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;margin-bottom:6px;color:#e6e8ea;}
   .stats-head .ic{font-size:15px;margin-right:6px;}
   .stats-head b{color:#9ba5ae;font-weight:500;font-size:12.5px;font-variant-numeric:tabular-nums;}
   .bar{height:9px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden;}
-  .bar > i{display:block;height:100%;border-radius:5px;
-    transition:width .7s cubic-bezier(.2,.9,.3,1.1);}
+  .bar > i{display:block;height:100%;border-radius:5px;transition:width .7s cubic-bezier(.2,.9,.3,1.1);}
   .b-hunger{background:linear-gradient(90deg,#ff7a18,#ff9f43);}
   .b-mood{background:linear-gradient(90deg,#ffb020,#ffd23f);}
   .b-energy{background:linear-gradient(90deg,#2d7cff,#54a0ff);}
   .b-clean{background:linear-gradient(90deg,#00b8d4,#48dbfb);}
   .b-health{background:linear-gradient(90deg,#ff3b5c,#ff6b7a);}
-
   .actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
   .action{background:#1a2410;border:1px solid rgba(120,160,80,.15);border-radius:12px;
     padding:16px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;
-    gap:6px;position:relative;overflow:hidden;transition:transform .12s;
-    color:#fff;font-family:inherit;font-size:14px;}
+    gap:6px;position:relative;overflow:hidden;transition:transform .12s;color:#fff;font-family:inherit;font-size:14px;}
   .action:active:not(:disabled){transform:scale(.97);background:#1e2a12;}
   .action:disabled{opacity:.55;cursor:not-allowed;}
   .action .ic{font-size:22px;line-height:1;}
@@ -268,61 +198,46 @@
     font-variant-numeric:tabular-nums;backdrop-filter:blur(2px);color:#9ba5ae;}
   .action .cd:empty{display:none;}
   .action.wide{grid-column:span 2;flex-direction:row;justify-content:center;gap:8px;padding:15px;}
-
   .score-line{text-align:center;color:#7d8b99;font-size:13px;margin:14px 0 6px;}
   .score-line b{color:#fff;font-weight:700;font-variant-numeric:tabular-nums;}
-
   h2{font-size:16px;font-weight:700;margin:0 0 12px;display:flex;align-items:center;gap:7px;}
-
   .event .av{width:28px;height:28px;border-radius:50%;flex:0 0 28px;
-    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;
-    color:#fff;text-transform:uppercase;}
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;text-transform:uppercase;}
   .event .txt{flex:1;min-width:0;color:#9ba5ae;}
   .event .txt b{color:#fff;font-weight:600;}
   .event .time{color:#5a6470;font-size:11px;white-space:nowrap;}
   .empty{text-align:center;color:#5a6470;font-size:13px;padding:18px 0;}
-
   .lb{display:flex;align-items:center;gap:10px;padding:10px 0;}
-  .lb .rank{width:22px;text-align:center;font-weight:700;font-size:13px;
-    color:#5a6470;flex:0 0 22px;font-variant-numeric:tabular-nums;}
+  .lb .rank{width:22px;text-align:center;font-weight:700;font-size:13px;color:#5a6470;flex:0 0 22px;font-variant-numeric:tabular-nums;}
   .lb .rank.g{color:#ffd23f;}
   .lb .rank.s{color:#c0c8d0;}
   .lb .rank.b{color:#cd7f32;}
   .lb .av{width:30px;height:30px;border-radius:50%;flex:0 0 30px;
-    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;
-    color:#fff;text-transform:uppercase;}
-  .lb .name{flex:1;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;
-    white-space:nowrap;}
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;text-transform:uppercase;}
+  .lb .name{flex:1;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .lb .name.me{color:#48dbfb;font-weight:700;}
   .lb .pts{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;}
-
   .pet-row{display:flex;align-items:center;gap:10px;padding:11px 0;}
-  .pet-row .place{width:22px;text-align:center;font-weight:700;font-size:13px;
-    color:#5a6470;flex:0 0 22px;}
+  .pet-row .place{width:22px;text-align:center;font-weight:700;font-size:13px;color:#5a6470;flex:0 0 22px;}
   .pet-row .place.g{color:#ffd23f;}
   .pet-row .place.s{color:#c0c8d0;}
   .pet-row .place.b{color:#cd7f32;}
   .pet-row .ic{font-size:24px;flex:0 0 auto;}
   .pet-row .pn{flex:1;font-size:14px;min-width:0;}
   .pet-row .pn .pname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
-  .pet-row .pn .psub{color:#7d8b99;font-size:11.5px;margin-top:3px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pet-row .pn .psub{color:#7d8b99;font-size:11.5px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .pet-row .pn .psub .owner{color:#48dbfb;}
   .pet-row .xp{font-weight:700;font-size:13px;color:#48dbfb;flex:0 0 auto;}
   .pet-row.me{background:rgba(122,92,255,.08);border-radius:10px;padding-left:10px;padding-right:10px;}
-
   .dead-screen{text-align:center;padding:40px 20px;background:#0d0d0d;border-radius:18px;
-    margin-bottom:12px;position:relative;overflow:hidden;
-    border:1px solid rgba(255,60,90,.2);}
-  .dead-screen::before{content:'💀';position:absolute;right:-30px;top:-20px;font-size:200px;
-    opacity:.06;pointer-events:none;}
+    margin-bottom:12px;position:relative;overflow:hidden;border:1px solid rgba(255,60,90,.2);}
+  .dead-screen::before{content:'💀';position:absolute;right:-30px;top:-20px;font-size:200px;opacity:.06;pointer-events:none;}
   .dead-screen > *{position:relative;z-index:1;}
   .dead-screen .skull{font-size:96px;margin-bottom:16px;filter:grayscale(.5);}
   .dead-screen h2{font-size:22px;color:#ff6b6b;display:block;justify-content:center;margin-bottom:8px;}
   .dead-screen p{color:#7d8b99;font-size:13px;line-height:1.6;margin-bottom:20px;}
   .dead-screen .quote{font-style:italic;color:#9ba5ae;font-size:13px;
     border-left:2px solid rgba(255,60,90,.3);padding-left:12px;text-align:left;margin:16px 0 20px;}
-
   .modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;
     align-items:flex-end;justify-content:center;z-index:200;backdrop-filter:blur(2px);
     opacity:0;transition:opacity .25s ease;}
@@ -351,19 +266,16 @@
     color:#fff;border-radius:9px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;}
   .topn-row button.active{background:#7a5cff;border-color:#7a5cff;}
   .modal-btns{display:flex;gap:8px;}
-  .modal-btns button{flex:1;padding:13px;border:0;border-radius:11px;font-family:inherit;
-    font-size:14px;font-weight:700;cursor:pointer;}
+  .modal-btns button{flex:1;padding:13px;border:0;border-radius:11px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;}
   .modal-btns .cancel{background:rgba(255,255,255,.08);color:#fff;}
   .modal-btns .ok{background:#7a5cff;color:#fff;}
-
   .skins-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
   .skin-opt{background:rgba(255,255,255,.03);border:2px solid rgba(255,255,255,.06);
     border-radius:12px;padding:13px 9px;text-align:center;cursor:pointer;
     transition:border-color .2s, background .2s, transform .1s;}
   .skin-opt:active{transform:scale(.97);}
   .skin-opt.active{border-color:#7a5cff;background:rgba(122,92,255,.14);}
-  .skin-opt .em{font-size:26px;line-height:1;display:flex;justify-content:center;gap:3px;
-    transition:transform .3s;}
+  .skin-opt .em{font-size:26px;line-height:1;display:flex;justify-content:center;gap:3px;transition:transform .3s;}
   .skin-opt.active .em{transform:scale(1.15);}
   .skin-opt .nm{font-size:12.5px;color:#c0c8d0;margin-top:7px;font-weight:600;}
   .skin-opt .pr{font-size:11px;color:#ffd23f;font-weight:700;margin-top:3px;}
@@ -574,6 +486,7 @@
 <script>
 const SUPABASE_URL = "https://ripjvcglkcqvyolnewaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_P5IC_YkWUcchuxcQM_THFQ_uOxhPv4Q";
+const BOT_API = "https://botpet-production.up.railway.app";
 const BOT_USERNAME = "GroupPet_bot";
 const GLOBAL_PET_LIMIT = 100;
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -591,11 +504,36 @@ const user = init.user || { id: 0, first_name: "Гость" };
 const userId = user.id;
 const firstName = user.first_name || "Гость";
 const username = user.username || null;
+const initDataRaw = tg?.initData || "";
 
 if(!userId){
   document.getElementById("loader").innerHTML =
     "<div style='text-align:center;padding:40px;color:#7d8b99'>🔒<br><br><b style='color:#fff'>Только в Telegram</b></div>";
   throw 0;
+}
+
+/* ============================================================
+   API BOT — все мутации через бота с HMAC-проверкой initData
+============================================================ */
+async function api(path, body){
+  const r = await fetch(BOT_API + path, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Telegram-Init-Data": initDataRaw
+    },
+    body: JSON.stringify(body || {})
+  });
+  let data;
+  try { data = await r.json(); } catch(e){ data = {}; }
+  if (!r.ok || !data.ok){
+    const msg = data.error || ("HTTP " + r.status);
+    const err = new Error(msg);
+    err.status = r.status;
+    err.data = data;
+    throw err;
+  }
+  return data;
 }
 
 const SKINS = {
@@ -646,7 +584,7 @@ const AVATAR_COLORS = ["#7a5cff","#00b8d4","#ff7a18","#ff3b5c","#48dbfb","#ffcc4
 const avColor = id => AVATAR_COLORS[Math.abs(Number(id)||0) % AVATAR_COLORS.length];
 const initial = n => (n||"?").trim().charAt(0).toUpperCase();
 
-let pet=null, me=null, cooldowns={}, myWriteAt=0, isOwner=false, lottieAnim=null;
+let pet=null, me=null, cooldowns={}, isOwner=false, lottieAnim=null;
 let renderIntervalId = null;
 let handlersBound = false;
 
@@ -658,12 +596,10 @@ const stageFromLevel = l => l>=28?7 : l>=24?6 : l>=20?5 : l>=16?4 : l>=12?3 : l>
 const esc = s => String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 /* ============================================================
-   ЖИВОЙ ФОН — частицы + звёздное небо
-   bgMode: "particles" (обычный) | "stars" (космос)
+   ЖИВОЙ ФОН
 ============================================================ */
 let bgMode = "particles";
 let bgParticles = [];
-let bgResize = null;
 let bgSetMode = null;
 
 (function(){
@@ -672,43 +608,33 @@ let bgSetMode = null;
   const ctx = cv.getContext("2d");
   let W = 0, H = 0;
 
-  function resize(){
-    W = cv.width = window.innerWidth;
-    H = cv.height = window.innerHeight;
-  }
+  function resize(){ W = cv.width = window.innerWidth; H = cv.height = window.innerHeight; }
   resize();
   window.addEventListener("resize", resize);
-  bgResize = resize;
 
   const COLORS = ["#ffd23f","#7a5cff","#00d4ff","#ff9f43","#48dbfb","#ffcc48"];
   const COUNT = 25;
 
   function spawnParticle(){
     return {
-      x: Math.random() * W,
-      y: Math.random() * H,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
       size: Math.random() * 3 + 1.5,
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
       alpha: Math.random() * 0.4 + 0.2,
       pulse: Math.random() * Math.PI * 2
     };
   }
-
   function spawnStar(){
     return {
-      x: Math.random() * W,
-      y: Math.random() * H,
+      x: Math.random() * W, y: Math.random() * H,
       size: Math.random() * 1.6 + 0.4,
       alpha: Math.random() * 0.5 + 0.3,
       twinkle: Math.random() * Math.PI * 2,
       twinkleSpeed: Math.random() * 0.03 + 0.01,
-      // редкие крупные звёзды с крестом
       big: Math.random() < 0.08
     };
   }
-
   function seed(){
     bgParticles = [];
     for (let i = 0; i < COUNT; i++){
@@ -716,7 +642,6 @@ let bgSetMode = null;
     }
   }
   seed();
-
   bgSetMode = function(mode){
     if (mode === bgMode) return;
     bgMode = mode;
@@ -727,29 +652,19 @@ let bgSetMode = null;
   function draw(){
     t += 0.016;
     ctx.clearRect(0, 0, W, H);
-
     if (bgMode === "stars"){
-      // ===== Звёздное небо =====
       for (const s of bgParticles){
         s.twinkle += s.twinkleSpeed;
         const a = s.alpha * (0.5 + 0.5 * Math.abs(Math.sin(s.twinkle)));
         ctx.globalAlpha = a;
         ctx.fillStyle = "#fff";
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-        ctx.fill();
-
-        // свечение
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
         ctx.globalAlpha = a * 0.35;
         const grd = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size * 6);
         grd.addColorStop(0, "rgba(200,220,255,.9)");
         grd.addColorStop(1, "rgba(200,220,255,0)");
         ctx.fillStyle = grd;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.size * 6, 0, Math.PI * 2);
-        ctx.fill();
-
-        // крестик у крупных
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.size * 6, 0, Math.PI * 2); ctx.fill();
         if (s.big && a > 0.5){
           ctx.globalAlpha = a * 0.6;
           ctx.strokeStyle = "rgba(200,220,255,.7)";
@@ -762,27 +677,16 @@ let bgSetMode = null;
         }
       }
     } else {
-      // ===== Плавающие частицы =====
       for (const p of bgParticles){
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < -20) p.x = W + 20;
-        if (p.x > W + 20) p.x = -20;
-        if (p.y < -20) p.y = H + 20;
-        if (p.y > H + 20) p.y = -20;
-
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < -20) p.x = W + 20; if (p.x > W + 20) p.x = -20;
+        if (p.y < -20) p.y = H + 20; if (p.y > H + 20) p.y = -20;
         const a = p.alpha * (0.6 + 0.4 * Math.sin(t + p.pulse));
         ctx.globalAlpha = a;
         ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
         ctx.globalAlpha = a * 0.3;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2); ctx.fill();
       }
     }
     ctx.globalAlpha = 1;
@@ -807,7 +711,7 @@ function fatal(t,e){ $("loader").style.display="block";
 
 async function goMenu(){
   if (renderIntervalId) { clearInterval(renderIntervalId); renderIntervalId = null; }
-  pet = null; me = null; cooldowns = {}; isOwner = false; myWriteAt = 0;
+  pet = null; me = null; cooldowns = {}; isOwner = false;
   petId = null;
   if (lottieAnim) { try { lottieAnim.destroy(); } catch(e){} lottieAnim = null; }
   if (bgSetMode) bgSetMode("particles");
@@ -816,22 +720,6 @@ async function goMenu(){
   await initMenu();
 }
 
-function tick(p){
-  if(p.dead) return p;
-  const now=Date.now(), last=new Date(p.last_tick_at).getTime(), min=(now-last)/60000;
-  if(min<1) return p;
-  const h=min/60, c={...p};
-  const season = seasonFor(new Date());
-  const eRate = season==="winter" ? 2.5 : 2;
-  const mRate = season==="summer" ? 2.5 : 3;
-  c.hunger=clamp(c.hunger-3*h); c.mood=clamp(c.mood-mRate*h);
-  c.energy=clamp(c.energy-eRate*h); c.clean=clamp(c.clean-2*h);
-  if(c.hunger<20||c.clean<20) c.health=clamp(c.health-5*h);
-  else if(c.hunger>60&&c.mood>60&&c.clean>60) c.health=clamp(c.health+2*h);
-  c.last_tick_at=new Date().toISOString();
-  if(c.health<=0){ c.health=0; c.dead=true; c.dead_at=new Date().toISOString(); }
-  return c;
-}
 function moodText(p){
   if(p.dead) return "Умер…";
   if(p.health<30)return"Мне плохо… 💔"; if(p.hunger<20)return"Я голоден! 🍖";
@@ -924,40 +812,29 @@ async function openPet(id){
   $("menuView").style.display = "none";
   $("petView").style.display = "none";
   $("loader").style.display = "block";
-  pet = null; me = null; cooldowns = {}; isOwner = false; myWriteAt = 0;
+  pet = null; me = null; cooldowns = {}; isOwner = false;
 
   try {
-    const {data, error} = await sb.from("pets").select("*").eq("id", id).maybeSingle();
-    if(error){ fatal("Ошибка загрузки", error); return; }
-    if(!data){ toast("Питомец не найден"); await goMenu(); return; }
-    pet = data;
-    if (!pet.dead) {
-      const t = tick(pet);
-      if (t.last_tick_at !== pet.last_tick_at) {
-        myWriteAt = Date.now();
-        await sb.from("pets").update({
-          hunger:t.hunger, mood:t.mood, energy:t.energy, clean:t.clean,
-          health:t.health, last_tick_at:t.last_tick_at
-        }).eq("id", id);
-      }
-      pet = t;
+    // join — гарантирует, что я участник; возвращает pet + me
+    const joinRes = await api("/api/join", { pet_id: id });
+    pet = joinRes.pet;
+    me = joinRes.me;
+
+    // тик, если питомец жив
+    if (pet && !pet.dead) {
+      try {
+        const tickRes = await api("/api/tick", { pet_id: id });
+        pet = tickRes.pet;
+      } catch(e) { /* tick может упасть, это ок */ }
     }
 
-    // Переключаем фон по скину
     if (bgSetMode) bgSetMode(pet.skin === "space" ? "stars" : "particles");
 
-    const {data: m} = await sb.from("members").select("*")
-      .eq("pet_id", id).eq("user_id", userId).maybeSingle();
-    if (!m) {
-      const {data: c, error: e2} = await sb.from("members").insert({
-        pet_id: id, user_id: userId, username, first_name: firstName, score: 0
-      }).select().single();
-      if (e2) { toast("Ошибка регистрации"); return; }
-      me = c;
-    } else me = m;
-    for (const k of Object.keys(ACTIONS)) {
-      const t = me["last_" + k + "_at"];
-      if (t) cooldowns[k] = new Date(t).getTime() + ACTIONS[k].cd * 1000;
+    if (me) {
+      for (const k of Object.keys(ACTIONS)) {
+        const t = me["last_" + k + "_at"];
+        if (t) cooldowns[k] = new Date(t).getTime() + ACTIONS[k].cd * 1000;
+      }
     }
 
     $("loader").style.display = "none";
@@ -979,7 +856,9 @@ async function openPet(id){
     if (renderIntervalId) clearInterval(renderIntervalId);
     renderIntervalId = setInterval(render, 1000);
   } catch(e) {
-    console.error(e); fatal("Ошибка", e);
+    console.error(e);
+    if (e.status === 404) { toast("Питомец не найден"); await goMenu(); return; }
+    fatal("Ошибка", e);
   }
 }
 
@@ -987,20 +866,10 @@ async function createPet(){
   const btn = $("createBtn");
   if (btn) { btn.disabled = true; btn.textContent = "Создаю…"; }
   try {
-    const { data: mine } = await sb.from("pets").select("id").eq("owner_id", userId).eq("dead", false);
-    if (mine && mine.length > 0) throw new Error("У тебя уже есть питомец");
-    const { count: aliveCount } = await sb.from("pets").select("*", { count: "exact", head: true }).eq("dead", false);
-    if ((aliveCount||0) >= GLOBAL_PET_LIMIT) throw new Error(`Все ${GLOBAL_PET_LIMIT} питомцев заняты`);
-    const code = Math.random().toString(36).slice(2, 8).toUpperCase();
-    const { data: pet, error } = await sb.from("pets").insert({ owner_id: userId, invite_code: code }).select().single();
-    if (error) throw error;
-    await sb.from("members").insert({
-      pet_id: pet.id, user_id: userId,
-      first_name: firstName, username: username, score: 0
-    });
+    const res = await api("/api/create", {});
     toast("🐣 Питомец создан!", true);
     haptic("success");
-    setTimeout(() => { openPet(pet.id); }, 500);
+    setTimeout(() => { openPet(res.pet.id); }, 500);
   } catch(e) {
     toast("Ошибка: " + (e.message || e));
     if (btn) { btn.disabled = false; btn.textContent = "➕ Создать питомца"; }
@@ -1046,14 +915,7 @@ async function revivePet(){
   if (!confirm("Возродить питомца за 100 очков?")) return;
   const btn = $("reviveBtn"); btn.disabled = true; btn.textContent = "Возрождаю…";
   try {
-    const now = new Date().toISOString();
-    const r1 = await sb.from("pets").update({
-      dead: false, dead_at: null,
-      health: 50, hunger: 50, mood: 50, clean: 50, energy: 50, last_tick_at: now
-    }).eq("id", petId);
-    const r2 = await sb.from("members").update({ score: me.score - 100 })
-      .eq("pet_id", petId).eq("user_id", userId);
-    if (r1.error || r2.error) throw (r1.error || r2.error);
+    await api("/api/revive", { pet_id: petId });
     toast("💖 Питомец возрождён!", true);
     haptic("success");
     setTimeout(() => openPet(petId), 700);
@@ -1137,14 +999,6 @@ async function loadEvents(){
       esc(initial(name))+"</div><div class='txt'><b>"+name+"</b> "+cfg.emoji+"</div>"+
       "<div class='time'>"+t+"</div></div>";
   }).join("");
-}
-
-async function logEvent(action){
-  try {
-    await sb.from("events").insert({pet_id:petId, user_id:userId, first_name:firstName, action});
-    const cutoff = new Date(Date.now()-7*24*60*60*1000).toISOString();
-    await sb.from("events").delete().eq("pet_id", petId).lt("created_at", cutoff);
-  } catch(e){}
 }
 
 function render(){
@@ -1244,42 +1098,40 @@ async function doAction(act){
   if(cooldowns[act] && cooldowns[act]>now){ toast("Ещё рано ⌛"); return; }
   if(cfg.cost && me.score<cfg.cost){ toast("Не хватает очков"); return; }
 
-  const np = {...pet};
-  for(const [k,v] of Object.entries(cfg.effects)) np[k] = clamp(np[k]+v);
-  np.xp = pet.xp + cfg.xp;
-
   const oldSt = stageFromLevel(levelFromXp(pet.xp));
-  const newSt = stageFromLevel(levelFromXp(np.xp));
 
+  // оптимистично ставим кулдаун, чтобы юзер не спамил
   cooldowns[act] = now + cfg.cd*1000;
-  const iso = new Date(now).toISOString();
-  const petUpdate = {hunger:np.hunger, mood:np.mood, energy:np.energy, clean:np.clean, health:np.health, xp:np.xp};
-  const today = new Date().toISOString().slice(0,10);
-  const mUpdate = {score: me.score + cfg.score, ["last_"+act+"_at"]: iso};
-  if(me.today_date === today) mUpdate.today_score = (me.today_score||0) + Math.max(cfg.score,0);
-  else { mUpdate.today_score = Math.max(cfg.score,0); mUpdate.today_date = today; }
 
-  myWriteAt = Date.now();
-  const [r1, r2] = await Promise.all([
-    sb.from("pets").update(petUpdate).eq("id", petId),
-    sb.from("members").update(mUpdate).eq("pet_id", petId).eq("user_id", userId)
-  ]);
-  if(r1.error || r2.error){ toast("Ошибка: " + (r1.error?.message || r2.error?.message || "")); return; }
+  try {
+    const res = await api("/api/action", { pet_id: petId, action: act });
+    pet = res.pet;
+    me = res.me;
 
-  pet = {...pet, ...petUpdate};
-  me = {...me, ...mUpdate};
-  $("petEl").classList.add("pulse");
-  setTimeout(()=>$("petEl").classList.remove("pulse"), 220);
-  toast(cfg.emoji+" "+cfg.msg);
-  haptic(newSt>oldSt ? "success" : "light");
-  if(newSt>oldSt){
-    $("petEl").classList.add("mega");
-    setTimeout(()=>$("petEl").classList.remove("mega"), 700);
-    setTimeout(()=>toast("✨ "+stageNamesFor(pet.skin)[newSt]+"!", true), 500);
+    if (me && me["last_"+act+"_at"]) {
+      cooldowns[act] = new Date(me["last_"+act+"_at"]).getTime() + cfg.cd*1000;
+    }
+
+    $("petEl").classList.add("pulse");
+    setTimeout(()=>$("petEl").classList.remove("pulse"), 220);
+    toast(cfg.emoji+" "+cfg.msg);
+    haptic(res.evolved ? "success" : "light");
+
+    if (res.evolved) {
+      $("petEl").classList.add("mega");
+      setTimeout(()=>$("petEl").classList.remove("mega"), 700);
+      const newSt = stageFromLevel(levelFromXp(pet.xp));
+      setTimeout(()=>toast("✨ "+stageNamesFor(pet.skin)[newSt]+"!", true), 500);
+    }
+
+    render();
+    loadLeaderboard(); loadEvents();
+  } catch(e) {
+    // сбрасываем оптимистичный кулдаун при ошибке
+    delete cooldowns[act];
+    if (e.status === 429) toast("Ещё рано ⌛");
+    else toast("Ошибка: " + (e.message || e));
   }
-  logEvent(act);
-  render();
-  loadLeaderboard(); loadEvents();
 }
 
 async function makeCard(){
@@ -1380,12 +1232,12 @@ function bindCommonOnce(){
   $("leaveOk").addEventListener("click", async ()=>{
     if (isOwner) { toast("Владелец не может выйти"); return; }
     if (!confirm("Точно выйти из питомца?")) return;
-    const { error } = await sb.from("members")
-      .delete().eq("pet_id", petId).eq("user_id", userId);
-    if (error) { toast("Ошибка: " + error.message); return; }
-    toast("🚪 Ты вышел из питомца", true);
-    haptic("success");
-    setTimeout(goMenu, 500);
+    try {
+      await api("/api/leave", { pet_id: petId });
+      toast("🚪 Ты вышел из питомца", true);
+      haptic("success");
+      setTimeout(goMenu, 500);
+    } catch(e) { toast("Ошибка: " + (e.message || e)); }
   });
 
   document.querySelectorAll(".action[data-act]").forEach(b=>{
@@ -1413,9 +1265,10 @@ function bindCommonOnce(){
     const v = $("renameInput").value.trim().slice(0,20);
     $("renameModal").classList.remove("show");
     if(!v) return;
-    const { error } = await sb.from("pets").update({name:v}).eq("id", petId);
-    if (error) return toast("Ошибка");
-    pet.name = v; render(); toast("📛 Имя изменено");
+    try {
+      const res = await api("/api/rename", { pet_id: petId, name: v });
+      pet.name = res.name; render(); toast("📛 Имя изменено");
+    } catch(e) { toast("Ошибка: " + (e.message || e)); }
   });
 
   $("deleteBtn").addEventListener("click", ()=>{
@@ -1428,10 +1281,11 @@ function bindCommonOnce(){
   $("deleteOk").addEventListener("click", async ()=>{
     if ($("deleteInput").value.trim() !== pet.name) { toast("Имя не совпадает"); return; }
     if (!confirm("Точно удалить?")) return;
-    const { error } = await sb.from("pets").delete().eq("id", petId);
-    if (error) return toast("Ошибка");
-    toast("🗑 Удалено", true);
-    setTimeout(goMenu, 700);
+    try {
+      await api("/api/delete", { pet_id: petId, confirm_name: pet.name });
+      toast("🗑 Удалено", true);
+      setTimeout(goMenu, 700);
+    } catch(e) { toast("Ошибка: " + (e.message || e)); }
   });
 
   $("skinBtn").addEventListener("click", openSkinModal);
@@ -1508,17 +1362,18 @@ function bindCommonOnce(){
 
 async function claimDaily(){
   if(!me) return;
-  const last = me.last_daily_at ? new Date(me.last_daily_at).getTime() : 0;
-  if(Date.now()-last < 24*60*60*1000){ toast("Уже получен"); return; }
-  const newStreak = (Date.now()-last < 2*24*60*60*1000) ? (me.streak||0)+1 : 1;
-  const now = new Date().toISOString();
-  const { error } = await sb.from("members").update({
-    score: me.score + DAILY_BONUS, last_daily_at: now, streak: newStreak
-  }).eq("pet_id", petId).eq("user_id", userId);
-  if(error) return toast("Ошибка");
-  me = {...me, score: me.score+DAILY_BONUS, last_daily_at: now, streak: newStreak};
-  toast("🎁 +"+DAILY_BONUS+" очков!", true);
-  haptic("success"); render(); loadLeaderboard();
+  try {
+    const res = await api("/api/daily", { pet_id: petId });
+    me.score = res.score;
+    me.streak = res.streak;
+    me.last_daily_at = new Date().toISOString();
+    toast("🎁 +"+res.bonus+" очков!", true);
+    haptic("success");
+    render(); loadLeaderboard();
+  } catch(e) {
+    if (e.status === 429) toast("Уже получен");
+    else toast("Ошибка: " + (e.message || e));
+  }
 }
 
 async function openSkinModal(){
@@ -1546,14 +1401,12 @@ async function openSkinModal(){
   $("skinModal").classList.add("show");
 }
 
-/* Плавная смена скина (эффект 14) */
 async function changeSkin(newSkin){
   if (!pet || Number(pet.owner_id) !== Number(userId)) { toast("Только владелец"); return; }
   if (!SKINS[newSkin]) return;
   if (pet.skin === newSkin) { toast("Уже выбран"); return; }
   if (!me || me.score < SKIN_PRICE) { toast("Нужно "+SKIN_PRICE+" очков"); return; }
 
-  // 1. Растворение питомца
   const petEl = $("petEl");
   const lottieContainer = $("lottieContainer");
   petEl.classList.add("skin-dissolve");
@@ -1561,45 +1414,35 @@ async function changeSkin(newSkin){
     lottieContainer.style.animation = "skinDissolve .8s cubic-bezier(.2,.9,.3,1) both";
   }
 
-  // 2. Вспышка фиолетовым
   const flash = document.createElement("div");
   flash.className = "skin-flash";
   document.body.appendChild(flash);
   setTimeout(() => flash.remove(), 1000);
 
-  // 3. Вибрация
   haptic("success");
 
-  // 4. Обновляем данные
-  myWriteAt = Date.now();
-  const newScore = me.score - SKIN_PRICE;
-  const [r1, r2] = await Promise.all([
-    sb.from("pets").update({skin: newSkin}).eq("id", petId),
-    sb.from("members").update({score: newScore}).eq("pet_id", petId).eq("user_id", userId)
-  ]);
-  if(r1.error || r2.error){
+  try {
+    const res = await api("/api/skin", { pet_id: petId, skin: newSkin });
+    pet.skin = res.skin;
+    me.score = res.score;
+
+    if (bgSetMode) bgSetMode(newSkin === "space" ? "stars" : "particles");
+
+    if (lottieAnim) { lottieAnim.destroy(); lottieAnim = null; }
+    setTimeout(() => {
+      render();
+      petEl.classList.remove("skin-dissolve");
+      if (lottieContainer) lottieContainer.style.animation = "";
+    }, 400);
+
+    toast("🎨 Скин «"+SKINS[newSkin].name+"»", true);
+    loadLeaderboard();
+    setTimeout(openSkinModal, 500);
+  } catch(e) {
     petEl.classList.remove("skin-dissolve");
     if (lottieContainer) lottieContainer.style.animation = "";
-    toast("Ошибка");
-    return;
+    toast("Ошибка: " + (e.message || e));
   }
-  pet = {...pet, skin: newSkin};
-  me = {...me, score: newScore};
-
-  // 5. Переключаем фон (космос = звёзды)
-  if (bgSetMode) bgSetMode(newSkin === "space" ? "stars" : "particles");
-
-  // 6. Сбрасываем анимацию lottie и рендерим
-  if (lottieAnim) { lottieAnim.destroy(); lottieAnim = null; }
-  setTimeout(() => {
-    render();
-    petEl.classList.remove("skin-dissolve");
-    if (lottieContainer) lottieContainer.style.animation = "";
-  }, 400);
-
-  toast("🎨 Скин «"+SKINS[newSkin].name+"»", true);
-  loadLeaderboard();
-  setTimeout(openSkinModal, 500);
 }
 
 /* ============================================================
