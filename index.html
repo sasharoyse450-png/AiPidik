@@ -124,35 +124,13 @@
   .ring circle{fill:none;}
   .ring .bg{stroke:rgba(255,255,255,.05);stroke-width:5;}
   .ring .fg{stroke:#ffb347;stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .5s;}
-
   .pet-fig{position:absolute;inset:0;transition:transform .15s;cursor:pointer;}
   .pet-fig.pulse{transform:scale(1.08);}
   .pet-fig.mega{animation:mega .5s;}
   @keyframes mega{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
-
   .pet-body{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:90px;pointer-events:none;}
   .pet-body img{width:110px;height:110px;object-fit:contain;
     filter:drop-shadow(0 6px 12px rgba(0,0,0,.5));}
-
-  .pet-acc{position:absolute;pointer-events:none;
-    filter:drop-shadow(0 3px 6px rgba(0,0,0,.5));
-    transform:translate(-50%, -50%);
-    display:flex;align-items:center;justify-content:center;
-    transition:left .35s ease, top .35s ease, width .35s ease, height .35s ease;}
-  .pet-acc img{width:100%;height:100%;object-fit:contain;display:block;}
-  .pet-acc.hidden{display:none;}
-
-  /* редактор */
-  .editor-active .pet-acc{pointer-events:auto !important;cursor:grab;
-    outline:2px dashed rgba(122,92,255,.5);outline-offset:2px;border-radius:6px;}
-  .editor-active .pet-acc:active{cursor:grabbing;}
-  .editor-active #accHead{outline-color:rgba(255,157,67,.7);}
-  .editor-active #accEyes{outline-color:rgba(72,219,251,.7);}
-  .editor-active #accNeck{outline-color:rgba(255,80,180,.7);}
-  .editor-active #accHead,
-  .editor-active #accEyes,
-  .editor-active #accNeck{pointer-events:auto !important;}
-
   .pet-title{margin-top:14px;}
   .pet-title h1{font-size:22px;font-weight:700;margin:0;
     display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;}
@@ -162,6 +140,7 @@
   .pet-id{color:#5a6470;font-size:10px;margin-top:6px;font-family:monospace;
     word-break:break-all;padding:0 12px;opacity:.55;}
   .pet-mood{font-size:15px;margin-top:10px;font-weight:500;}
+  .care-timer{font-size:12px;margin-top:6px;font-weight:600;color:#7d8b99;}
   .weather{font-size:12px;color:#7d8b99;margin-top:5px;}
   .xp-text{text-align:center;font-size:12px;color:#7d8b99;margin-top:12px;font-variant-numeric:tabular-nums;}
   .daily{display:flex;background:linear-gradient(90deg,#ff9f43,#ffcc48);color:#1a1000;
@@ -270,7 +249,6 @@
     border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.3);color:#fff;
     font-size:15px;font-family:inherit;margin-bottom:14px;}
   .modal-box input:focus{outline:none;border-color:#7a5cff;}
-  .modal-box input[type="range"]{padding:0;height:6px;background:rgba(255,255,255,.1);border:0;margin-bottom:6px;}
   .preset-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px;}
   .preset-row button{padding:10px 0;border:1px solid rgba(255,255,255,.1);background:transparent;
     color:#fff;border-radius:9px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;}
@@ -297,30 +275,6 @@
   .skin-opt .pr{font-size:11px;color:#ffd23f;font-weight:700;margin-top:3px;}
   .skin-opt.owned .pr{color:#48d98e;}
   .skin-price-hint{text-align:center;color:#7d8b99;font-size:12.5px;margin-bottom:10px;}
-
-  .acc-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
-  .acc-tab{flex:1;min-width:70px;padding:9px 0;border:1px solid rgba(255,255,255,.08);background:transparent;
-    color:#9ba5ae;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border-radius:9px;}
-  .acc-tab.active{background:#7a5cff;border-color:#7a5cff;color:#fff;}
-  .acc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-  .acc-opt{position:relative;background:rgba(255,255,255,.03);border:2px solid rgba(255,255,255,.06);
-    border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;
-    transition:border-color .2s, background .2s, transform .1s;}
-  .acc-opt:active{transform:scale(.97);}
-  .acc-opt.equipped{border-color:#48d98e;background:rgba(72,217,142,.10);}
-  .acc-opt.owned{border-color:rgba(72,217,142,.4);}
-  .acc-opt .em{width:38px;height:38px;margin:0 auto;display:flex;align-items:center;justify-content:center;
-    font-size:28px;line-height:1;}
-  .acc-opt .em img{width:100%;height:100%;object-fit:contain;}
-  .acc-opt .nm{font-size:11px;color:#c0c8d0;margin-top:6px;font-weight:600;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .acc-opt .pr{font-size:11px;color:#ffd23f;font-weight:700;margin-top:3px;}
-  .acc-opt .pr.owned{color:#48d98e;}
-  .acc-opt .pr.equipped{color:#48d98e;font-weight:800;}
-  .acc-opt .badge{position:absolute;top:4px;right:6px;font-size:10px;
-    background:#48d98e;color:#0d0d0d;padding:1px 5px;border-radius:6px;font-weight:700;}
-  .acc-hint{text-align:center;color:#7d8b99;font-size:12px;margin-bottom:6px;}
-  .acc-empty{text-align:center;color:#5a6470;font-size:12.5px;padding:14px 0;}
 </style>
 </head>
 <body>
@@ -373,9 +327,6 @@
         </svg>
         <div class="pet-fig" id="petFig">
           <div class="pet-body" id="petBody">🐱</div>
-          <div class="pet-acc hidden" id="accNeck"></div>
-          <div class="pet-acc hidden" id="accHead"></div>
-          <div class="pet-acc hidden" id="accEyes"></div>
         </div>
       </div>
       <div class="pet-title">
@@ -383,14 +334,13 @@
           <span id="nameEl">Пушистик</span>
           <button class="edit-btn" id="cardBtn" title="Карточка" style="display:none">📸</button>
           <button class="edit-btn" id="skinBtn" style="display:none">🎨</button>
-          <button class="edit-btn" id="accBtn" style="display:none">🎩</button>
-          <button class="edit-btn" id="editorBtn" style="display:none" title="Редактор позиций">🎯</button>
           <button class="edit-btn" id="renameBtn" style="display:none">✏️</button>
           <button class="edit-btn" id="deleteBtn" style="display:none;color:#c96d6d">🗑</button>
         </h1>
         <div class="pet-sub" id="stageEl">Яйцо · Ур. 1</div>
         <div class="pet-id" id="petIdEl"></div>
         <div class="pet-mood" id="moodEl"></div>
+        <div class="care-timer" id="careTimerEl"></div>
         <div class="weather" id="weatherEl"></div>
       </div>
       <div class="xp-text" id="xpEl">XP: 0 / 50</div>
@@ -492,87 +442,6 @@
   </div>
 </div>
 
-<div class="modal" id="accModal">
-  <div class="modal-box">
-    <h3>🎩 Аксессуары</h3>
-    <div class="sub">Каждый — <b>1 ⭐ Telegram Star</b> · виден всем</div>
-    <div class="pid" id="accPid"></div>
-    <div class="acc-tabs" id="accTabs">
-      <button class="acc-tab active" data-slot="head">👒 Голова</button>
-      <button class="acc-tab" data-slot="eyes">🕶 Глаза</button>
-      <button class="acc-tab" data-slot="neck">🎀 Шея</button>
-    </div>
-    <div class="acc-grid" id="accGrid"></div>
-    <div class="acc-hint" id="accHint"></div>
-    <div class="modal-btns"><button class="cancel" id="accCancel">Закрыть</button></div>
-  </div>
-</div>
-
-<div class="modal" id="editorModal">
-  <div class="modal-box" style="max-height:95vh">
-    <h3>🎯 Редактор позиций</h3>
-    <div class="sub">Тащи аксессуар пальцем по сцене. Слайдер — размер. Потом «Скопировать JSON» → скинь в чат.</div>
-
-    <label>Скин</label>
-    <div class="acc-tabs" id="edSkinTabs" style="margin-bottom:10px">
-      <button class="acc-tab active" data-skin="cat">🐱 Кот</button>
-      <button class="acc-tab" data-skin="classic">🐦 Птица</button>
-      <button class="acc-tab" data-skin="space">🌌 Космос</button>
-      <button class="acc-tab" data-skin="dino">🦕 Дино</button>
-    </div>
-
-    <label>Стадия (0–7)</label>
-    <div class="acc-tabs" id="edStageTabs" style="margin-bottom:14px">
-      <button class="acc-tab active" data-stage="0">0</button>
-      <button class="acc-tab" data-stage="1">1</button>
-      <button class="acc-tab" data-stage="2">2</button>
-      <button class="acc-tab" data-stage="3">3</button>
-      <button class="acc-tab" data-stage="4">4</button>
-      <button class="acc-tab" data-stage="5">5</button>
-      <button class="acc-tab" data-stage="6">6</button>
-      <button class="acc-tab" data-stage="7">7</button>
-    </div>
-
-    <label>Слот</label>
-    <div class="acc-tabs" id="edSlotTabs" style="margin-bottom:14px">
-      <button class="acc-tab active" data-slot="head">👒 Голова</button>
-      <button class="acc-tab" data-slot="eyes">🕶 Глаза</button>
-      <button class="acc-tab" data-slot="neck">🎀 Шея</button>
-    </div>
-
-    <label>Размер: <span id="edSizeVal">50</span> px</label>
-    <input type="range" id="edSize" min="20" max="120" value="50" step="1"
-      style="width:100%;margin-bottom:14px;" />
-
-    <label>Координаты</label>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
-      <div>
-        <div style="font-size:11px;color:#7d8b99;margin-bottom:4px">X %</div>
-        <input type="number" id="edX" step="0.5" value="50" style="margin:0" />
-      </div>
-      <div>
-        <div style="font-size:11px;color:#7d8b99;margin-bottom:4px">Y %</div>
-        <input type="number" id="edY" step="0.5" value="50" style="margin:0" />
-      </div>
-    </div>
-
-    <div class="modal-btns" style="margin-bottom:8px">
-      <button class="cancel" id="edClear">Сбросить эту позицию</button>
-    </div>
-    <div class="modal-btns" style="margin-bottom:8px">
-      <button class="cancel" id="edResetAll">Сбросить ВСЁ</button>
-    </div>
-    <div class="modal-btns" style="margin-bottom:8px">
-      <button class="ok" id="edCopy">📋 Скопировать JSON</button>
-    </div>
-    <div class="modal-btns">
-      <button class="cancel" id="edClose">Закрыть</button>
-    </div>
-
-    <div id="edStatus" style="text-align:center;color:#48d98e;font-size:12px;margin-top:10px"></div>
-  </div>
-</div>
-
 <div class="modal" id="topupModal">
   <div class="modal-box">
     <h3>💳 Пополнить банк</h3>
@@ -616,6 +485,7 @@ const SUPABASE_KEY = "sb_publishable_P5IC_YkWUcchuxcQM_THFQ_uOxhPv4Q";
 const BOT_API = "https://botpet-production.up.railway.app";
 const BOT_USERNAME = "GroupPet_bot";
 const GLOBAL_PET_LIMIT = 100;
+const DEATH_AFTER_HOURS = 24;
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const tg = window.Telegram?.WebApp;
@@ -708,130 +578,6 @@ function cpsFor(k){ return (SKINS[k] || SKINS.classic).cps; }
 function stagesFor(k){ return (SKINS[k] || SKINS.classic).stages; }
 function stageNamesFor(k){ return (SKINS[k] || SKINS.classic).stageNames; }
 
-/* Аксессуары */
-const ACC_CP = {
-  crown:      { cp: "1f451", emoji: "👑" },
-  tophat:     { cp: "1f3a9", emoji: "🎩" },
-  cap:        { cp: "1f9e2", emoji: "🧢" },
-  grad:       { cp: "1f393", emoji: "🎓" },
-  sunhat:     { cp: "1f452", emoji: "👒" },
-  helmet:     { cp: "26d1",  emoji: "⛑" },
-  pumpkin:    { cp: "1f383", emoji: "🎃" },
-  party:      { cp: "1f389", emoji: "🎉" },
-  sunglasses: { cp: "1f576", emoji: "🕶" },
-  nerd:       { cp: "1f453", emoji: "👓" },
-  goggles:    { cp: "1f97d", emoji: "🥽" },
-  bow:        { cp: "1f380", emoji: "🎀" },
-  scarf:      { cp: "1f9e3", emoji: "🧣" },
-  medal:      { cp: "1f3c5", emoji: "🏅" },
-  beads:      { cp: "1f4ff", emoji: "📿" },
-  ribbon:     { cp: "1f397", emoji: "🎗" },
-};
-
-/* ============================================================
-   БАЗОВЫЕ ПОЗИЦИИ (стартовые; в редакторе можно переопределить)
-   x,y — % от .pet-stage, w — ширина в px
-============================================================ */
-const ACC_POS = {
-  cat: [
-    { head:{x:50,y:34,w:50}, eyes:null,             neck:null },
-    { head:{x:50,y:34,w:56}, eyes:{x:50,y:54,w:50}, neck:{x:50,y:74,w:44} },
-    { head:{x:30,y:22,w:50}, eyes:{x:30,y:38,w:46}, neck:{x:32,y:58,w:40} },
-    { head:{x:30,y:22,w:50}, eyes:{x:30,y:38,w:46}, neck:{x:32,y:58,w:40} },
-    { head:{x:30,y:22,w:50}, eyes:{x:30,y:38,w:46}, neck:{x:32,y:58,w:40} },
-    { head:{x:30,y:22,w:50}, eyes:{x:30,y:38,w:46}, neck:{x:32,y:58,w:40} },
-    { head:{x:46,y:20,w:58}, eyes:{x:46,y:40,w:52}, neck:{x:46,y:62,w:46} },
-    { head:{x:50,y:30,w:56}, eyes:{x:50,y:50,w:50}, neck:{x:50,y:72,w:44} },
-  ],
-  classic: [
-    { head:{x:50,y:34,w:50}, eyes:null,             neck:null },
-    { head:{x:50,y:34,w:54}, eyes:{x:50,y:52,w:48}, neck:{x:50,y:72,w:42} },
-    { head:{x:50,y:28,w:54}, eyes:{x:50,y:46,w:48}, neck:{x:50,y:66,w:42} },
-    { head:{x:50,y:28,w:54}, eyes:{x:50,y:46,w:48}, neck:{x:50,y:66,w:42} },
-    { head:{x:38,y:22,w:50}, eyes:{x:38,y:40,w:46}, neck:{x:40,y:60,w:42} },
-    { head:{x:50,y:24,w:56}, eyes:{x:50,y:44,w:50}, neck:{x:50,y:66,w:46} },
-    { head:{x:50,y:22,w:60}, eyes:{x:50,y:44,w:54}, neck:{x:50,y:68,w:48} },
-    { head:{x:50,y:28,w:58}, eyes:{x:50,y:48,w:52}, neck:{x:50,y:70,w:46} },
-  ],
-  space: [
-    { head:null,             eyes:null,             neck:null },
-    { head:{x:50,y:32,w:50}, eyes:null,             neck:null },
-    { head:{x:50,y:32,w:44}, eyes:null,             neck:null },
-    { head:{x:50,y:32,w:44}, eyes:null,             neck:null },
-    { head:{x:50,y:32,w:44}, eyes:null,             neck:null },
-    { head:{x:54,y:36,w:44}, eyes:null,             neck:null },
-    { head:{x:50,y:34,w:46}, eyes:null,             neck:null },
-    { head:{x:50,y:26,w:60}, eyes:{x:50,y:46,w:52}, neck:null },
-  ],
-  dino: [
-    { head:{x:50,y:34,w:50}, eyes:null,             neck:null },
-    { head:{x:34,y:28,w:48}, eyes:{x:34,y:44,w:44}, neck:{x:36,y:64,w:40} },
-    { head:{x:38,y:22,w:48}, eyes:{x:38,y:38,w:44}, neck:{x:40,y:58,w:40} },
-    { head:{x:34,y:22,w:50}, eyes:{x:34,y:38,w:46}, neck:{x:36,y:58,w:42} },
-    { head:{x:38,y:28,w:48}, eyes:{x:38,y:44,w:44}, neck:{x:40,y:64,w:40} },
-    { head:{x:36,y:20,w:52}, eyes:{x:36,y:38,w:48}, neck:{x:38,y:58,w:42} },
-    { head:{x:48,y:26,w:56}, eyes:{x:48,y:44,w:50}, neck:{x:48,y:66,w:44} },
-    { head:null,             eyes:null,             neck:null },
-  ],
-};
-
-/* overrides из localStorage */
-const LS_KEY = "acc_pos_overrides_v1";
-function loadOverrides(){
-  try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}") || {}; } catch(e){ return {}; }
-}
-function saveOverrides(o){
-  try { localStorage.setItem(LS_KEY, JSON.stringify(o)); } catch(e){}
-}
-function getPos(skin, stage, slot){
-  const ov = loadOverrides();
-  const key = `${skin}_${stage}_${slot}`;
-  if (ov[key]) return ov[key];
-  const base = (ACC_POS[skin] || ACC_POS.classic)[stage] || {};
-  return base[slot] || null;
-}
-function setPos(skin, stage, slot, val){
-  const ov = loadOverrides();
-  const key = `${skin}_${stage}_${slot}`;
-  if (val) ov[key] = val; else delete ov[key];
-  saveOverrides(ov);
-}
-
-const ACC_SLOT_IDS = { head: "accHead", eyes: "accEyes", neck: "accNeck" };
-
-function applyAccessories(){
-  if (!pet || pet.dead){
-    for (const id of Object.values(ACC_SLOT_IDS)) $(id).classList.add("hidden");
-    return;
-  }
-  const st = stageFromLevel(levelFromXp(pet.xp));
-  const skin = pet.skin || "classic";
-  const equipped = pet.accessories_equipped || {};
-
-  for (const slot of ["head","eyes","neck"]){
-    const el = $(ACC_SLOT_IDS[slot]);
-    const pos = getPos(skin, st, slot);
-    const accId = equipped[slot];
-    if (!pos || !accId){
-      el.classList.add("hidden");
-      el.innerHTML = "";
-      continue;
-    }
-    const data = ACC_CP[accId];
-    if (!data){
-      el.classList.add("hidden");
-      el.innerHTML = "";
-      continue;
-    }
-    el.style.left = pos.x + "%";
-    el.style.top  = pos.y + "%";
-    el.style.width  = pos.w + "px";
-    el.style.height = pos.w + "px";
-    el.innerHTML = emojiImg(data.cp, Math.round(pos.w * 0.95), data.emoji);
-    el.classList.remove("hidden");
-  }
-}
-
 const SEASONS = {
   winter: { emoji:"❄️", name:"Зима" }, spring: { emoji:"🌸", name:"Весна" },
   summer: { emoji:"☀️", name:"Лето" }, autumn: { emoji:"🍂", name:"Осень" },
@@ -863,8 +609,6 @@ let pet=null, me=null, cooldowns={}, isOwner=false;
 let renderIntervalId = null;
 let handlersBound = false;
 let realtimeChannel = null;
-let accCatalog = [];
-let accTabSlot = "head";
 
 const $ = id => document.getElementById(id);
 const clamp = (v,mn=0,mx=100) => Math.max(mn, Math.min(mx, Math.round(v)));
@@ -1007,6 +751,25 @@ function renderWeather(){
   const w = weatherFor(d);
   $("weatherEl").innerHTML = s.emoji + " " + s.name + " · <b>" + w + "</b>";
 }
+function renderCareTimer(){
+  const el = $("careTimerEl");
+  if (!el) return;
+  if (!pet || pet.dead || !pet.last_care_at){ el.textContent = ""; return; }
+  const careDate = new Date(pet.last_care_at).getTime();
+  const hoursPassed = (Date.now() - careDate) / 3600000;
+  const hoursLeft = DEATH_AFTER_HOURS - hoursPassed;
+  if (hoursLeft <= 0){
+    el.textContent = "⚠️ Умирает!";
+    el.style.color = "#ff6b6b";
+    return;
+  }
+  el.style.color = hoursLeft < 4 ? "#ff6b6b" : (hoursLeft < 12 ? "#ffb347" : "#7d8b99");
+  if (hoursLeft < 1){
+    el.textContent = "⏰ Умрёт через " + Math.ceil(hoursLeft * 60) + " мин";
+  } else {
+    el.textContent = "⏰ Умрёт через " + Math.floor(hoursLeft) + " ч";
+  }
+}
 
 /* МЕНЮ */
 async function initMenu(){
@@ -1140,10 +903,10 @@ async function renderDead(){
   $("deadCard").style.display = "block";
   $("petBody").innerHTML = emojiImg("1f480", 90, "💀");
   $("petBody").style.filter = "grayscale(.4)";
-  ["accHead","accEyes","accNeck"].forEach(id=>{ $(id).classList.add("hidden"); $(id).innerHTML=""; });
   $("nameEl").textContent = pet.name;
   $("stageEl").textContent = "Умер";
   $("moodEl").textContent = "Умер…";
+  $("careTimerEl").textContent = "";
   $("petIdEl").textContent = "ID: " + pet.id;
   $("xpEl").textContent = "—";
   const quotes = ["Ты забыл обо мне…","Я так ждал тебя каждый день…","Мне было холодно и одиноко…",
@@ -1161,8 +924,6 @@ async function renderDead(){
   $("deleteDeadBtn").style.display = isOwner ? "block" : "none";
   $("cardBtn").style.display = "none";
   $("skinBtn").style.display = "none";
-  $("accBtn").style.display = "none";
-  $("editorBtn").style.display = "none";
   $("renameBtn").style.display = "none";
   $("deleteBtn").style.display = "none";
   $("leaveBtn").style.display = isOwner ? "none" : "block";
@@ -1264,7 +1025,6 @@ function render(){
 
   $("petBody").style.filter = "";
   $("petBody").innerHTML = emojiImg(cps[st] || cps[0], 110, stages[st] || stages[0]);
-  applyAccessories();
 
   $("nameEl").textContent = pet.name;
   $("petIdEl").textContent = "ID: " + pet.id;
@@ -1272,14 +1032,13 @@ function render(){
   isOwner = Number(pet.owner_id) === Number(userId);
   $("cardBtn").style.display = "inline-block";
   $("skinBtn").style.display = isOwner ? "inline-block" : "none";
-  $("accBtn").style.display = isOwner ? "inline-block" : "none";
-  $("editorBtn").style.display = isOwner ? "inline-block" : "none";
   $("renameBtn").style.display = isOwner ? "inline-block" : "none";
   $("deleteBtn").style.display = isOwner ? "inline-block" : "none";
   $("leaveBtn").style.display = isOwner ? "none" : "block";
 
   $("stageEl").textContent = names[st]+" · Ур. "+lvl;
   $("moodEl").textContent = moodText(pet);
+  renderCareTimer();
   setBar("hunger",pet.hunger); setBar("mood",pet.mood); setBar("energy",pet.energy);
   setBar("clean",pet.clean); setBar("health",pet.health);
 
@@ -1434,20 +1193,6 @@ function bindCommonOnce(){
   $("skinBtn").addEventListener("click", openSkinModal);
   $("skinCancel").addEventListener("click", ()=>$("skinModal").classList.remove("show"));
 
-  $("accBtn").addEventListener("click", openAccModal);
-  $("accCancel").addEventListener("click", ()=>$("accModal").classList.remove("show"));
-  document.querySelectorAll("#accTabs .acc-tab").forEach(t=>{
-    t.addEventListener("click", ()=>{
-      document.querySelectorAll("#accTabs .acc-tab").forEach(x=>x.classList.remove("active"));
-      t.classList.add("active");
-      accTabSlot = t.dataset.slot;
-      renderAccGrid();
-    });
-  });
-
-  $("editorBtn").addEventListener("click", openEditor);
-  $("edClose").addEventListener("click", closeEditor);
-
   let topupAmount = 1;
   $("topupBtn").addEventListener("click", ()=>{
     if(!isOwner){ toast("Только владелец"); return; }
@@ -1584,319 +1329,6 @@ async function changeSkin(newSkin){
     fig.classList.remove("skin-dissolve");
     toast("Ошибка: " + (e.message || e));
   }
-}
-
-/* АКСЕССУАРЫ */
-async function openAccModal(){
-  if(!pet || !isOwner) { toast("Только владелец"); return; }
-  $("accPid").textContent = "ID: " + petId;
-  $("accModal").classList.add("show");
-  $("accGrid").innerHTML = "<div class='acc-empty'>Загрузка…</div>";
-  try {
-    const res = await api("/api/acc/list", { pet_id: petId });
-    accCatalog = res.items || [];
-    renderAccGrid();
-  } catch(e){
-    $("accGrid").innerHTML = "<div class='acc-empty'>Ошибка загрузки</div>";
-  }
-}
-
-function renderAccGrid(){
-  const grid = $("accGrid");
-  const owned = new Set(pet?.accessories_owned || []);
-  const equipped = pet?.accessories_equipped || {};
-  const items = accCatalog.filter(x => x.slot === accTabSlot);
-  if (!items.length){ grid.innerHTML = "<div class='acc-empty'>Тут пусто</div>"; return; }
-  grid.innerHTML = items.map(it => {
-    const isOwned = owned.has(it.id);
-    const isEq = equipped[it.slot] === it.id;
-    let cls = "acc-opt";
-    if (isEq) cls += " equipped";
-    else if (isOwned) cls += " owned";
-    const accData = ACC_CP[it.id] || { cp: "2728", emoji: "✨" };
-    let priceTxt = "";
-    if (isEq) priceTxt = '<div class="pr equipped">надето</div>';
-    else if (isOwned) priceTxt = '<div class="pr owned">надеть</div>';
-    else priceTxt = '<div class="pr">' + it.price + ' ⭐</div>';
-    return `<div class="${cls}" data-acc="${it.id}" data-owned="${isOwned?1:0}">
-      ${isEq ? '<div class="badge">✓</div>' : ''}
-      <div class="em">${emojiImg(accData.cp, 38, accData.emoji)}</div>
-      <div class="nm">${esc(it.name)}</div>
-      ${priceTxt}
-    </div>`;
-  }).join("");
-  grid.querySelectorAll(".acc-opt").forEach(el=>{
-    el.addEventListener("click", ()=>onAccClick(el.dataset.acc, el.dataset.owned === "1"));
-  });
-  $("accHint").textContent = "Надето: " + Object.values(equipped).length + " / 3 слота";
-}
-
-async function onAccClick(accId, owned){
-  if (!pet || !isOwner) return;
-  const equipped = pet.accessories_equipped || {};
-  const slot = accCatalog.find(x => x.id === accId)?.slot;
-
-  if (equipped[slot] === accId){
-    try {
-      const res = await api("/api/acc/unequip", { pet_id: petId, slot });
-      pet.accessories_equipped = res.equipped;
-      render(); renderAccGrid();
-      toast("Снято");
-    } catch(e){ toast("Ошибка: " + (e.message||e)); }
-    return;
-  }
-  if (owned){
-    try {
-      const res = await api("/api/acc/equip", { pet_id: petId, accessory_id: accId });
-      pet.accessories_equipped = res.equipped;
-      render(); renderAccGrid();
-      haptic("success");
-      toast("Надето ✨");
-    } catch(e){ toast("Ошибка: " + (e.message||e)); }
-    return;
-  }
-  try {
-    const res = await api("/api/acc/buy", { pet_id: petId, accessory_id: accId });
-    const url = res.invoice_url;
-    if (!url) { toast("Не удалось создать счёт"); return; }
-    if (tg?.openInvoice){
-      tg.openInvoice(url, (status) => {
-        if (status === "paid"){
-          toast("✨ Аксессуар куплен!", true);
-          haptic("success");
-          setTimeout(async () => {
-            try {
-              const r = await api("/api/open", { pet_id: petId });
-              pet = r.pet; me = r.me;
-              render(); renderAccGrid();
-            } catch(e){}
-          }, 700);
-        } else if (status === "cancelled"){
-          toast("Отменено");
-        } else if (status === "failed"){
-          toast("Ошибка оплаты");
-        }
-      });
-    } else {
-      window.open(url, "_blank");
-    }
-  } catch(e){
-    toast("Ошибка: " + (e.message||e));
-  }
-}
-
-/* ============================================================
-   РЕДАКТОР ПОЗИЦИЙ
-============================================================ */
-let edSkin = "cat", edStage = 0, edSlot = "head";
-let edDragStartX = 0, edDragStartY = 0;
-let edStartLeft = 0, edStartTop = 0;
-let edActive = false;
-
-function openEditor(){
-  if (!pet || !isOwner){ toast("Только владелец"); return; }
-  edActive = true;
-  $("editorModal").classList.add("show");
-  edSkin = pet.skin || "cat";
-  edStage = stageFromLevel(levelFromXp(pet.xp));
-  edSlot = "head";
-  document.querySelectorAll("#edSkinTabs .acc-tab").forEach(b=>b.classList.toggle("active", b.dataset.skin===edSkin));
-  document.querySelectorAll("#edStageTabs .acc-tab").forEach(b=>b.classList.toggle("active", +b.dataset.stage===edStage));
-  document.querySelectorAll("#edSlotTabs .acc-tab").forEach(b=>b.classList.toggle("active", b.dataset.slot===edSlot));
-  $("petView").classList.add("editor-active");
-  ensureEditorAcc();
-  edLoadValues();
-  attachDragHandlers();
-}
-
-function closeEditor(){
-  edActive = false;
-  $("editorModal").classList.remove("show");
-  $("petView").classList.remove("editor-active");
-  render();
-}
-
-function ensureEditorAcc(){
-  const demo = { head: "crown", eyes: "sunglasses", neck: "bow" }[edSlot];
-  const equipped = pet.accessories_equipped || {};
-  equipped[edSlot] = demo;
-  pet.accessories_equipped = equipped;
-
-  if (!getPos(edSkin, edStage, edSlot)){
-    setPos(edSkin, edStage, edSlot, {x:50, y:30, w:50});
-  }
-  // рисуем питомца нужного скина/стадии
-  const cps = cpsFor(edSkin);
-  const stages = stagesFor(edSkin);
-  $("petBody").innerHTML = emojiImg(cps[edStage] || cps[0], 110, stages[edStage]);
-
-  // временно подменим для applyAccessories
-  const realSkin = pet.skin;
-  const realXp = pet.xp;
-  pet.skin = edSkin;
-  pet.xp = edStage * 50 + 1;
-  applyAccessories();
-  pet.skin = realSkin;
-  pet.xp = realXp;
-}
-
-function edLoadValues(){
-  const pos = getPos(edSkin, edStage, edSlot) || {x:50,y:30,w:50};
-  $("edX").value = pos.x.toFixed(1);
-  $("edY").value = pos.y.toFixed(1);
-  $("edSize").value = pos.w;
-  $("edSizeVal").textContent = pos.w;
-}
-
-function edApplyFromInputs(){
-  const x = parseFloat($("edX").value) || 50;
-  const y = parseFloat($("edY").value) || 30;
-  const w = parseInt($("edSize").value, 10) || 50;
-  setPos(edSkin, edStage, edSlot, {x, y, w});
-
-  const realSkin = pet.skin, realXp = pet.xp;
-  pet.skin = edSkin;
-  pet.xp = edStage * 50 + 1;
-  applyAccessories();
-  pet.skin = realSkin;
-  pet.xp = realXp;
-
-  const el = $(ACC_SLOT_IDS[edSlot]);
-  el.style.left = x + "%";
-  el.style.top  = y + "%";
-  el.style.width  = w + "px";
-  el.style.height = w + "px";
-}
-
-document.querySelectorAll("#edSkinTabs .acc-tab").forEach(b=>{
-  b.addEventListener("click", ()=>{
-    document.querySelectorAll("#edSkinTabs .acc-tab").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
-    edSkin = b.dataset.skin;
-    ensureEditorAcc();
-    edLoadValues();
-    attachDragHandlers();
-  });
-});
-document.querySelectorAll("#edStageTabs .acc-tab").forEach(b=>{
-  b.addEventListener("click", ()=>{
-    document.querySelectorAll("#edStageTabs .acc-tab").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
-    edStage = parseInt(b.dataset.stage, 10);
-    ensureEditorAcc();
-    edLoadValues();
-  });
-});
-document.querySelectorAll("#edSlotTabs .acc-tab").forEach(b=>{
-  b.addEventListener("click", ()=>{
-    document.querySelectorAll("#edSlotTabs .acc-tab").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
-    edSlot = b.dataset.slot;
-    ensureEditorAcc();
-    edLoadValues();
-    attachDragHandlers();
-  });
-});
-$("edSize").addEventListener("input", ()=>{
-  $("edSizeVal").textContent = $("edSize").value;
-  edApplyFromInputs();
-});
-$("edX").addEventListener("change", edApplyFromInputs);
-$("edY").addEventListener("change", edApplyFromInputs);
-
-$("edClear").addEventListener("click", ()=>{
-  setPos(edSkin, edStage, edSlot, null);
-  const base = (ACC_POS[edSkin] || ACC_POS.classic)[edStage] || {};
-  const def = base[edSlot] || {x:50, y:30, w:50};
-  setPos(edSkin, edStage, edSlot, def);
-  ensureEditorAcc();
-  edLoadValues();
-  toast("Сброшено");
-});
-$("edResetAll").addEventListener("click", ()=>{
-  if (!confirm("Удалить все твои правки позиций?")) return;
-  localStorage.removeItem(LS_KEY);
-  toast("Все правки сброшены");
-  ensureEditorAcc();
-  edLoadValues();
-});
-
-$("edCopy").addEventListener("click", ()=>{
-  const out = {};
-  for (const skin of Object.keys(SKINS)){
-    out[skin] = [];
-    for (let stage = 0; stage < 8; stage++){
-      const row = {head:null, eyes:null, neck:null};
-      for (const slot of ["head","eyes","neck"]){
-        const pos = getPos(skin, stage, slot);
-        if (pos) row[slot] = {x:+pos.x.toFixed(1), y:+pos.y.toFixed(1), w:pos.w};
-      }
-      out[skin].push(row);
-    }
-  }
-  const txt = "const ACC_POS = " + JSON.stringify(out, null, 2).replace(/"([a-zA-Z_]+)":/g, '$1:') + ";";
-  const done = ()=>{
-    $("edStatus").textContent = "✓ Скопировано — вставь в чат";
-    toast("Скопировано ✓", true);
-    setTimeout(()=>{ $("edStatus").textContent = ""; }, 3500);
-  };
-  if (navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(done).catch(()=>{
-      const ta = document.createElement("textarea");
-      ta.value = txt; document.body.appendChild(ta); ta.select();
-      try { document.execCommand("copy"); done(); } catch(e){ toast("Не вышло скопировать"); }
-      ta.remove();
-    });
-  } else {
-    const ta = document.createElement("textarea");
-    ta.value = txt; document.body.appendChild(ta); ta.select();
-    try { document.execCommand("copy"); done(); } catch(e){ toast("Не вышло скопировать"); }
-    ta.remove();
-  }
-});
-
-function attachDragHandlers(){
-  const stage = document.querySelector(".pet-stage");
-  if (!stage) return;
-  ["accHead","accEyes","accNeck"].forEach(id=>{
-    const el = $(id);
-    if (!el || el._dragBound) return;
-    el._dragBound = true;
-
-    el.addEventListener("pointerdown", (e)=>{
-      if (!edActive) return;
-      if (id !== ACC_SLOT_IDS[edSlot]) return;
-      e.preventDefault();
-      e.stopPropagation();
-      try { el.setPointerCapture(e.pointerId); } catch(err){}
-      const rect = stage.getBoundingClientRect();
-      const pos = getPos(edSkin, edStage, edSlot);
-      edStartLeft = pos.x;
-      edStartTop = pos.y;
-      edDragStartX = e.clientX;
-      edDragStartY = e.clientY;
-
-      const move = (ev)=>{
-        const dx = (ev.clientX - edDragStartX) / rect.width * 100;
-        const dy = (ev.clientY - edDragStartY) / rect.height * 100;
-        const nx = Math.max(-10, Math.min(110, edStartLeft + dx));
-        const ny = Math.max(-10, Math.min(110, edStartTop + dy));
-        setPos(edSkin, edStage, edSlot, {x:nx, y:ny, w:parseInt($("edSize").value,10)});
-        el.style.left = nx + "%";
-        el.style.top  = ny + "%";
-        $("edX").value = nx.toFixed(1);
-        $("edY").value = ny.toFixed(1);
-      };
-      const up = ()=>{
-        el.removeEventListener("pointermove", move);
-        el.removeEventListener("pointerup", up);
-        el.removeEventListener("pointercancel", up);
-      };
-      el.addEventListener("pointermove", move);
-      el.addEventListener("pointerup", up);
-      el.addEventListener("pointercancel", up);
-    }, { passive: false });
-  });
 }
 
 /* СТАРТ */
