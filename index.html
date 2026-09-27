@@ -29,6 +29,26 @@
   .btn-primary{background:linear-gradient(135deg,#ffd23f,#ff9f43);color:#1a1000;}
   .btn-blue{background:linear-gradient(135deg,#7a5cff,#00d4ff);color:#fff;}
   .btn-red{background:linear-gradient(135deg,#ee5253,#c73a3b);color:#fff;}
+  .btn-ghost{background:rgba(255,255,255,.06);color:#7d8b99;border:1px solid rgba(255,255,255,.08);}
+  .btn-ghost:active{color:#fff;}
+
+  .topnav{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .back-btn{
+    background:transparent;border:0;color:#7d8b99;
+    font-family:inherit;font-size:14px;font-weight:600;
+    padding:6px 0;cursor:pointer;
+    display:flex;align-items:center;gap:4px;
+  }
+  .back-btn:active{color:#fff;}
+  .leave-btn{
+    background:transparent;border:0;color:#c96d6d;
+    font-family:inherit;font-size:13px;font-weight:600;
+    padding:6px 0;cursor:pointer;
+  }
+  .leave-btn:active{color:#ff6b6b;}
 
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
     background:#2a2a2c;color:#fff;border:1px solid rgba(255,255,255,.08);
@@ -268,6 +288,11 @@
   </div>
 
   <div id="petView" style="display:none">
+    <div class="topnav">
+      <button class="back-btn" id="backBtn">‹ Все питомцы</button>
+      <button class="leave-btn" id="leaveBtn" style="display:none">Выйти из питомца</button>
+    </div>
+
     <div class="daily hidden" id="dailyBtn"><span>🎁 Ежедневный бонус</span><span id="dailyStreak"></span></div>
 
     <div class="pet-card" id="petMainCard">
@@ -365,6 +390,18 @@
     <div class="modal-btns">
       <button class="cancel" id="deleteCancel">Отмена</button>
       <button class="ok" id="deleteOk" style="background:#ee5253">Удалить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="leaveModal">
+  <div class="modal-box">
+    <h3 style="color:#ffb347">🚪 Выйти из питомца</h3>
+    <div class="sub">Ты перестанешь быть участником и твои очки в топе этого питомца обнулятся. Питомец останется у владельца.</div>
+    <div class="pid" id="leavePid"></div>
+    <div class="modal-btns">
+      <button class="cancel" id="leaveCancel">Отмена</button>
+      <button class="ok" id="leaveOk" style="background:#ee5253">Выйти</button>
     </div>
   </div>
 </div>
@@ -512,6 +549,11 @@ function fatal(t,e){ $("loader").style.display="block";
   $("loader").innerHTML="<div class='fatal'><b>"+t+"</b><br>"+(e?.message||e)+"</div>";
   $("menuView").style.display="none"; $("petView").style.display="none"; }
 
+function goMenu(){
+  try { tg?.close(); } catch(e){}
+  location.href = location.pathname;
+}
+
 function tick(p){
   if(p.dead) return p;
   const now=Date.now(), last=new Date(p.last_tick_at).getTime(), min=(now-last)/60000;
@@ -552,16 +594,12 @@ async function initMenu(){
   $("menuView").style.display = "none";
   $("petView").style.display = "none";
 
-  // Считаем живых питомцев
-  const { count: aliveCount, error: cntErr } = await sb.from("pets")
+  const { count: aliveCount } = await sb.from("pets")
     .select("*", { count: "exact", head: true }).eq("dead", false);
-  if (cntErr) console.warn("count error:", cntErr);
 
-  // Мои питомцы
-  const { data: members, error: mErr } = await sb.from("members")
+  const { data: members } = await sb.from("members")
     .select("pet_id, pets!inner(id, name, xp, skin, dead, owner_id)")
     .eq("user_id", userId);
-  if (mErr) console.warn("members error:", mErr);
 
   const list = (members || []).map(m => m.pets).filter(Boolean);
   const owned = list.filter(p => Number(p.owner_id) === Number(userId));
@@ -690,6 +728,8 @@ async function renderDead(){
   $("skinBtn").style.display = "none";
   $("renameBtn").style.display = "none";
   $("deleteBtn").style.display = "none";
+  // кнопка «Выйти» — только для не-владельца
+  $("leaveBtn").style.display = isOwner ? "none" : "block";
 }
 
 async function revivePet(){
@@ -865,6 +905,7 @@ function render(){
   $("skinBtn").style.display = isOwner ? "inline-block" : "none";
   $("renameBtn").style.display = isOwner ? "inline-block" : "none";
   $("deleteBtn").style.display = isOwner ? "inline-block" : "none";
+  $("leaveBtn").style.display = isOwner ? "none" : "block";
 
   $("stageEl").textContent = names[st]+" · Ур. "+lvl;
   $("moodEl").textContent = moodText(pet);
@@ -1049,6 +1090,25 @@ async function makeCard(){
    Обработчики
 ============================================================ */
 function bindCommon(){
+  $("backBtn").addEventListener("click", goMenu);
+
+  $("leaveBtn").addEventListener("click", ()=>{
+    if (isOwner) return;
+    $("leavePid").textContent = "Питомец: " + pet.name + " · ID: " + petId;
+    $("leaveModal").classList.add("show");
+  });
+  $("leaveCancel").addEventListener("click", ()=>$("leaveModal").classList.remove("show"));
+  $("leaveOk").addEventListener("click", async ()=>{
+    if (isOwner) { toast("Владелец не может выйти"); return; }
+    if (!confirm("Точно выйти из питомца?")) return;
+    const { error } = await sb.from("members")
+      .delete().eq("pet_id", petId).eq("user_id", userId);
+    if (error) { toast("Ошибка: " + error.message); return; }
+    toast("🚪 Ты вышел из питомца", true);
+    haptic("success");
+    setTimeout(goMenu, 600);
+  });
+
   document.querySelectorAll(".action[data-act]").forEach(b=>{
     b.addEventListener("click", ()=>doAction(b.dataset.act));
   });
@@ -1091,7 +1151,7 @@ function bindCommon(){
     const { error } = await sb.from("pets").delete().eq("id", petId);
     if (error) return toast("Ошибка");
     toast("🗑 Удалено", true);
-    setTimeout(()=>{ try { tg?.close(); } catch(e){} location.href = location.pathname; }, 900);
+    setTimeout(goMenu, 900);
   });
 
   $("skinBtn").addEventListener("click", openSkinModal);
