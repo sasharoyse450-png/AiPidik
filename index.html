@@ -17,24 +17,40 @@
 
   /* ===== SPLASH ===== */
   .splash{
-    position:fixed;inset:0;z-index:9999;
-    background:#0d0d0d;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:14px;
+    position:fixed;inset:0;z-index:9999;background:#0d0d0d;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
     transition:opacity .7s ease, visibility .7s ease;
   }
   .splash.hide{opacity:0;visibility:hidden;pointer-events:none;}
-  .splash-text{
-    font-size:32px;font-weight:800;letter-spacing:-.6px;color:#fff;
+  .splash-text{font-size:32px;font-weight:800;letter-spacing:-.6px;color:#fff;
     opacity:0;transform:translateY(18px);
-    animation:splashIn .9s ease forwards;animation-delay:.15s;
-  }
-  .splash-sub{
-    font-size:14px;color:#7d8b99;font-weight:600;
+    animation:splashIn .9s ease forwards;animation-delay:.15s;}
+  .splash-sub{font-size:14px;color:#7d8b99;font-weight:600;
     opacity:0;transform:translateY(12px);
-    animation:splashIn .9s ease forwards;animation-delay:.55s;
-  }
+    animation:splashIn .9s ease forwards;animation-delay:.55s;}
   @keyframes splashIn{to{opacity:1;transform:translateY(0);}}
+
+  /* ===== LOADER (эффект 19) ===== */
+  .loader{text-align:center;padding:60px 20px;color:#7d8b99;font-size:13px;}
+  .loader-dots{
+    display:inline-flex;align-items:center;justify-content:center;
+    gap:10px;margin-bottom:14px;
+  }
+  .loader-dots span{
+    width:12px;height:12px;border-radius:50%;
+    background:linear-gradient(135deg,#ffd23f,#ff9f43);
+    animation:dotBounce 1.2s ease-in-out infinite;
+  }
+  .loader-dots span:nth-child(2){animation-delay:.15s;background:linear-gradient(135deg,#7a5cff,#00d4ff);}
+  .loader-dots span:nth-child(3){animation-delay:.3s;background:linear-gradient(135deg,#48dbfb,#ffcc48);}
+  @keyframes dotBounce{
+    0%,80%,100%{transform:translateY(0) scale(1);opacity:.6;}
+    40%{transform:translateY(-14px) scale(1.3);opacity:1;}
+  }
+  .loader-text{font-size:13px;color:#7d8b99;letter-spacing:.4px;}
+
+  .fatal{color:#ff6b6b;font-size:13px;padding:16px;line-height:1.5;word-break:break-word;
+    border:1px solid rgba(255,60,90,.25);border-radius:14px;background:rgba(255,60,90,.06);}
 
   /* ===== ПЛАВНЫЕ ПЕРЕХОДЫ ===== */
   .fade-in{animation:fadeIn .35s ease both;}
@@ -42,10 +58,7 @@
     from{opacity:0;transform:translateY(10px);}
     to{opacity:1;transform:translateY(0);}
   }
-  .stagger > *{
-    opacity:0;
-    animation:fadeIn .4s ease both;
-  }
+  .stagger > *{opacity:0;animation:fadeIn .4s ease both;}
   .stagger > *:nth-child(1){animation-delay:.03s;}
   .stagger > *:nth-child(2){animation-delay:.08s;}
   .stagger > *:nth-child(3){animation-delay:.13s;}
@@ -55,42 +68,70 @@
   .stagger > *:nth-child(7){animation-delay:.33s;}
   .stagger > *:nth-child(8){animation-delay:.38s;}
 
-  #menuView, #petView{
-    animation:screenIn .45s cubic-bezier(.2,.9,.3,1) both;
-  }
+  #menuView, #petView{animation:screenIn .45s cubic-bezier(.2,.9,.3,1) both;}
   @keyframes screenIn{
     from{opacity:0;transform:translateY(14px);}
     to{opacity:1;transform:translateY(0);}
   }
 
-  .lb, .pet-row, .event, .pet-list-item{
-    animation:fadeIn .35s ease both;
+  /* Лента событий — приезд справа (эффект 15) */
+  .event{
+    display:flex;gap:11px;align-items:center;padding:9px 0;font-size:13px;
+    animation:eventSlide .5s cubic-bezier(.2,.9,.3,1.1) both;
   }
-  .lb:nth-child(1), .pet-row:nth-child(1), .event:nth-child(1), .pet-list-item:nth-child(1){animation-delay:.05s;}
-  .lb:nth-child(2), .pet-row:nth-child(2), .event:nth-child(2), .pet-list-item:nth-child(2){animation-delay:.1s;}
-  .lb:nth-child(3), .pet-row:nth-child(3), .event:nth-child(3), .pet-list-item:nth-child(3){animation-delay:.15s;}
-  .lb:nth-child(4), .pet-row:nth-child(4), .event:nth-child(4), .pet-list-item:nth-child(4){animation-delay:.2s;}
-  .lb:nth-child(5), .pet-row:nth-child(5), .event:nth-child(5), .pet-list-item:nth-child(5){animation-delay:.25s;}
-  .lb:nth-child(6), .pet-row:nth-child(6), .event:nth-child(6), .pet-list-item:nth-child(6){animation-delay:.3s;}
-  .lb:nth-child(7), .pet-row:nth-child(7), .event:nth-child(7), .pet-list-item:nth-child(7){animation-delay:.35s;}
-  .lb:nth-child(8), .pet-row:nth-child(8), .event:nth-child(8), .pet-list-item:nth-child(8){animation-delay:.4s;}
+  .event:nth-child(1){animation-delay:.03s;}
+  .event:nth-child(2){animation-delay:.08s;}
+  .event:nth-child(3){animation-delay:.13s;}
+  .event:nth-child(4){animation-delay:.18s;}
+  .event:nth-child(5){animation-delay:.23s;}
+  .event:nth-child(6){animation-delay:.28s;}
+  .event:nth-child(7){animation-delay:.33s;}
+  .event:nth-child(8){animation-delay:.38s;}
+  @keyframes eventSlide{
+    from{opacity:0;transform:translateX(30px);}
+    to{opacity:1;transform:translateX(0);}
+  }
 
-  .pet{
-    animation:petIn .5s cubic-bezier(.2,.9,.3,1.2) both;
-  }
+  .lb, .pet-row, .pet-list-item{animation:fadeIn .35s ease both;}
+  .lb:nth-child(1), .pet-row:nth-child(1), .pet-list-item:nth-child(1){animation-delay:.05s;}
+  .lb:nth-child(2), .pet-row:nth-child(2), .pet-list-item:nth-child(2){animation-delay:.1s;}
+  .lb:nth-child(3), .pet-row:nth-child(3), .pet-list-item:nth-child(3){animation-delay:.15s;}
+  .lb:nth-child(4), .pet-row:nth-child(4), .pet-list-item:nth-child(4){animation-delay:.2s;}
+  .lb:nth-child(5), .pet-row:nth-child(5), .pet-list-item:nth-child(5){animation-delay:.25s;}
+
+  /* Питомец — плавное появление */
+  .pet{animation:petIn .5s cubic-bezier(.2,.9,.3,1.2) both;}
   @keyframes petIn{
     from{opacity:0;transform:scale(.7);}
     to{opacity:1;transform:scale(1);}
   }
+
+  /* Плавная смена скина (эффект 14) */
+  .pet.skin-dissolve{
+    animation:skinDissolve .8s cubic-bezier(.2,.9,.3,1) both;
+  }
+  @keyframes skinDissolve{
+    0%{opacity:1;transform:scale(1) rotate(0deg);filter:blur(0);}
+    40%{opacity:.3;transform:scale(1.4) rotate(8deg);filter:blur(6px);}
+    60%{opacity:0;transform:scale(.5) rotate(-8deg);filter:blur(8px);}
+    80%{opacity:.7;transform:scale(1.15) rotate(3deg);filter:blur(2px);}
+    100%{opacity:1;transform:scale(1) rotate(0deg);filter:blur(0);}
+  }
+
+  /* Вспышка при смене скина (эффект 14) */
+  .skin-flash{
+    position:fixed;inset:0;z-index:850;pointer-events:none;
+    background:radial-gradient(circle at center, rgba(122,92,255,.7), transparent 65%);
+    animation:flashOut .9s ease forwards;
+  }
+  @keyframes flashOut{0%{opacity:1;}100%{opacity:0;}}
 
   .card{background:#151515;border-radius:18px;padding:16px 18px;margin-bottom:12px;
     position:relative;overflow:hidden;}
   .card::before{content:attr(data-wm);position:absolute;right:-14px;top:-22px;
     font-size:110px;opacity:.06;pointer-events:none;line-height:1;user-select:none;}
   .card > *{position:relative;z-index:1;}
-  .loader{text-align:center;padding:48px 20px;color:#7d8b99;font-size:13px;}
-  .fatal{color:#ff6b6b;font-size:13px;padding:16px;line-height:1.5;word-break:break-word;
-    border:1px solid rgba(255,60,90,.25);border-radius:14px;background:rgba(255,60,90,.06);}
+
   .btn{width:100%;padding:14px;border:0;border-radius:12px;font-family:inherit;
     font-size:14px;font-weight:700;cursor:pointer;transition:transform .1s;}
   .btn:active{transform:scale(.97);}
@@ -233,7 +274,6 @@
 
   h2{font-size:16px;font-weight:700;margin:0 0 12px;display:flex;align-items:center;gap:7px;}
 
-  .event{display:flex;gap:11px;align-items:center;padding:9px 0;font-size:13px;}
   .event .av{width:28px;height:28px;border-radius:50%;flex:0 0 28px;
     display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;
     color:#fff;text-transform:uppercase;}
@@ -318,10 +358,13 @@
 
   .skins-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
   .skin-opt{background:rgba(255,255,255,.03);border:2px solid rgba(255,255,255,.06);
-    border-radius:12px;padding:13px 9px;text-align:center;cursor:pointer;}
+    border-radius:12px;padding:13px 9px;text-align:center;cursor:pointer;
+    transition:border-color .2s, background .2s, transform .1s;}
   .skin-opt:active{transform:scale(.97);}
   .skin-opt.active{border-color:#7a5cff;background:rgba(122,92,255,.14);}
-  .skin-opt .em{font-size:26px;line-height:1;display:flex;justify-content:center;gap:3px;}
+  .skin-opt .em{font-size:26px;line-height:1;display:flex;justify-content:center;gap:3px;
+    transition:transform .3s;}
+  .skin-opt.active .em{transform:scale(1.15);}
   .skin-opt .nm{font-size:12.5px;color:#c0c8d0;margin-top:7px;font-weight:600;}
   .skin-opt .pr{font-size:11px;color:#ffd23f;font-weight:700;margin-top:3px;}
   .skin-opt.owned .pr{color:#48d98e;}
@@ -338,7 +381,10 @@
 </div>
 
 <div class="wrap">
-  <div class="loader" id="loader">Загрузка…</div>
+  <div class="loader" id="loader">
+    <div class="loader-dots"><span></span><span></span><span></span></div>
+    <div class="loader-text">Загрузка…</div>
+  </div>
 
   <div id="menuView" style="display:none">
     <div class="menu-title">🐾 Питомцы</div>
@@ -355,7 +401,7 @@
     </div>
     <div class="card" data-wm="🌍">
       <h2>🌍 Топ питомцев</h2>
-      <div id="globalMenuEl"><div class="loader">Загрузка…</div></div>
+      <div id="globalMenuEl"><div class="loader"><div class="loader-dots"><span></span><span></span><span></span></div></div></div>
     </div>
   </div>
 
@@ -612,13 +658,19 @@ const stageFromLevel = l => l>=28?7 : l>=24?6 : l>=20?5 : l>=16?4 : l>=12?3 : l>
 const esc = s => String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 /* ============================================================
-   ЖИВОЙ ФОН — ЧАСТИЦЫ
+   ЖИВОЙ ФОН — частицы + звёздное небо
+   bgMode: "particles" (обычный) | "stars" (космос)
 ============================================================ */
+let bgMode = "particles";
+let bgParticles = [];
+let bgResize = null;
+let bgSetMode = null;
+
 (function(){
   const cv = document.getElementById("bgCanvas");
   if (!cv) return;
   const ctx = cv.getContext("2d");
-  let W, H, particles = [];
+  let W = 0, H = 0;
 
   function resize(){
     W = cv.width = window.innerWidth;
@@ -626,11 +678,12 @@ const esc = s => String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">
   }
   resize();
   window.addEventListener("resize", resize);
+  bgResize = resize;
 
   const COLORS = ["#ffd23f","#7a5cff","#00d4ff","#ff9f43","#48dbfb","#ffcc48"];
   const COUNT = 25;
 
-  function spawn(){
+  function spawnParticle(){
     return {
       x: Math.random() * W,
       y: Math.random() * H,
@@ -642,34 +695,95 @@ const esc = s => String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">
       pulse: Math.random() * Math.PI * 2
     };
   }
-  for (let i = 0; i < COUNT; i++) particles.push(spawn());
+
+  function spawnStar(){
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      size: Math.random() * 1.6 + 0.4,
+      alpha: Math.random() * 0.5 + 0.3,
+      twinkle: Math.random() * Math.PI * 2,
+      twinkleSpeed: Math.random() * 0.03 + 0.01,
+      // редкие крупные звёзды с крестом
+      big: Math.random() < 0.08
+    };
+  }
+
+  function seed(){
+    bgParticles = [];
+    for (let i = 0; i < COUNT; i++){
+      bgParticles.push(bgMode === "stars" ? spawnStar() : spawnParticle());
+    }
+  }
+  seed();
+
+  bgSetMode = function(mode){
+    if (mode === bgMode) return;
+    bgMode = mode;
+    seed();
+  };
 
   let t = 0;
   function draw(){
     t += 0.016;
     ctx.clearRect(0, 0, W, H);
 
-    for (const p of particles){
-      p.x += p.vx;
-      p.y += p.vy;
+    if (bgMode === "stars"){
+      // ===== Звёздное небо =====
+      for (const s of bgParticles){
+        s.twinkle += s.twinkleSpeed;
+        const a = s.alpha * (0.5 + 0.5 * Math.abs(Math.sin(s.twinkle)));
+        ctx.globalAlpha = a;
+        ctx.fillStyle = "#fff";
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fill();
 
-      if (p.x < -20) p.x = W + 20;
-      if (p.x > W + 20) p.x = -20;
-      if (p.y < -20) p.y = H + 20;
-      if (p.y > H + 20) p.y = -20;
+        // свечение
+        ctx.globalAlpha = a * 0.35;
+        const grd = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size * 6);
+        grd.addColorStop(0, "rgba(200,220,255,.9)");
+        grd.addColorStop(1, "rgba(200,220,255,0)");
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size * 6, 0, Math.PI * 2);
+        ctx.fill();
 
-      const a = p.alpha * (0.6 + 0.4 * Math.sin(t + p.pulse));
-      ctx.globalAlpha = a;
-      ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fill();
+        // крестик у крупных
+        if (s.big && a > 0.5){
+          ctx.globalAlpha = a * 0.6;
+          ctx.strokeStyle = "rgba(200,220,255,.7)";
+          ctx.lineWidth = 0.8;
+          const L = s.size * 4;
+          ctx.beginPath();
+          ctx.moveTo(s.x - L, s.y); ctx.lineTo(s.x + L, s.y);
+          ctx.moveTo(s.x, s.y - L); ctx.lineTo(s.x, s.y + L);
+          ctx.stroke();
+        }
+      }
+    } else {
+      // ===== Плавающие частицы =====
+      for (const p of bgParticles){
+        p.x += p.vx;
+        p.y += p.vy;
 
-      // свечение вокруг частицы
-      ctx.globalAlpha = a * 0.3;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
-      ctx.fill();
+        if (p.x < -20) p.x = W + 20;
+        if (p.x > W + 20) p.x = -20;
+        if (p.y < -20) p.y = H + 20;
+        if (p.y > H + 20) p.y = -20;
+
+        const a = p.alpha * (0.6 + 0.4 * Math.sin(t + p.pulse));
+        ctx.globalAlpha = a;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.globalAlpha = a * 0.3;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
     ctx.globalAlpha = 1;
     requestAnimationFrame(draw);
@@ -677,6 +791,9 @@ const esc = s => String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">
   draw();
 })();
 
+/* ============================================================
+   УТИЛИТЫ
+============================================================ */
 function toast(msg, gold){
   const el=$("toastEl"); el.textContent=msg; el.classList.toggle("gold",!!gold);
   el.classList.add("show"); clearTimeout(el._t);
@@ -693,6 +810,7 @@ async function goMenu(){
   pet = null; me = null; cooldowns = {}; isOwner = false; myWriteAt = 0;
   petId = null;
   if (lottieAnim) { try { lottieAnim.destroy(); } catch(e){} lottieAnim = null; }
+  if (bgSetMode) bgSetMode("particles");
   try { history.replaceState({}, "", location.pathname); } catch(e){}
   $("petView").style.display = "none";
   await initMenu();
@@ -737,6 +855,7 @@ async function initMenu(){
   $("loader").style.display = "block";
   $("menuView").style.display = "none";
   $("petView").style.display = "none";
+  if (bgSetMode) bgSetMode("particles");
 
   const { count: aliveCount } = await sb.from("pets")
     .select("*", { count: "exact", head: true }).eq("dead", false);
@@ -823,6 +942,9 @@ async function openPet(id){
       }
       pet = t;
     }
+
+    // Переключаем фон по скину
+    if (bgSetMode) bgSetMode(pet.skin === "space" ? "stars" : "particles");
 
     const {data: m} = await sb.from("members").select("*")
       .eq("pet_id", id).eq("user_id", userId).maybeSingle();
@@ -1015,9 +1137,6 @@ async function loadEvents(){
       esc(initial(name))+"</div><div class='txt'><b>"+name+"</b> "+cfg.emoji+"</div>"+
       "<div class='time'>"+t+"</div></div>";
   }).join("");
-  el.classList.remove("stagger");
-  void el.offsetWidth;
-  el.classList.add("stagger");
 }
 
 async function logEvent(action){
@@ -1427,23 +1546,60 @@ async function openSkinModal(){
   $("skinModal").classList.add("show");
 }
 
+/* Плавная смена скина (эффект 14) */
 async function changeSkin(newSkin){
   if (!pet || Number(pet.owner_id) !== Number(userId)) { toast("Только владелец"); return; }
   if (!SKINS[newSkin]) return;
   if (pet.skin === newSkin) { toast("Уже выбран"); return; }
   if (!me || me.score < SKIN_PRICE) { toast("Нужно "+SKIN_PRICE+" очков"); return; }
 
+  // 1. Растворение питомца
+  const petEl = $("petEl");
+  const lottieContainer = $("lottieContainer");
+  petEl.classList.add("skin-dissolve");
+  if (lottieContainer && lottieContainer.style.display !== "none"){
+    lottieContainer.style.animation = "skinDissolve .8s cubic-bezier(.2,.9,.3,1) both";
+  }
+
+  // 2. Вспышка фиолетовым
+  const flash = document.createElement("div");
+  flash.className = "skin-flash";
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 1000);
+
+  // 3. Вибрация
+  haptic("success");
+
+  // 4. Обновляем данные
   myWriteAt = Date.now();
   const newScore = me.score - SKIN_PRICE;
   const [r1, r2] = await Promise.all([
     sb.from("pets").update({skin: newSkin}).eq("id", petId),
     sb.from("members").update({score: newScore}).eq("pet_id", petId).eq("user_id", userId)
   ]);
-  if(r1.error || r2.error){ toast("Ошибка"); return; }
+  if(r1.error || r2.error){
+    petEl.classList.remove("skin-dissolve");
+    if (lottieContainer) lottieContainer.style.animation = "";
+    toast("Ошибка");
+    return;
+  }
   pet = {...pet, skin: newSkin};
   me = {...me, score: newScore};
-  render(); toast("🎨 Скин «"+SKINS[newSkin].name+"»", true);
-  loadLeaderboard(); openSkinModal();
+
+  // 5. Переключаем фон (космос = звёзды)
+  if (bgSetMode) bgSetMode(newSkin === "space" ? "stars" : "particles");
+
+  // 6. Сбрасываем анимацию lottie и рендерим
+  if (lottieAnim) { lottieAnim.destroy(); lottieAnim = null; }
+  setTimeout(() => {
+    render();
+    petEl.classList.remove("skin-dissolve");
+    if (lottieContainer) lottieContainer.style.animation = "";
+  }, 400);
+
+  toast("🎨 Скин «"+SKINS[newSkin].name+"»", true);
+  loadLeaderboard();
+  setTimeout(openSkinModal, 500);
 }
 
 /* ============================================================
