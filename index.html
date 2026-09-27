@@ -30,22 +30,12 @@
   .btn-blue{background:linear-gradient(135deg,#7a5cff,#00d4ff);color:#fff;}
   .btn-red{background:linear-gradient(135deg,#ee5253,#c73a3b);color:#fff;}
 
-  .topnav{
-    display:flex;align-items:center;justify-content:space-between;
-    margin-bottom:12px;
-  }
-  .back-btn{
-    background:transparent;border:0;color:#7d8b99;
-    font-family:inherit;font-size:14px;font-weight:600;
-    padding:6px 0;cursor:pointer;
-    display:flex;align-items:center;gap:4px;
-  }
+  .topnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .back-btn{background:transparent;border:0;color:#7d8b99;font-family:inherit;font-size:14px;
+    font-weight:600;padding:6px 0;cursor:pointer;display:flex;align-items:center;gap:4px;}
   .back-btn:active{color:#fff;}
-  .leave-btn{
-    background:transparent;border:0;color:#c96d6d;
-    font-family:inherit;font-size:13px;font-weight:600;
-    padding:6px 0;cursor:pointer;
-  }
+  .leave-btn{background:transparent;border:0;color:#c96d6d;font-family:inherit;
+    font-size:13px;font-weight:600;padding:6px 0;cursor:pointer;}
   .leave-btn:active{color:#ff6b6b;}
 
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
@@ -457,7 +447,6 @@ const SUPABASE_URL = "https://ripjvcglkcqvyolnewaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_P5IC_YkWUcchuxcQM_THFQ_uOxhPv4Q";
 const BOT_USERNAME = "Aipidik_bot";
 const GLOBAL_PET_LIMIT = 100;
-const FEE_PCT = 0.05;
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const tg = window.Telegram?.WebApp;
@@ -465,8 +454,10 @@ tg?.ready(); tg?.expand();
 try { tg?.setHeaderColor?.("secondary_bg_color"); } catch(e){}
 try { tg?.setBackgroundColor?.("bg_color"); } catch(e){}
 
+// ===== petId теперь let, чтобы обновлять при переключении =====
 const params = new URLSearchParams(location.search);
-const petId = params.get("pet");
+let petId = params.get("pet");
+
 const init = tg?.initDataUnsafe || {};
 const user = init.user || { id: 0, first_name: "Гость" };
 const userId = user.id;
@@ -529,6 +520,7 @@ const initial = n => (n||"?").trim().charAt(0).toUpperCase();
 
 let pet=null, me=null, cooldowns={}, myWriteAt=0, isOwner=false, lottieAnim=null;
 let renderIntervalId = null;
+let handlersBound = false;
 
 const $ = id => document.getElementById(id);
 const clamp = (v,mn=0,mx=100) => Math.max(mn, Math.min(mx, Math.round(v)));
@@ -550,14 +542,11 @@ function fatal(t,e){ $("loader").style.display="block";
 
 /* ===== Переход в меню без закрытия WebApp ===== */
 async function goMenu(){
-  // Останавливаем рендер-интервал
   if (renderIntervalId) { clearInterval(renderIntervalId); renderIntervalId = null; }
-  // Сбрасываем состояние питомца
   pet = null; me = null; cooldowns = {}; isOwner = false; myWriteAt = 0;
+  petId = null;
   if (lottieAnim) { try { lottieAnim.destroy(); } catch(e){} lottieAnim = null; }
-  // Очищаем URL без перезагрузки
   try { history.replaceState({}, "", location.pathname); } catch(e){}
-  // Прячем экран питомца, показываем меню
   $("petView").style.display = "none";
   await initMenu();
 }
@@ -658,21 +647,19 @@ async function initMenu(){
   $("menuView").style.display = "block";
 }
 
-/* Открыть питомца без перезагрузки */
+/* ===== Открытие питомца (без перезагрузки) ===== */
 async function openPet(id){
+  petId = id;  // ← ФИКС: обновляем глобальную переменную
   try { history.replaceState({}, "", location.pathname + "?pet=" + id); } catch(e){}
   $("menuView").style.display = "none";
   $("petView").style.display = "none";
+  $("loader").style.display = "block";
   pet = null; me = null; cooldowns = {}; isOwner = false; myWriteAt = 0;
 
   try {
-    // Загружаем питомца по новому ID
     const {data, error} = await sb.from("pets").select("*").eq("id", id).maybeSingle();
-    if(error || !data){
-      toast("Питомец не найден");
-      await goMenu();
-      return;
-    }
+    if(error){ fatal("Ошибка загрузки", error); return; }
+    if(!data){ toast("Питомец не найден"); await goMenu(); return; }
     pet = data;
     if (!pet.dead) {
       const t = tick(pet);
@@ -686,7 +673,6 @@ async function openPet(id){
       pet = t;
     }
 
-    // Загружаем участника
     const {data: m} = await sb.from("members").select("*")
       .eq("pet_id", id).eq("user_id", userId).maybeSingle();
     if (!m) {
@@ -717,8 +703,7 @@ async function openPet(id){
     if (renderIntervalId) clearInterval(renderIntervalId);
     renderIntervalId = setInterval(render, 1000);
   } catch(e) {
-    console.error(e);
-    fatal("Ошибка", e);
+    console.error(e); fatal("Ошибка", e);
   }
 }
 
@@ -795,7 +780,7 @@ async function revivePet(){
     if (r1.error || r2.error) throw (r1.error || r2.error);
     toast("💖 Питомец возрождён!", true);
     haptic("success");
-    setTimeout(() => { pet.dead = false; render(); location.reload(); }, 800);
+    setTimeout(() => openPet(petId), 700);
   } catch(e) {
     toast("Ошибка: " + (e.message || e));
     btn.disabled = false; btn.textContent = "💖 Возродить за 100 очков";
@@ -996,7 +981,7 @@ async function doAction(act){
     sb.from("pets").update(petUpdate).eq("id", petId),
     sb.from("members").update(mUpdate).eq("pet_id", petId).eq("user_id", userId)
   ]);
-  if(r1.error || r2.error){ toast("Ошибка"); return; }
+  if(r1.error || r2.error){ toast("Ошибка: " + (r1.error?.message || r2.error?.message || "")); return; }
 
   pet = {...pet, ...petUpdate};
   me = {...me, ...mUpdate};
@@ -1101,10 +1086,8 @@ async function makeCard(){
 }
 
 /* ============================================================
-   Обработчики (навешиваем один раз)
+   Обработчики (навешиваются один раз)
 ============================================================ */
-let handlersBound = false;
-
 function bindCommonOnce(){
   if (handlersBound) return;
   handlersBound = true;
@@ -1112,8 +1095,7 @@ function bindCommonOnce(){
   $("backBtn").addEventListener("click", goMenu);
 
   $("leaveBtn").addEventListener("click", ()=>{
-    if (!pet) return;
-    if (isOwner) return;
+    if (!pet || isOwner) return;
     $("leavePid").textContent = "Питомец: " + pet.name + " · ID: " + petId;
     $("leaveModal").classList.add("show");
   });
@@ -1312,10 +1294,8 @@ async function changeSkin(newSkin){
 (async ()=>{
   try {
     if (petId) {
-      // Открыли конкретного питомца — сразу он
       await openPet(petId);
     } else {
-      // Меню
       await initMenu();
     }
   } catch(e){
