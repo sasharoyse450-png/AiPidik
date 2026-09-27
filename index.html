@@ -273,6 +273,10 @@
       <h2>📋 Мои питомцы</h2>
       <div id="myPetsList"><div class="empty">Загрузка…</div></div>
     </div>
+    <div class="card" data-wm="🌍">
+      <h2>🌍 Топ питомцев</h2>
+      <div id="globalMenuEl"><div class="loader">Загрузка…</div></div>
+    </div>
   </div>
 
   <div id="petView" style="display:none">
@@ -349,7 +353,6 @@
 
       <div class="card" data-wm="📜" style="margin-top:12px"><h2>📜 Лента событий</h2><div id="eventsEl"><div class="empty">Тут пока тихо…</div></div></div>
       <div class="card" data-wm="🏆"><h2>🏆 Топ заботливых</h2><div id="lbEl"></div></div>
-      <div class="card" data-wm="🌍"><h2>🌍 Рейтинг питомцев</h2><div id="globalEl"><div class="loader">Загрузка…</div></div></div>
     </div>
   </div>
 </div>
@@ -454,7 +457,6 @@ tg?.ready(); tg?.expand();
 try { tg?.setHeaderColor?.("secondary_bg_color"); } catch(e){}
 try { tg?.setBackgroundColor?.("bg_color"); } catch(e){}
 
-// ===== petId теперь let, чтобы обновлять при переключении =====
 const params = new URLSearchParams(location.search);
 let petId = params.get("pet");
 
@@ -540,7 +542,6 @@ function fatal(t,e){ $("loader").style.display="block";
   $("loader").innerHTML="<div class='fatal'><b>"+t+"</b><br>"+(e?.message||e)+"</div>";
   $("menuView").style.display="none"; $("petView").style.display="none"; }
 
-/* ===== Переход в меню без закрытия WebApp ===== */
 async function goMenu(){
   if (renderIntervalId) { clearInterval(renderIntervalId); renderIntervalId = null; }
   pet = null; me = null; cooldowns = {}; isOwner = false; myWriteAt = 0;
@@ -643,13 +644,15 @@ async function initMenu(){
     });
   }
 
+  // Загружаем топ питомцев в меню
+  await loadGlobalRating();
+
   $("loader").style.display = "none";
   $("menuView").style.display = "block";
 }
 
-/* ===== Открытие питомца (без перезагрузки) ===== */
 async function openPet(id){
-  petId = id;  // ← ФИКС: обновляем глобальную переменную
+  petId = id;
   try { history.replaceState({}, "", location.pathname + "?pet=" + id); } catch(e){}
   $("menuView").style.display = "none";
   $("petView").style.display = "none";
@@ -695,7 +698,7 @@ async function openPet(id){
     } else {
       $("deadCard").style.display = "none";
       $("aliveContent").style.display = "block";
-      await Promise.all([loadLeaderboard(), loadEvents(), loadGlobalRating()]);
+      await Promise.all([loadLeaderboard(), loadEvents()]);
     }
 
     bindCommonOnce();
@@ -808,7 +811,8 @@ async function loadLeaderboard(){
 async function loadGlobalRating(){
   const {data: pets} = await sb.from("pets").select("id,name,xp,skin,owner_id,dead")
     .eq("dead", false).order("xp",{ascending:false}).limit(10);
-  const el = $("globalEl");
+  const el = $("globalMenuEl");
+  if (!el) return;
   if(!pets || !pets.length){ el.innerHTML = "<div class='empty'>Пока никого</div>"; return; }
   const petIds = pets.map(p => p.id);
   const {data: members} = await sb.from("members")
@@ -996,12 +1000,9 @@ async function doAction(act){
   }
   logEvent(act);
   render();
-  loadLeaderboard(); loadEvents(); loadGlobalRating();
+  loadLeaderboard(); loadEvents();
 }
 
-/* ============================================================
-   ФОТО-КАРТОЧКА
-============================================================ */
 async function makeCard(){
   if (!pet) return;
   const canvas = document.createElement("canvas");
@@ -1085,9 +1086,6 @@ async function makeCard(){
   }, "image/png");
 }
 
-/* ============================================================
-   Обработчики (навешиваются один раз)
-============================================================ */
 function bindCommonOnce(){
   if (handlersBound) return;
   handlersBound = true;
@@ -1285,12 +1283,9 @@ async function changeSkin(newSkin){
   pet = {...pet, skin: newSkin};
   me = {...me, score: newScore};
   render(); toast("🎨 Скин «"+SKINS[newSkin].name+"»", true);
-  loadLeaderboard(); loadGlobalRating(); openSkinModal();
+  loadLeaderboard(); openSkinModal();
 }
 
-/* ============================================================
-   СТАРТ
-============================================================ */
 (async ()=>{
   try {
     if (petId) {
