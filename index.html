@@ -50,21 +50,8 @@
   @keyframes screenIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
   .event{display:flex;gap:11px;align-items:center;padding:9px 0;font-size:13px;
     animation:eventSlide .5s cubic-bezier(.2,.9,.3,1.1) both;}
-  .event:nth-child(1){animation-delay:.03s;}
-  .event:nth-child(2){animation-delay:.08s;}
-  .event:nth-child(3){animation-delay:.13s;}
-  .event:nth-child(4){animation-delay:.18s;}
-  .event:nth-child(5){animation-delay:.23s;}
-  .event:nth-child(6){animation-delay:.28s;}
-  .event:nth-child(7){animation-delay:.33s;}
-  .event:nth-child(8){animation-delay:.38s;}
   @keyframes eventSlide{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
   .lb,.pet-row,.pet-list-item{animation:fadeIn .35s ease both;}
-  .lb:nth-child(1),.pet-row:nth-child(1),.pet-list-item:nth-child(1){animation-delay:.05s;}
-  .lb:nth-child(2),.pet-row:nth-child(2),.pet-list-item:nth-child(2){animation-delay:.1s;}
-  .lb:nth-child(3),.pet-row:nth-child(3),.pet-list-item:nth-child(3){animation-delay:.15s;}
-  .lb:nth-child(4),.pet-row:nth-child(4),.pet-list-item:nth-child(4){animation-delay:.2s;}
-  .lb:nth-child(5),.pet-row:nth-child(5),.pet-list-item:nth-child(5){animation-delay:.25s;}
   .pet-fig{animation:petIn .5s cubic-bezier(.2,.9,.3,1.2) both;}
   @keyframes petIn{from{opacity:0;transform:scale(.7);}to{opacity:1;transform:scale(1);}}
   .pet-fig.skin-dissolve{animation:skinDissolve .8s cubic-bezier(.2,.9,.3,1) both;}
@@ -142,16 +129,18 @@
   .pet-fig.pulse{transform:scale(1.08);}
   .pet-fig.mega{animation:mega .5s;}
   @keyframes mega{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
-  .pet-body{position:absolute;inset:20px;display:flex;align-items:center;justify-content:center;font-size:90px;}
-  .pet-body img{width:100%;height:100%;object-fit:contain;
+
+  .pet-body{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:90px;pointer-events:none;}
+  .pet-body img{width:110px;height:110px;object-fit:contain;
     filter:drop-shadow(0 6px 12px rgba(0,0,0,.5));}
-  .pet-acc{position:absolute;left:50%;pointer-events:none;
+
+  /* Слоты аксессуаров — теперь чисто контейнеры, координаты задаются из JS */
+  .pet-acc{position:absolute;pointer-events:none;
     filter:drop-shadow(0 3px 6px rgba(0,0,0,.5));
-    transition:transform .3s;display:flex;align-items:center;justify-content:center;}
+    transform:translate(-50%, -50%);
+    display:flex;align-items:center;justify-content:center;
+    transition:left .35s ease, top .35s ease, width .35s ease, height .35s ease;}
   .pet-acc img{width:100%;height:100%;object-fit:contain;display:block;}
-  .pet-acc[data-slot="head"]{top:2px;width:60px;height:60px;transform:translateX(-50%);}
-  .pet-acc[data-slot="eyes"]{top:62px;width:70px;height:70px;transform:translateX(-50%);}
-  .pet-acc[data-slot="neck"]{top:110px;width:60px;height:60px;transform:translateX(-50%);}
   .pet-acc.hidden{display:none;}
 
   .pet-title{margin-top:14px;}
@@ -298,7 +287,6 @@
   .skin-opt.owned .pr{color:#48d98e;}
   .skin-price-hint{text-align:center;color:#7d8b99;font-size:12.5px;margin-bottom:10px;}
 
-  /* ====== АКСЕССУАРЫ ====== */
   .acc-tabs{display:flex;gap:6px;margin-bottom:14px;}
   .acc-tab{flex:1;padding:9px 0;border:1px solid rgba(255,255,255,.08);background:transparent;
     color:#9ba5ae;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border-radius:9px;}
@@ -374,9 +362,9 @@
         </svg>
         <div class="pet-fig" id="petFig">
           <div class="pet-body" id="petBody">🐱</div>
-          <div class="pet-acc hidden" id="accHead" data-slot="head"></div>
-          <div class="pet-acc hidden" id="accEyes" data-slot="eyes"></div>
-          <div class="pet-acc hidden" id="accNeck" data-slot="neck"></div>
+          <div class="pet-acc hidden" id="accNeck"></div>
+          <div class="pet-acc hidden" id="accHead"></div>
+          <div class="pet-acc hidden" id="accEyes"></div>
         </div>
       </div>
       <div class="pet-title">
@@ -596,7 +584,7 @@ async function api(path, body){
 }
 
 /* ============================================================
-   Twemoji SVG — питомцы
+   Twemoji SVG
 ============================================================ */
 const TWEMOJI_BASE = "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/";
 function twemoji(cp){
@@ -604,8 +592,6 @@ function twemoji(cp){
   clean = clean.replace(/_/g, "-");
   return TWEMOJI_BASE + clean + ".svg";
 }
-
-/* картинка с fallback на эмодзи */
 function emojiImg(cp, size, emojiFallback){
   const sz = size || 32;
   const fb = emojiFallback || "";
@@ -641,11 +627,11 @@ const SKINS = {
   },
 };
 const SKIN_PRICE = 50;
-function stagesFor(k){ return (SKINS[k] || SKINS.classic).stages; }
 function cpsFor(k){ return (SKINS[k] || SKINS.classic).cps; }
+function stagesFor(k){ return (SKINS[k] || SKINS.classic).stages; }
 function stageNamesFor(k){ return (SKINS[k] || SKINS.classic).stageNames; }
 
-/* Аксессуары — codepoint + эмодзи-fallback */
+/* Аксессуары (id → codepoint + emoji-fallback) */
 const ACC_CP = {
   crown:      { cp: "1f451", emoji: "👑" },
   tophat:     { cp: "1f3a9", emoji: "🎩" },
@@ -664,6 +650,96 @@ const ACC_CP = {
   beads:      { cp: "1f4ff", emoji: "📿" },
   ribbon:     { cp: "1f397", emoji: "🎗" },
 };
+
+/* ============================================================
+   ПОЗИЦИИ АКСЕССУАРОВ ПО СТАДИЯМ
+   ------------------------------------------------------------
+   x — % от левого края .pet-stage (0..100, 50 = центр)
+   y — % от верхнего края (0..100, 50 = центр)
+   w — ширина аксессуара в px
+   null — не показывать на этой стадии
+============================================================ */
+const ACC_POS = {
+  cat: [
+    { head:{x:50,y:32,w:52}, eyes:null,               neck:null },              // яйцо
+    { head:{x:50,y:36,w:58}, eyes:{x:50,y:56,w:52},   neck:{x:50,y:78,w:46} }, // котёнок (морда)
+    { head:{x:36,y:32,w:54}, eyes:{x:36,y:48,w:50},   neck:{x:38,y:68,w:44} }, // котик (тело)
+    { head:{x:36,y:32,w:54}, eyes:{x:36,y:48,w:50},   neck:{x:38,y:68,w:44} }, // чёрный кот
+    { head:{x:38,y:28,w:54}, eyes:{x:38,y:44,w:50},   neck:{x:40,y:64,w:44} }, // леопард
+    { head:{x:36,y:28,w:54}, eyes:{x:36,y:44,w:50},   neck:{x:38,y:64,w:44} }, // тигр
+    { head:{x:50,y:26,w:64}, eyes:{x:50,y:48,w:58},   neck:{x:50,y:72,w:50} }, // лев (грива)
+    { head:{x:50,y:32,w:60}, eyes:{x:50,y:52,w:54},   neck:{x:50,y:76,w:46} }, // тигриная морда
+  ],
+  classic: [
+    { head:{x:50,y:32,w:52}, eyes:null,               neck:null },              // яйцо
+    { head:{x:50,y:34,w:54}, eyes:{x:50,y:52,w:50},   neck:{x:50,y:72,w:44} }, // птенец в скорлупе
+    { head:{x:50,y:30,w:56}, eyes:{x:50,y:46,w:50},   neck:{x:50,y:66,w:46} }, // цыплёнок
+    { head:{x:50,y:30,w:56}, eyes:{x:50,y:46,w:50},   neck:{x:50,y:66,w:46} }, // подросток
+    { head:{x:50,y:26,w:56}, eyes:{x:50,y:42,w:50},   neck:{x:50,y:62,w:48} }, // петух
+    { head:{x:50,y:28,w:60}, eyes:{x:50,y:48,w:54},   neck:{x:50,y:70,w:52} }, // орёл
+    { head:{x:50,y:24,w:64}, eyes:{x:50,y:48,w:58},   neck:{x:50,y:72,w:52} }, // сова
+    { head:{x:50,y:30,w:62}, eyes:{x:50,y:52,w:56},   neck:{x:50,y:76,w:50} }, // легенда
+  ],
+  space: [
+    { head:null,             eyes:null,               neck:null },              // туманность
+    { head:{x:50,y:32,w:52}, eyes:null,               neck:null },              // луна
+    { head:{x:50,y:36,w:46}, eyes:null,               neck:null },              // звезда
+    { head:{x:50,y:36,w:46}, eyes:null,               neck:null },              // яркая звезда
+    { head:{x:50,y:38,w:46}, eyes:null,               neck:null },              // искры
+    { head:{x:56,y:42,w:44}, eyes:null,               neck:null },              // комета
+    { head:{x:50,y:38,w:48}, eyes:null,               neck:null },              // падающая
+    { head:{x:50,y:30,w:62}, eyes:{x:50,y:50,w:54},   neck:null },              // солнце
+  ],
+  dino: [
+    { head:{x:50,y:32,w:52}, eyes:null,               neck:null },              // яйцо
+    { head:{x:50,y:34,w:52}, eyes:{x:50,y:52,w:48},   neck:{x:50,y:74,w:44} }, // ящерка
+    { head:{x:38,y:30,w:50}, eyes:{x:38,y:46,w:46},   neck:{x:40,y:66,w:44} }, // динозаврик
+    { head:{x:48,y:30,w:54}, eyes:{x:48,y:46,w:50},   neck:{x:48,y:66,w:46} }, // юный дино
+    { head:{x:48,y:34,w:54}, eyes:{x:48,y:50,w:50},   neck:{x:48,y:70,w:46} }, // ящер
+    { head:{x:44,y:28,w:58}, eyes:{x:44,y:46,w:52},   neck:{x:46,y:68,w:48} }, // хищный дино
+    { head:{x:50,y:32,w:60}, eyes:{x:50,y:50,w:54},   neck:{x:50,y:74,w:50} }, // древний ящер
+    { head:null,             eyes:null,               neck:null },              // вулкан
+  ],
+};
+
+/* ============================================================
+   Применение позиций аксессуаров по скину + стадии
+============================================================ */
+const ACC_SLOT_IDS = { head: "accHead", eyes: "accEyes", neck: "accNeck" };
+
+function applyAccessories(){
+  if (!pet || pet.dead){
+    for (const id of Object.values(ACC_SLOT_IDS)) $(id).classList.add("hidden");
+    return;
+  }
+  const st = stageFromLevel(levelFromXp(pet.xp));
+  const skin = pet.skin || "classic";
+  const positions = (ACC_POS[skin] || ACC_POS.classic)[st] || {};
+  const equipped = pet.accessories_equipped || {};
+
+  for (const slot of ["head","eyes","neck"]){
+    const el = $(ACC_SLOT_IDS[slot]);
+    const pos = positions[slot];
+    const accId = equipped[slot];
+    if (!pos || !accId){
+      el.classList.add("hidden");
+      el.innerHTML = "";
+      continue;
+    }
+    const data = ACC_CP[accId];
+    if (!data){
+      el.classList.add("hidden");
+      el.innerHTML = "";
+      continue;
+    }
+    el.style.left = pos.x + "%";
+    el.style.top  = pos.y + "%";
+    el.style.width  = pos.w + "px";
+    el.style.height = pos.w + "px";
+    el.innerHTML = emojiImg(data.cp, Math.round(pos.w * 0.95), data.emoji);
+    el.classList.remove("hidden");
+  }
+}
 
 const SEASONS = {
   winter: { emoji:"❄️", name:"Зима" }, spring: { emoji:"🌸", name:"Весна" },
@@ -706,16 +782,10 @@ const xpForLevel = lvl => (lvl-1)*XP_PER_LEVEL;
 const stageFromLevel = l => l>=28?7 : l>=24?6 : l>=20?5 : l>=16?4 : l>=12?3 : l>=8?2 : l>=4?1 : 0;
 const esc = s => String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-/* ============================================================
-   REALTIME
-============================================================ */
+/* REALTIME */
 function unsubscribeFromPet(){
-  if (realtimeChannel) {
-    try { sb.removeChannel(realtimeChannel); } catch(e){}
-    realtimeChannel = null;
-  }
+  if (realtimeChannel) { try { sb.removeChannel(realtimeChannel); } catch(e){} realtimeChannel = null; }
 }
-
 function subscribeToPet(){
   unsubscribeFromPet();
   if (!petId) return;
@@ -743,13 +813,10 @@ function subscribeToPet(){
     .subscribe();
 }
 
-/* ============================================================
-   ЖИВОЙ ФОН
-============================================================ */
+/* ЖИВОЙ ФОН */
 let bgMode = "particles";
 let bgParticles = [];
 let bgSetMode = null;
-
 (function(){
   const cv = document.getElementById("bgCanvas");
   if (!cv) return;
@@ -813,9 +880,7 @@ let bgSetMode = null;
   draw();
 })();
 
-/* ============================================================
-   УТИЛИТЫ
-============================================================ */
+/* УТИЛИТЫ */
 function toast(msg, gold){
   const el=$("toastEl"); el.textContent=msg; el.classList.toggle("gold",!!gold);
   el.classList.add("show"); clearTimeout(el._t);
@@ -836,7 +901,6 @@ async function goMenu(){
   $("petView").style.display = "none";
   await initMenu();
 }
-
 function moodText(p){
   if(p.dead) return "Умер…";
   if(p.health<30)return"Мне плохо… 💔"; if(p.hunger<20)return"Я голоден! 🍖";
@@ -853,9 +917,7 @@ function renderWeather(){
   $("weatherEl").innerHTML = s.emoji + " " + s.name + " · <b>" + w + "</b>";
 }
 
-/* ============================================================
-   МЕНЮ
-============================================================ */
+/* МЕНЮ */
 async function initMenu(){
   $("loader").style.display = "block";
   $("menuView").style.display = "none";
@@ -934,8 +996,7 @@ async function openPet(id){
 
   try {
     const res = await api("/api/open", { pet_id: id });
-    pet = res.pet;
-    me = res.me;
+    pet = res.pet; me = res.me;
     if (!pet) { toast("Питомец не найден"); await goMenu(); return; }
     if (bgSetMode) bgSetMode(pet.skin === "space" ? "stars" : "particles");
     if (me) {
@@ -982,15 +1043,13 @@ async function createPet(){
   }
 }
 
-/* ============================================================
-   ПИТОМЕЦ
-============================================================ */
+/* ПИТОМЕЦ */
 async function renderDead(){
   $("aliveContent").style.display = "none";
   $("deadCard").style.display = "block";
   $("petBody").innerHTML = emojiImg("1f480", 90, "💀");
   $("petBody").style.filter = "grayscale(.4)";
-  ["accHead","accEyes","accNeck"].forEach(id=>$(id).classList.add("hidden"));
+  ["accHead","accEyes","accNeck"].forEach(id=>{ $(id).classList.add("hidden"); $(id).innerHTML=""; });
   $("nameEl").textContent = pet.name;
   $("stageEl").textContent = "Умер";
   $("moodEl").textContent = "Умер…";
@@ -1101,23 +1160,6 @@ async function loadEvents(){
   }).join("");
 }
 
-function renderAccessories(){
-  const eq = pet.accessories_equipped || {};
-  const slots = { head: "accHead", eyes: "accEyes", neck: "accNeck" };
-  for (const [slot, elId] of Object.entries(slots)){
-    const el = $(elId);
-    const accId = eq[slot];
-    const data = accId && ACC_CP[accId];
-    if (data){
-      el.innerHTML = emojiImg(data.cp, 60, data.emoji);
-      el.classList.remove("hidden");
-    } else {
-      el.innerHTML = "";
-      el.classList.add("hidden");
-    }
-  }
-}
-
 function render(){
   if(!pet) return;
   if (pet.dead) return;
@@ -1129,8 +1171,8 @@ function render(){
   const names = stageNamesFor(pet.skin);
 
   $("petBody").style.filter = "";
-  $("petBody").innerHTML = emojiImg(cps[st] || cps[0], 90, stages[st] || stages[0]);
-  renderAccessories();
+  $("petBody").innerHTML = emojiImg(cps[st] || cps[0], 110, stages[st] || stages[0]);
+  applyAccessories();
 
   $("nameEl").textContent = pet.name;
   $("petIdEl").textContent = "ID: " + pet.id;
@@ -1181,7 +1223,6 @@ function render(){
   });
 
   if(me) $("scoreEl").innerHTML = "Твои очки: <b>"+me.score+"</b>";
-
   if(me){
     const last = me.last_daily_at ? new Date(me.last_daily_at).getTime() : 0;
     const can = Date.now()-last > 24*60*60*1000;
@@ -1448,9 +1489,7 @@ async function changeSkin(newSkin){
   }
 }
 
-/* ============================================================
-   АКСЕССУАРЫ
-============================================================ */
+/* АКСЕССУАРЫ */
 async function openAccModal(){
   if(!pet || !isOwner) { toast("Только владелец"); return; }
   $("accPid").textContent = "ID: " + petId;
@@ -1549,9 +1588,7 @@ async function onAccClick(accId, owned){
   }
 }
 
-/* ============================================================
-   СТАРТ
-============================================================ */
+/* СТАРТ */
 (async ()=>{
   try {
     if (petId) await openPet(petId);
