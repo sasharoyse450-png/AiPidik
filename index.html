@@ -134,7 +134,6 @@
   .pet-body img{width:110px;height:110px;object-fit:contain;
     filter:drop-shadow(0 6px 12px rgba(0,0,0,.5));}
 
-  /* Слоты аксессуаров — теперь чисто контейнеры, координаты задаются из JS */
   .pet-acc{position:absolute;pointer-events:none;
     filter:drop-shadow(0 3px 6px rgba(0,0,0,.5));
     transform:translate(-50%, -50%);
@@ -142,6 +141,17 @@
     transition:left .35s ease, top .35s ease, width .35s ease, height .35s ease;}
   .pet-acc img{width:100%;height:100%;object-fit:contain;display:block;}
   .pet-acc.hidden{display:none;}
+
+  /* редактор */
+  .editor-active .pet-acc{pointer-events:auto !important;cursor:grab;
+    outline:2px dashed rgba(122,92,255,.5);outline-offset:2px;border-radius:6px;}
+  .editor-active .pet-acc:active{cursor:grabbing;}
+  .editor-active #accHead{outline-color:rgba(255,157,67,.7);}
+  .editor-active #accEyes{outline-color:rgba(72,219,251,.7);}
+  .editor-active #accNeck{outline-color:rgba(255,80,180,.7);}
+  .editor-active #accHead,
+  .editor-active #accEyes,
+  .editor-active #accNeck{pointer-events:auto !important;}
 
   .pet-title{margin-top:14px;}
   .pet-title h1{font-size:22px;font-weight:700;margin:0;
@@ -260,6 +270,7 @@
     border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.3);color:#fff;
     font-size:15px;font-family:inherit;margin-bottom:14px;}
   .modal-box input:focus{outline:none;border-color:#7a5cff;}
+  .modal-box input[type="range"]{padding:0;height:6px;background:rgba(255,255,255,.1);border:0;margin-bottom:6px;}
   .preset-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px;}
   .preset-row button{padding:10px 0;border:1px solid rgba(255,255,255,.1);background:transparent;
     color:#fff;border-radius:9px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;}
@@ -287,8 +298,8 @@
   .skin-opt.owned .pr{color:#48d98e;}
   .skin-price-hint{text-align:center;color:#7d8b99;font-size:12.5px;margin-bottom:10px;}
 
-  .acc-tabs{display:flex;gap:6px;margin-bottom:14px;}
-  .acc-tab{flex:1;padding:9px 0;border:1px solid rgba(255,255,255,.08);background:transparent;
+  .acc-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+  .acc-tab{flex:1;min-width:70px;padding:9px 0;border:1px solid rgba(255,255,255,.08);background:transparent;
     color:#9ba5ae;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border-radius:9px;}
   .acc-tab.active{background:#7a5cff;border-color:#7a5cff;color:#fff;}
   .acc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
@@ -373,6 +384,7 @@
           <button class="edit-btn" id="cardBtn" title="Карточка" style="display:none">📸</button>
           <button class="edit-btn" id="skinBtn" style="display:none">🎨</button>
           <button class="edit-btn" id="accBtn" style="display:none">🎩</button>
+          <button class="edit-btn" id="editorBtn" style="display:none" title="Редактор позиций">🎯</button>
           <button class="edit-btn" id="renameBtn" style="display:none">✏️</button>
           <button class="edit-btn" id="deleteBtn" style="display:none;color:#c96d6d">🗑</button>
         </h1>
@@ -493,6 +505,71 @@
     <div class="acc-grid" id="accGrid"></div>
     <div class="acc-hint" id="accHint"></div>
     <div class="modal-btns"><button class="cancel" id="accCancel">Закрыть</button></div>
+  </div>
+</div>
+
+<div class="modal" id="editorModal">
+  <div class="modal-box" style="max-height:95vh">
+    <h3>🎯 Редактор позиций</h3>
+    <div class="sub">Тащи аксессуар пальцем по сцене. Слайдер — размер. Потом «Скопировать JSON» → скинь в чат.</div>
+
+    <label>Скин</label>
+    <div class="acc-tabs" id="edSkinTabs" style="margin-bottom:10px">
+      <button class="acc-tab active" data-skin="cat">🐱 Кот</button>
+      <button class="acc-tab" data-skin="classic">🐦 Птица</button>
+      <button class="acc-tab" data-skin="space">🌌 Космос</button>
+      <button class="acc-tab" data-skin="dino">🦕 Дино</button>
+    </div>
+
+    <label>Стадия (0–7)</label>
+    <div class="acc-tabs" id="edStageTabs" style="margin-bottom:14px">
+      <button class="acc-tab active" data-stage="0">0</button>
+      <button class="acc-tab" data-stage="1">1</button>
+      <button class="acc-tab" data-stage="2">2</button>
+      <button class="acc-tab" data-stage="3">3</button>
+      <button class="acc-tab" data-stage="4">4</button>
+      <button class="acc-tab" data-stage="5">5</button>
+      <button class="acc-tab" data-stage="6">6</button>
+      <button class="acc-tab" data-stage="7">7</button>
+    </div>
+
+    <label>Слот</label>
+    <div class="acc-tabs" id="edSlotTabs" style="margin-bottom:14px">
+      <button class="acc-tab active" data-slot="head">👒 Голова</button>
+      <button class="acc-tab" data-slot="eyes">🕶 Глаза</button>
+      <button class="acc-tab" data-slot="neck">🎀 Шея</button>
+    </div>
+
+    <label>Размер: <span id="edSizeVal">50</span> px</label>
+    <input type="range" id="edSize" min="20" max="120" value="50" step="1"
+      style="width:100%;margin-bottom:14px;" />
+
+    <label>Координаты</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+      <div>
+        <div style="font-size:11px;color:#7d8b99;margin-bottom:4px">X %</div>
+        <input type="number" id="edX" step="0.5" value="50" style="margin:0" />
+      </div>
+      <div>
+        <div style="font-size:11px;color:#7d8b99;margin-bottom:4px">Y %</div>
+        <input type="number" id="edY" step="0.5" value="50" style="margin:0" />
+      </div>
+    </div>
+
+    <div class="modal-btns" style="margin-bottom:8px">
+      <button class="cancel" id="edClear">Сбросить эту позицию</button>
+    </div>
+    <div class="modal-btns" style="margin-bottom:8px">
+      <button class="cancel" id="edResetAll">Сбросить ВСЁ</button>
+    </div>
+    <div class="modal-btns" style="margin-bottom:8px">
+      <button class="ok" id="edCopy">📋 Скопировать JSON</button>
+    </div>
+    <div class="modal-btns">
+      <button class="cancel" id="edClose">Закрыть</button>
+    </div>
+
+    <div id="edStatus" style="text-align:center;color:#48d98e;font-size:12px;margin-top:10px"></div>
   </div>
 </div>
 
@@ -631,7 +708,7 @@ function cpsFor(k){ return (SKINS[k] || SKINS.classic).cps; }
 function stagesFor(k){ return (SKINS[k] || SKINS.classic).stages; }
 function stageNamesFor(k){ return (SKINS[k] || SKINS.classic).stageNames; }
 
-/* Аксессуары (id → codepoint + emoji-fallback) */
+/* Аксессуары */
 const ACC_CP = {
   crown:      { cp: "1f451", emoji: "👑" },
   tophat:     { cp: "1f3a9", emoji: "🎩" },
@@ -652,59 +729,74 @@ const ACC_CP = {
 };
 
 /* ============================================================
-   ПОЗИЦИИ АКСЕССУАРОВ ПО СТАДИЯМ
-   ------------------------------------------------------------
-   x — % от левого края .pet-stage (0..100, 50 = центр)
-   y — % от верхнего края (0..100, 50 = центр)
-   w — ширина аксессуара в px
-   null — не показывать на этой стадии
+   БАЗОВЫЕ ПОЗИЦИИ (стартовые; в редакторе можно переопределить)
+   x,y — % от .pet-stage, w — ширина в px
 ============================================================ */
 const ACC_POS = {
   cat: [
-    { head:{x:50,y:32,w:52}, eyes:null,               neck:null },              // яйцо
-    { head:{x:50,y:36,w:58}, eyes:{x:50,y:56,w:52},   neck:{x:50,y:78,w:46} }, // котёнок (морда)
-    { head:{x:36,y:32,w:54}, eyes:{x:36,y:48,w:50},   neck:{x:38,y:68,w:44} }, // котик (тело)
-    { head:{x:36,y:32,w:54}, eyes:{x:36,y:48,w:50},   neck:{x:38,y:68,w:44} }, // чёрный кот
-    { head:{x:38,y:28,w:54}, eyes:{x:38,y:44,w:50},   neck:{x:40,y:64,w:44} }, // леопард
-    { head:{x:36,y:28,w:54}, eyes:{x:36,y:44,w:50},   neck:{x:38,y:64,w:44} }, // тигр
-    { head:{x:50,y:26,w:64}, eyes:{x:50,y:48,w:58},   neck:{x:50,y:72,w:50} }, // лев (грива)
-    { head:{x:50,y:32,w:60}, eyes:{x:50,y:52,w:54},   neck:{x:50,y:76,w:46} }, // тигриная морда
+    { head:{x:50,y:34,w:50}, eyes:null,             neck:null },
+    { head:{x:50,y:34,w:56}, eyes:{x:50,y:54,w:50}, neck:{x:50,y:74,w:44} },
+    { head:{x:30,y:22,w:50}, eyes:{x:30,y:38,w:46}, neck:{x:32,y:58,w:40} },
+    { head:{x:30,y:22,w:50}, eyes:{x:30,y:38,w:46}, neck:{x:32,y:58,w:40} },
+    { head:{x:30,y:22,w:50}, eyes:{x:30,y:38,w:46}, neck:{x:32,y:58,w:40} },
+    { head:{x:30,y:22,w:50}, eyes:{x:30,y:38,w:46}, neck:{x:32,y:58,w:40} },
+    { head:{x:46,y:20,w:58}, eyes:{x:46,y:40,w:52}, neck:{x:46,y:62,w:46} },
+    { head:{x:50,y:30,w:56}, eyes:{x:50,y:50,w:50}, neck:{x:50,y:72,w:44} },
   ],
   classic: [
-    { head:{x:50,y:32,w:52}, eyes:null,               neck:null },              // яйцо
-    { head:{x:50,y:34,w:54}, eyes:{x:50,y:52,w:50},   neck:{x:50,y:72,w:44} }, // птенец в скорлупе
-    { head:{x:50,y:30,w:56}, eyes:{x:50,y:46,w:50},   neck:{x:50,y:66,w:46} }, // цыплёнок
-    { head:{x:50,y:30,w:56}, eyes:{x:50,y:46,w:50},   neck:{x:50,y:66,w:46} }, // подросток
-    { head:{x:50,y:26,w:56}, eyes:{x:50,y:42,w:50},   neck:{x:50,y:62,w:48} }, // петух
-    { head:{x:50,y:28,w:60}, eyes:{x:50,y:48,w:54},   neck:{x:50,y:70,w:52} }, // орёл
-    { head:{x:50,y:24,w:64}, eyes:{x:50,y:48,w:58},   neck:{x:50,y:72,w:52} }, // сова
-    { head:{x:50,y:30,w:62}, eyes:{x:50,y:52,w:56},   neck:{x:50,y:76,w:50} }, // легенда
+    { head:{x:50,y:34,w:50}, eyes:null,             neck:null },
+    { head:{x:50,y:34,w:54}, eyes:{x:50,y:52,w:48}, neck:{x:50,y:72,w:42} },
+    { head:{x:50,y:28,w:54}, eyes:{x:50,y:46,w:48}, neck:{x:50,y:66,w:42} },
+    { head:{x:50,y:28,w:54}, eyes:{x:50,y:46,w:48}, neck:{x:50,y:66,w:42} },
+    { head:{x:38,y:22,w:50}, eyes:{x:38,y:40,w:46}, neck:{x:40,y:60,w:42} },
+    { head:{x:50,y:24,w:56}, eyes:{x:50,y:44,w:50}, neck:{x:50,y:66,w:46} },
+    { head:{x:50,y:22,w:60}, eyes:{x:50,y:44,w:54}, neck:{x:50,y:68,w:48} },
+    { head:{x:50,y:28,w:58}, eyes:{x:50,y:48,w:52}, neck:{x:50,y:70,w:46} },
   ],
   space: [
-    { head:null,             eyes:null,               neck:null },              // туманность
-    { head:{x:50,y:32,w:52}, eyes:null,               neck:null },              // луна
-    { head:{x:50,y:36,w:46}, eyes:null,               neck:null },              // звезда
-    { head:{x:50,y:36,w:46}, eyes:null,               neck:null },              // яркая звезда
-    { head:{x:50,y:38,w:46}, eyes:null,               neck:null },              // искры
-    { head:{x:56,y:42,w:44}, eyes:null,               neck:null },              // комета
-    { head:{x:50,y:38,w:48}, eyes:null,               neck:null },              // падающая
-    { head:{x:50,y:30,w:62}, eyes:{x:50,y:50,w:54},   neck:null },              // солнце
+    { head:null,             eyes:null,             neck:null },
+    { head:{x:50,y:32,w:50}, eyes:null,             neck:null },
+    { head:{x:50,y:32,w:44}, eyes:null,             neck:null },
+    { head:{x:50,y:32,w:44}, eyes:null,             neck:null },
+    { head:{x:50,y:32,w:44}, eyes:null,             neck:null },
+    { head:{x:54,y:36,w:44}, eyes:null,             neck:null },
+    { head:{x:50,y:34,w:46}, eyes:null,             neck:null },
+    { head:{x:50,y:26,w:60}, eyes:{x:50,y:46,w:52}, neck:null },
   ],
   dino: [
-    { head:{x:50,y:32,w:52}, eyes:null,               neck:null },              // яйцо
-    { head:{x:50,y:34,w:52}, eyes:{x:50,y:52,w:48},   neck:{x:50,y:74,w:44} }, // ящерка
-    { head:{x:38,y:30,w:50}, eyes:{x:38,y:46,w:46},   neck:{x:40,y:66,w:44} }, // динозаврик
-    { head:{x:48,y:30,w:54}, eyes:{x:48,y:46,w:50},   neck:{x:48,y:66,w:46} }, // юный дино
-    { head:{x:48,y:34,w:54}, eyes:{x:48,y:50,w:50},   neck:{x:48,y:70,w:46} }, // ящер
-    { head:{x:44,y:28,w:58}, eyes:{x:44,y:46,w:52},   neck:{x:46,y:68,w:48} }, // хищный дино
-    { head:{x:50,y:32,w:60}, eyes:{x:50,y:50,w:54},   neck:{x:50,y:74,w:50} }, // древний ящер
-    { head:null,             eyes:null,               neck:null },              // вулкан
+    { head:{x:50,y:34,w:50}, eyes:null,             neck:null },
+    { head:{x:34,y:28,w:48}, eyes:{x:34,y:44,w:44}, neck:{x:36,y:64,w:40} },
+    { head:{x:38,y:22,w:48}, eyes:{x:38,y:38,w:44}, neck:{x:40,y:58,w:40} },
+    { head:{x:34,y:22,w:50}, eyes:{x:34,y:38,w:46}, neck:{x:36,y:58,w:42} },
+    { head:{x:38,y:28,w:48}, eyes:{x:38,y:44,w:44}, neck:{x:40,y:64,w:40} },
+    { head:{x:36,y:20,w:52}, eyes:{x:36,y:38,w:48}, neck:{x:38,y:58,w:42} },
+    { head:{x:48,y:26,w:56}, eyes:{x:48,y:44,w:50}, neck:{x:48,y:66,w:44} },
+    { head:null,             eyes:null,             neck:null },
   ],
 };
 
-/* ============================================================
-   Применение позиций аксессуаров по скину + стадии
-============================================================ */
+/* overrides из localStorage */
+const LS_KEY = "acc_pos_overrides_v1";
+function loadOverrides(){
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}") || {}; } catch(e){ return {}; }
+}
+function saveOverrides(o){
+  try { localStorage.setItem(LS_KEY, JSON.stringify(o)); } catch(e){}
+}
+function getPos(skin, stage, slot){
+  const ov = loadOverrides();
+  const key = `${skin}_${stage}_${slot}`;
+  if (ov[key]) return ov[key];
+  const base = (ACC_POS[skin] || ACC_POS.classic)[stage] || {};
+  return base[slot] || null;
+}
+function setPos(skin, stage, slot, val){
+  const ov = loadOverrides();
+  const key = `${skin}_${stage}_${slot}`;
+  if (val) ov[key] = val; else delete ov[key];
+  saveOverrides(ov);
+}
+
 const ACC_SLOT_IDS = { head: "accHead", eyes: "accEyes", neck: "accNeck" };
 
 function applyAccessories(){
@@ -714,12 +806,11 @@ function applyAccessories(){
   }
   const st = stageFromLevel(levelFromXp(pet.xp));
   const skin = pet.skin || "classic";
-  const positions = (ACC_POS[skin] || ACC_POS.classic)[st] || {};
   const equipped = pet.accessories_equipped || {};
 
   for (const slot of ["head","eyes","neck"]){
     const el = $(ACC_SLOT_IDS[slot]);
-    const pos = positions[slot];
+    const pos = getPos(skin, st, slot);
     const accId = equipped[slot];
     if (!pos || !accId){
       el.classList.add("hidden");
@@ -1071,6 +1162,7 @@ async function renderDead(){
   $("cardBtn").style.display = "none";
   $("skinBtn").style.display = "none";
   $("accBtn").style.display = "none";
+  $("editorBtn").style.display = "none";
   $("renameBtn").style.display = "none";
   $("deleteBtn").style.display = "none";
   $("leaveBtn").style.display = isOwner ? "none" : "block";
@@ -1181,6 +1273,7 @@ function render(){
   $("cardBtn").style.display = "inline-block";
   $("skinBtn").style.display = isOwner ? "inline-block" : "none";
   $("accBtn").style.display = isOwner ? "inline-block" : "none";
+  $("editorBtn").style.display = isOwner ? "inline-block" : "none";
   $("renameBtn").style.display = isOwner ? "inline-block" : "none";
   $("deleteBtn").style.display = isOwner ? "inline-block" : "none";
   $("leaveBtn").style.display = isOwner ? "none" : "block";
@@ -1223,6 +1316,7 @@ function render(){
   });
 
   if(me) $("scoreEl").innerHTML = "Твои очки: <b>"+me.score+"</b>";
+
   if(me){
     const last = me.last_daily_at ? new Date(me.last_daily_at).getTime() : 0;
     const can = Date.now()-last > 24*60*60*1000;
@@ -1350,6 +1444,9 @@ function bindCommonOnce(){
       renderAccGrid();
     });
   });
+
+  $("editorBtn").addEventListener("click", openEditor);
+  $("edClose").addEventListener("click", closeEditor);
 
   let topupAmount = 1;
   $("topupBtn").addEventListener("click", ()=>{
@@ -1586,6 +1683,220 @@ async function onAccClick(accId, owned){
   } catch(e){
     toast("Ошибка: " + (e.message||e));
   }
+}
+
+/* ============================================================
+   РЕДАКТОР ПОЗИЦИЙ
+============================================================ */
+let edSkin = "cat", edStage = 0, edSlot = "head";
+let edDragStartX = 0, edDragStartY = 0;
+let edStartLeft = 0, edStartTop = 0;
+let edActive = false;
+
+function openEditor(){
+  if (!pet || !isOwner){ toast("Только владелец"); return; }
+  edActive = true;
+  $("editorModal").classList.add("show");
+  edSkin = pet.skin || "cat";
+  edStage = stageFromLevel(levelFromXp(pet.xp));
+  edSlot = "head";
+  document.querySelectorAll("#edSkinTabs .acc-tab").forEach(b=>b.classList.toggle("active", b.dataset.skin===edSkin));
+  document.querySelectorAll("#edStageTabs .acc-tab").forEach(b=>b.classList.toggle("active", +b.dataset.stage===edStage));
+  document.querySelectorAll("#edSlotTabs .acc-tab").forEach(b=>b.classList.toggle("active", b.dataset.slot===edSlot));
+  $("petView").classList.add("editor-active");
+  ensureEditorAcc();
+  edLoadValues();
+  attachDragHandlers();
+}
+
+function closeEditor(){
+  edActive = false;
+  $("editorModal").classList.remove("show");
+  $("petView").classList.remove("editor-active");
+  render();
+}
+
+function ensureEditorAcc(){
+  const demo = { head: "crown", eyes: "sunglasses", neck: "bow" }[edSlot];
+  const equipped = pet.accessories_equipped || {};
+  equipped[edSlot] = demo;
+  pet.accessories_equipped = equipped;
+
+  if (!getPos(edSkin, edStage, edSlot)){
+    setPos(edSkin, edStage, edSlot, {x:50, y:30, w:50});
+  }
+  // рисуем питомца нужного скина/стадии
+  const cps = cpsFor(edSkin);
+  const stages = stagesFor(edSkin);
+  $("petBody").innerHTML = emojiImg(cps[edStage] || cps[0], 110, stages[edStage]);
+
+  // временно подменим для applyAccessories
+  const realSkin = pet.skin;
+  const realXp = pet.xp;
+  pet.skin = edSkin;
+  pet.xp = edStage * 50 + 1;
+  applyAccessories();
+  pet.skin = realSkin;
+  pet.xp = realXp;
+}
+
+function edLoadValues(){
+  const pos = getPos(edSkin, edStage, edSlot) || {x:50,y:30,w:50};
+  $("edX").value = pos.x.toFixed(1);
+  $("edY").value = pos.y.toFixed(1);
+  $("edSize").value = pos.w;
+  $("edSizeVal").textContent = pos.w;
+}
+
+function edApplyFromInputs(){
+  const x = parseFloat($("edX").value) || 50;
+  const y = parseFloat($("edY").value) || 30;
+  const w = parseInt($("edSize").value, 10) || 50;
+  setPos(edSkin, edStage, edSlot, {x, y, w});
+
+  const realSkin = pet.skin, realXp = pet.xp;
+  pet.skin = edSkin;
+  pet.xp = edStage * 50 + 1;
+  applyAccessories();
+  pet.skin = realSkin;
+  pet.xp = realXp;
+
+  const el = $(ACC_SLOT_IDS[edSlot]);
+  el.style.left = x + "%";
+  el.style.top  = y + "%";
+  el.style.width  = w + "px";
+  el.style.height = w + "px";
+}
+
+document.querySelectorAll("#edSkinTabs .acc-tab").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll("#edSkinTabs .acc-tab").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    edSkin = b.dataset.skin;
+    ensureEditorAcc();
+    edLoadValues();
+    attachDragHandlers();
+  });
+});
+document.querySelectorAll("#edStageTabs .acc-tab").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll("#edStageTabs .acc-tab").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    edStage = parseInt(b.dataset.stage, 10);
+    ensureEditorAcc();
+    edLoadValues();
+  });
+});
+document.querySelectorAll("#edSlotTabs .acc-tab").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll("#edSlotTabs .acc-tab").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    edSlot = b.dataset.slot;
+    ensureEditorAcc();
+    edLoadValues();
+    attachDragHandlers();
+  });
+});
+$("edSize").addEventListener("input", ()=>{
+  $("edSizeVal").textContent = $("edSize").value;
+  edApplyFromInputs();
+});
+$("edX").addEventListener("change", edApplyFromInputs);
+$("edY").addEventListener("change", edApplyFromInputs);
+
+$("edClear").addEventListener("click", ()=>{
+  setPos(edSkin, edStage, edSlot, null);
+  const base = (ACC_POS[edSkin] || ACC_POS.classic)[edStage] || {};
+  const def = base[edSlot] || {x:50, y:30, w:50};
+  setPos(edSkin, edStage, edSlot, def);
+  ensureEditorAcc();
+  edLoadValues();
+  toast("Сброшено");
+});
+$("edResetAll").addEventListener("click", ()=>{
+  if (!confirm("Удалить все твои правки позиций?")) return;
+  localStorage.removeItem(LS_KEY);
+  toast("Все правки сброшены");
+  ensureEditorAcc();
+  edLoadValues();
+});
+
+$("edCopy").addEventListener("click", ()=>{
+  const out = {};
+  for (const skin of Object.keys(SKINS)){
+    out[skin] = [];
+    for (let stage = 0; stage < 8; stage++){
+      const row = {head:null, eyes:null, neck:null};
+      for (const slot of ["head","eyes","neck"]){
+        const pos = getPos(skin, stage, slot);
+        if (pos) row[slot] = {x:+pos.x.toFixed(1), y:+pos.y.toFixed(1), w:pos.w};
+      }
+      out[skin].push(row);
+    }
+  }
+  const txt = "const ACC_POS = " + JSON.stringify(out, null, 2).replace(/"([a-zA-Z_]+)":/g, '$1:') + ";";
+  const done = ()=>{
+    $("edStatus").textContent = "✓ Скопировано — вставь в чат";
+    toast("Скопировано ✓", true);
+    setTimeout(()=>{ $("edStatus").textContent = ""; }, 3500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(()=>{
+      const ta = document.createElement("textarea");
+      ta.value = txt; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); done(); } catch(e){ toast("Не вышло скопировать"); }
+      ta.remove();
+    });
+  } else {
+    const ta = document.createElement("textarea");
+    ta.value = txt; document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); done(); } catch(e){ toast("Не вышло скопировать"); }
+    ta.remove();
+  }
+});
+
+function attachDragHandlers(){
+  const stage = document.querySelector(".pet-stage");
+  if (!stage) return;
+  ["accHead","accEyes","accNeck"].forEach(id=>{
+    const el = $(id);
+    if (!el || el._dragBound) return;
+    el._dragBound = true;
+
+    el.addEventListener("pointerdown", (e)=>{
+      if (!edActive) return;
+      if (id !== ACC_SLOT_IDS[edSlot]) return;
+      e.preventDefault();
+      e.stopPropagation();
+      try { el.setPointerCapture(e.pointerId); } catch(err){}
+      const rect = stage.getBoundingClientRect();
+      const pos = getPos(edSkin, edStage, edSlot);
+      edStartLeft = pos.x;
+      edStartTop = pos.y;
+      edDragStartX = e.clientX;
+      edDragStartY = e.clientY;
+
+      const move = (ev)=>{
+        const dx = (ev.clientX - edDragStartX) / rect.width * 100;
+        const dy = (ev.clientY - edDragStartY) / rect.height * 100;
+        const nx = Math.max(-10, Math.min(110, edStartLeft + dx));
+        const ny = Math.max(-10, Math.min(110, edStartTop + dy));
+        setPos(edSkin, edStage, edSlot, {x:nx, y:ny, w:parseInt($("edSize").value,10)});
+        el.style.left = nx + "%";
+        el.style.top  = ny + "%";
+        $("edX").value = nx.toFixed(1);
+        $("edY").value = ny.toFixed(1);
+      };
+      const up = ()=>{
+        el.removeEventListener("pointermove", move);
+        el.removeEventListener("pointerup", up);
+        el.removeEventListener("pointercancel", up);
+      };
+      el.addEventListener("pointermove", move);
+      el.addEventListener("pointerup", up);
+      el.addEventListener("pointercancel", up);
+    }, { passive: false });
+  });
 }
 
 /* СТАРТ */
