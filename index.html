@@ -19,6 +19,46 @@
   .card::before{content:attr(data-wm);position:absolute;right:-14px;top:-22px;
     font-size:110px;opacity:.06;pointer-events:none;line-height:1;user-select:none;}
   .card > *{position:relative;z-index:1;}
+
+  /* ===== SPLASH ===== */
+  .splash{
+    position:fixed;inset:0;z-index:9999;
+    background:#0d0d0d;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    transition:opacity .7s ease, visibility .7s ease;
+  }
+  .splash.hide{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
+  .splash-text{
+    font-size:32px;
+    font-weight:800;
+    letter-spacing:-.6px;
+    color:#fff;
+    opacity:0;
+    transform:translateY(18px);
+    animation:splashIn .9s ease forwards;
+    animation-delay:.15s;
+  }
+  .splash-sub{
+    font-size:14px;
+    color:#7d8b99;
+    font-weight:600;
+    opacity:0;
+    transform:translateY(12px);
+    animation:splashIn .9s ease forwards;
+    animation-delay:.55s;
+  }
+  @keyframes splashIn{
+    to{ opacity:1; transform:translateY(0); }
+  }
+
   .loader{text-align:center;padding:48px 20px;color:#7d8b99;font-size:13px;}
   .fatal{color:#ff6b6b;font-size:13px;padding:16px;line-height:1.5;word-break:break-word;
     border:1px solid rgba(255,60,90,.25);border-radius:14px;background:rgba(255,60,90,.06);}
@@ -256,6 +296,11 @@
 </style>
 </head>
 <body>
+
+<div id="splash" class="splash">
+  <div class="splash-text">Добро пожаловать</div>
+  <div class="splash-sub">🐾 Питомец чата</div>
+</div>
 
 <div class="wrap">
   <div class="loader" id="loader">Загрузка…</div>
@@ -644,7 +689,6 @@ async function initMenu(){
     });
   }
 
-  // Загружаем топ питомцев в меню
   await loadGlobalRating();
 
   $("loader").style.display = "none";
@@ -1286,15 +1330,28 @@ async function changeSkin(newSkin){
   loadLeaderboard(); openSkinModal();
 }
 
+/* ============================================================
+   СТАРТ
+============================================================ */
 (async ()=>{
   try {
+    // Приложение загружается под сплэшем
     if (petId) {
       await openPet(petId);
     } else {
       await initMenu();
     }
+
+    // Убираем сплэш через 1.2 сек после загрузки
+    setTimeout(()=>{
+      const sp = document.getElementById("splash");
+      if (sp) sp.classList.add("hide");
+      setTimeout(()=>{ if (sp && sp.parentNode) sp.parentNode.removeChild(sp); }, 800);
+    }, 1200);
   } catch(e){
     console.error(e); fatal("Ошибка запуска", e);
+    const sp = document.getElementById("splash");
+    if (sp) sp.classList.add("hide");
   }
 })();
 </script>
