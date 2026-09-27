@@ -6,7 +6,6 @@
 <title>Питомец</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
@@ -60,15 +59,15 @@
   .event:nth-child(7){animation-delay:.33s;}
   .event:nth-child(8){animation-delay:.38s;}
   @keyframes eventSlide{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
-  .lb, .pet-row, .pet-list-item{animation:fadeIn .35s ease both;}
-  .lb:nth-child(1), .pet-row:nth-child(1), .pet-list-item:nth-child(1){animation-delay:.05s;}
-  .lb:nth-child(2), .pet-row:nth-child(2), .pet-list-item:nth-child(2){animation-delay:.1s;}
-  .lb:nth-child(3), .pet-row:nth-child(3), .pet-list-item:nth-child(3){animation-delay:.15s;}
-  .lb:nth-child(4), .pet-row:nth-child(4), .pet-list-item:nth-child(4){animation-delay:.2s;}
-  .lb:nth-child(5), .pet-row:nth-child(5), .pet-list-item:nth-child(5){animation-delay:.25s;}
-  .pet{animation:petIn .5s cubic-bezier(.2,.9,.3,1.2) both;}
+  .lb,.pet-row,.pet-list-item{animation:fadeIn .35s ease both;}
+  .lb:nth-child(1),.pet-row:nth-child(1),.pet-list-item:nth-child(1){animation-delay:.05s;}
+  .lb:nth-child(2),.pet-row:nth-child(2),.pet-list-item:nth-child(2){animation-delay:.1s;}
+  .lb:nth-child(3),.pet-row:nth-child(3),.pet-list-item:nth-child(3){animation-delay:.15s;}
+  .lb:nth-child(4),.pet-row:nth-child(4),.pet-list-item:nth-child(4){animation-delay:.2s;}
+  .lb:nth-child(5),.pet-row:nth-child(5),.pet-list-item:nth-child(5){animation-delay:.25s;}
+  .pet-fig{animation:petIn .5s cubic-bezier(.2,.9,.3,1.2) both;}
   @keyframes petIn{from{opacity:0;transform:scale(.7);}to{opacity:1;transform:scale(1);}}
-  .pet.skin-dissolve{animation:skinDissolve .8s cubic-bezier(.2,.9,.3,1) both;}
+  .pet-fig.skin-dissolve{animation:skinDissolve .8s cubic-bezier(.2,.9,.3,1) both;}
   @keyframes skinDissolve{
     0%{opacity:1;transform:scale(1) rotate(0deg);filter:blur(0);}
     40%{opacity:.3;transform:scale(1.4) rotate(8deg);filter:blur(6px);}
@@ -120,7 +119,9 @@
   .pet-list-item{display:flex;align-items:center;gap:12px;padding:14px 4px;
     border-bottom:1px solid rgba(127,127,127,.1);cursor:pointer;}
   .pet-list-item:last-child{border:0;}
-  .pet-list-item .ic{font-size:32px;flex:0 0 auto;}
+  .pet-list-item .ic{font-size:32px;flex:0 0 auto;width:40px;height:40px;
+    display:flex;align-items:center;justify-content:center;}
+  .pet-list-item .ic img{width:100%;height:100%;object-fit:contain;}
   .pet-list-item .info{flex:1;min-width:0;}
   .pet-list-item .nm{font-size:15px;font-weight:600;margin-bottom:2px;}
   .pet-list-item .st{font-size:12px;color:#7d8b99;}
@@ -131,16 +132,28 @@
     text-align:center;position:relative;overflow:hidden;}
   .pet-card::before{content:'✨';position:absolute;right:-20px;top:-30px;font-size:140px;opacity:.05;pointer-events:none;}
   .pet-card > *{position:relative;z-index:1;}
-  .pet-stage{width:150px;height:150px;margin:0 auto;position:relative;}
+  .pet-stage{width:170px;height:170px;margin:0 auto;position:relative;}
   .ring{position:absolute;inset:0;transform:rotate(-90deg);}
   .ring circle{fill:none;}
   .ring .bg{stroke:rgba(255,255,255,.05);stroke-width:5;}
   .ring .fg{stroke:#ffb347;stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .5s;}
-  .pet{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    font-size:80px;line-height:1;user-select:none;cursor:pointer;transition:transform .15s;}
-  .pet.pulse{transform:scale(1.08);}
-  .pet.mega{animation:mega .5s;}
+
+  .pet-fig{position:absolute;inset:0;transition:transform .15s;cursor:pointer;}
+  .pet-fig.pulse{transform:scale(1.08);}
+  .pet-fig.mega{animation:mega .5s;}
   @keyframes mega{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .pet-body{position:absolute;inset:20px;display:flex;align-items:center;justify-content:center;}
+  .pet-body img{width:100%;height:100%;object-fit:contain;
+    filter:drop-shadow(0 6px 12px rgba(0,0,0,.5));}
+  .pet-acc{position:absolute;left:50%;pointer-events:none;
+    filter:drop-shadow(0 3px 6px rgba(0,0,0,.5));
+    transition:transform .3s;}
+  .pet-acc img{width:100%;height:100%;display:block;}
+  .pet-acc[data-slot="head"]{top:2px;width:60px;height:60px;transform:translateX(-50%);}
+  .pet-acc[data-slot="eyes"]{top:62px;width:70px;height:70px;transform:translateX(-50%);}
+  .pet-acc[data-slot="neck"]{top:110px;width:60px;height:60px;transform:translateX(-50%);}
+  .pet-acc.hidden{display:none;}
+
   .pet-title{margin-top:14px;}
   .pet-title h1{font-size:22px;font-weight:700;margin:0;
     display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;}
@@ -222,7 +235,8 @@
   .pet-row .place.g{color:#ffd23f;}
   .pet-row .place.s{color:#c0c8d0;}
   .pet-row .place.b{color:#cd7f32;}
-  .pet-row .ic{font-size:24px;flex:0 0 auto;}
+  .pet-row .ic{font-size:24px;flex:0 0 auto;width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
+  .pet-row .ic img{width:100%;height:100%;object-fit:contain;}
   .pet-row .pn{flex:1;font-size:14px;min-width:0;}
   .pet-row .pn .pname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
   .pet-row .pn .psub{color:#7d8b99;font-size:11.5px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -275,12 +289,38 @@
     transition:border-color .2s, background .2s, transform .1s;}
   .skin-opt:active{transform:scale(.97);}
   .skin-opt.active{border-color:#7a5cff;background:rgba(122,92,255,.14);}
-  .skin-opt .em{font-size:26px;line-height:1;display:flex;justify-content:center;gap:3px;transition:transform .3s;}
+  .skin-opt .em{font-size:26px;line-height:1;display:flex;justify-content:center;gap:3px;transition:transform .3s;
+    width:44px;height:44px;margin:0 auto;}
+  .skin-opt .em img{width:100%;height:100%;object-fit:contain;}
   .skin-opt.active .em{transform:scale(1.15);}
   .skin-opt .nm{font-size:12.5px;color:#c0c8d0;margin-top:7px;font-weight:600;}
   .skin-opt .pr{font-size:11px;color:#ffd23f;font-weight:700;margin-top:3px;}
   .skin-opt.owned .pr{color:#48d98e;}
   .skin-price-hint{text-align:center;color:#7d8b99;font-size:12.5px;margin-bottom:10px;}
+
+  /* ====== АКСЕССУАРЫ ====== */
+  .acc-tabs{display:flex;gap:6px;margin-bottom:14px;}
+  .acc-tab{flex:1;padding:9px 0;border:1px solid rgba(255,255,255,.08);background:transparent;
+    color:#9ba5ae;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border-radius:9px;}
+  .acc-tab.active{background:#7a5cff;border-color:#7a5cff;color:#fff;}
+  .acc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+  .acc-opt{position:relative;background:rgba(255,255,255,.03);border:2px solid rgba(255,255,255,.06);
+    border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;
+    transition:border-color .2s, background .2s, transform .1s;}
+  .acc-opt:active{transform:scale(.97);}
+  .acc-opt.equipped{border-color:#48d98e;background:rgba(72,217,142,.10);}
+  .acc-opt.owned{border-color:rgba(72,217,142,.4);}
+  .acc-opt .em{width:38px;height:38px;margin:0 auto;display:block;}
+  .acc-opt .em img{width:100%;height:100%;object-fit:contain;}
+  .acc-opt .nm{font-size:11px;color:#c0c8d0;margin-top:6px;font-weight:600;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .acc-opt .pr{font-size:11px;color:#ffd23f;font-weight:700;margin-top:3px;}
+  .acc-opt .pr.owned{color:#48d98e;}
+  .acc-opt .pr.equipped{color:#48d98e;font-weight:800;}
+  .acc-opt .badge{position:absolute;top:4px;right:6px;font-size:10px;
+    background:#48d98e;color:#0d0d0d;padding:1px 5px;border-radius:6px;font-weight:700;}
+  .acc-hint{text-align:center;color:#7d8b99;font-size:12px;margin-bottom:6px;}
+  .acc-empty{text-align:center;color:#5a6470;font-size:12.5px;padding:14px 0;}
 </style>
 </head>
 <body>
@@ -331,14 +371,19 @@
           <circle cx="100" cy="100" r="90" class="bg"/>
           <circle cx="100" cy="100" r="90" class="fg" id="ringFg"/>
         </svg>
-        <div class="pet" id="petEl">🥚</div>
-        <div id="lottieContainer" style="position:absolute;inset:0;display:none;"></div>
+        <div class="pet-fig" id="petFig">
+          <div class="pet-body"><img id="petBodyImg" alt="" /></div>
+          <div class="pet-acc hidden" id="accHead" data-slot="head"><img alt=""/></div>
+          <div class="pet-acc hidden" id="accEyes" data-slot="eyes"><img alt=""/></div>
+          <div class="pet-acc hidden" id="accNeck" data-slot="neck"><img alt=""/></div>
+        </div>
       </div>
       <div class="pet-title">
         <h1>
           <span id="nameEl">Пушистик</span>
-          <button class="edit-btn" id="cardBtn" title="Карточка">📸</button>
+          <button class="edit-btn" id="cardBtn" title="Карточка" style="display:none">📸</button>
           <button class="edit-btn" id="skinBtn" style="display:none">🎨</button>
+          <button class="edit-btn" id="accBtn" style="display:none">🎩</button>
           <button class="edit-btn" id="renameBtn" style="display:none">✏️</button>
           <button class="edit-btn" id="deleteBtn" style="display:none;color:#c96d6d">🗑</button>
         </h1>
@@ -446,6 +491,22 @@
   </div>
 </div>
 
+<div class="modal" id="accModal">
+  <div class="modal-box">
+    <h3>🎩 Аксессуары</h3>
+    <div class="sub">Каждый — <b>1 ⭐ Telegram Star</b> · виден всем</div>
+    <div class="pid" id="accPid"></div>
+    <div class="acc-tabs" id="accTabs">
+      <button class="acc-tab active" data-slot="head">👒 Голова</button>
+      <button class="acc-tab" data-slot="eyes">🕶 Глаза</button>
+      <button class="acc-tab" data-slot="neck">🎀 Шея</button>
+    </div>
+    <div class="acc-grid" id="accGrid"></div>
+    <div class="acc-hint" id="accHint"></div>
+    <div class="modal-btns"><button class="cancel" id="accCancel">Закрыть</button></div>
+  </div>
+</div>
+
 <div class="modal" id="topupModal">
   <div class="modal-box">
     <h3>💳 Пополнить банк</h3>
@@ -513,7 +574,7 @@ if(!userId){
 }
 
 /* ============================================================
-   API BOT — все мутации через бота с HMAC-проверкой initData
+   API BOT
 ============================================================ */
 async function api(path, body){
   const r = await fetch(BOT_API + path, {
@@ -536,26 +597,50 @@ async function api(path, body){
   return data;
 }
 
+/* ============================================================
+   Noto Emoji SVG — питомцы
+============================================================ */
+const NOTO_BASE = "https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@main/svg/";
+function noto(cp){ return NOTO_BASE + "emoji_u" + cp + ".svg"; }
+
 const SKINS = {
-  classic: { name:"Птица", stages:["🥚","🐣","🐥","🐤","🐓","🦅","🦉","🐲"],
-    stageNames:["Яйцо","Птенец","Юнец","Подросток","Взрослый","Опытный","Старейшина","Легенда"],
-    nftUrl: "https://nft.fragment.com/gift/rarebird-4759.lottie.json" },
-  cat:     { name:"Котик", stages:["🥚","🐱","🐈","🐈‍⬛","🐆","🐅","🦁","🐯"],
-    stageNames:["Яйцо","Котёнок","Котик","Подросший кот","Крупный кот","Хищник","Царь зверей","Тигр"],
-    nftUrl: "https://nft.fragment.com/gift/scaredcat-11007.lottie.json" },
-  dragon:  { name:"Дракон", stages:["🥚","🦎","🐊","🐉","🐲","🐲","🦕","🔥"],
-    stageNames:["Яйцо","Ящерка","Дракончик","Юный дракон","Дракон","Взрослый дракон","Древний дракон","Огненный владыка"],
-    nftUrl: null },
-  space:   { name:"Космос", stages:["🌫","🌙","⭐","🌟","✨","☄️","🌠","☀️"],
-    stageNames:["Туманность","Луна","Звезда","Яркая звезда","Созвездие","Комета","Сверхновая","Солнце"],
-    nftUrl: "https://nft.fragment.com/gift/astralshard-2908.lottie.json" },
-  dino:    { name:"Динозавр", stages:["🥚","🦎","🦕","🦖","🐊","🐉","🐲","🌋"],
-    stageNames:["Яйцо","Ящерка","Динозаврик","Юный дино","Ящер","Хищный дино","Древний ящер","Вулкан"],
-    nftUrl: null },
+  classic: {
+    name: "Птица",
+    cps: ["1f95a","1f423","1f425","1f424","1f413","1f985","1f989","1f432"],
+    stages: ["🥚","🐣","🐥","🐤","🐓","🦅","🦉","🐲"],
+    stageNames: ["Яйцо","Птенец","Юнец","Подросток","Взрослый","Опытный","Старейшина","Легенда"],
+  },
+  cat: {
+    name: "Котик",
+    cps: ["1f95a","1f431","1f408","1f408_200d_2b1b","1f406","1f405","1f981","1f42f"],
+    stages: ["🥚","🐱","🐈","🐈‍⬛","🐆","🐅","🦁","🐯"],
+    stageNames: ["Яйцо","Котёнок","Котик","Чёрный кот","Леопард","Тигр","Лев","Царь зверей"],
+  },
+  space: {
+    name: "Космос",
+    cps: ["1f32b_fe0f","1f319","2b50","1f31f","2728","2604_fe0f","1f320","2600_fe0f"],
+    stages: ["🌫","🌙","⭐","🌟","✨","☄️","🌠","☀️"],
+    stageNames: ["Туманность","Луна","Звезда","Яркая звезда","Созвездие","Комета","Сверхновая","Солнце"],
+  },
+  dino: {
+    name: "Динозавр",
+    cps: ["1f95a","1f98e","1f995","1f996","1f40a","1f409","1f432","1f30b"],
+    stages: ["🥚","🦎","🦕","🦖","🐊","🐉","🐲","🌋"],
+    stageNames: ["Яйцо","Ящерка","Динозаврик","Юный дино","Ящер","Хищный дино","Древний ящер","Вулкан"],
+  },
 };
 const SKIN_PRICE = 50;
 function stagesFor(k){ return (SKINS[k] || SKINS.classic).stages; }
+function cpsFor(k){ return (SKINS[k] || SKINS.classic).cps; }
 function stageNamesFor(k){ return (SKINS[k] || SKINS.classic).stageNames; }
+
+/* Аксессуары (id → emoji codepoint) */
+const ACC_CP = {
+  crown: "1f451", tophat: "1f3a9", cap: "1f9e2", grad: "1f393",
+  sunhat: "1f452", helmet: "26d1_fe0f", pumpkin: "1f383", party: "1f389",
+  sunglasses: "1f576_fe0f", nerd: "1f453", goggles: "1f97d",
+  bow: "1f380", scarf: "1f9e3", medal: "1f3c5", beads: "1f4ff", ribbon: "1f397_fe0f",
+};
 
 const SEASONS = {
   winter: { emoji:"❄️", name:"Зима" }, spring: { emoji:"🌸", name:"Весна" },
@@ -584,10 +669,12 @@ const AVATAR_COLORS = ["#7a5cff","#00b8d4","#ff7a18","#ff3b5c","#48dbfb","#ffcc4
 const avColor = id => AVATAR_COLORS[Math.abs(Number(id)||0) % AVATAR_COLORS.length];
 const initial = n => (n||"?").trim().charAt(0).toUpperCase();
 
-let pet=null, me=null, cooldowns={}, isOwner=false, lottieAnim=null;
+let pet=null, me=null, cooldowns={}, isOwner=false;
 let renderIntervalId = null;
 let handlersBound = false;
 let realtimeChannel = null;
+let accCatalog = []; // список аксессуаров с бэка
+let accTabSlot = "head";
 
 const $ = id => document.getElementById(id);
 const clamp = (v,mn=0,mx=100) => Math.max(mn, Math.min(mx, Math.round(v)));
@@ -597,7 +684,7 @@ const stageFromLevel = l => l>=28?7 : l>=24?6 : l>=20?5 : l>=16?4 : l>=12?3 : l>
 const esc = s => String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 /* ============================================================
-   REALTIME — подписка на изменения питомца, событий, участников
+   REALTIME
 ============================================================ */
 function unsubscribeFromPet(){
   if (realtimeChannel) {
@@ -616,7 +703,6 @@ function subscribeToPet(){
         (payload) => {
           const newPet = payload.new;
           if (!newPet) return;
-          // если локальный тик свежее — не откатываем оптимистичный UI
           const localTick = pet?.last_tick_at ? new Date(pet.last_tick_at).getTime() : 0;
           const remoteTick = newPet.last_tick_at ? new Date(newPet.last_tick_at).getTime() : 0;
           if (remoteTick < localTick) return;
@@ -647,33 +733,22 @@ let bgSetMode = null;
   if (!cv) return;
   const ctx = cv.getContext("2d");
   let W = 0, H = 0;
-
   function resize(){ W = cv.width = window.innerWidth; H = cv.height = window.innerHeight; }
   resize();
   window.addEventListener("resize", resize);
-
   const COLORS = ["#ffd23f","#7a5cff","#00d4ff","#ff9f43","#48dbfb","#ffcc48"];
   const COUNT = 25;
-
   function spawnParticle(){
-    return {
-      x: Math.random() * W, y: Math.random() * H,
-      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
-      size: Math.random() * 3 + 1.5,
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      alpha: Math.random() * 0.4 + 0.2,
-      pulse: Math.random() * Math.PI * 2
-    };
+    return { x: Math.random()*W, y: Math.random()*H,
+      vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
+      size: Math.random()*3+1.5, color: COLORS[Math.floor(Math.random()*COLORS.length)],
+      alpha: Math.random()*0.4+0.2, pulse: Math.random()*Math.PI*2 };
   }
   function spawnStar(){
-    return {
-      x: Math.random() * W, y: Math.random() * H,
-      size: Math.random() * 1.6 + 0.4,
-      alpha: Math.random() * 0.5 + 0.3,
-      twinkle: Math.random() * Math.PI * 2,
-      twinkleSpeed: Math.random() * 0.03 + 0.01,
-      big: Math.random() < 0.08
-    };
+    return { x: Math.random()*W, y: Math.random()*H,
+      size: Math.random()*1.6+0.4, alpha: Math.random()*0.5+0.3,
+      twinkle: Math.random()*Math.PI*2, twinkleSpeed: Math.random()*0.03+0.01,
+      big: Math.random()<0.08 };
   }
   function seed(){
     bgParticles = [];
@@ -682,12 +757,7 @@ let bgSetMode = null;
     }
   }
   seed();
-  bgSetMode = function(mode){
-    if (mode === bgMode) return;
-    bgMode = mode;
-    seed();
-  };
-
+  bgSetMode = function(mode){ if (mode === bgMode) return; bgMode = mode; seed(); };
   let t = 0;
   function draw(){
     t += 0.016;
@@ -696,37 +766,25 @@ let bgSetMode = null;
       for (const s of bgParticles){
         s.twinkle += s.twinkleSpeed;
         const a = s.alpha * (0.5 + 0.5 * Math.abs(Math.sin(s.twinkle)));
-        ctx.globalAlpha = a;
-        ctx.fillStyle = "#fff";
-        ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = a; ctx.fillStyle = "#fff";
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
         ctx.globalAlpha = a * 0.35;
-        const grd = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size * 6);
+        const grd = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size*6);
         grd.addColorStop(0, "rgba(200,220,255,.9)");
         grd.addColorStop(1, "rgba(200,220,255,0)");
         ctx.fillStyle = grd;
-        ctx.beginPath(); ctx.arc(s.x, s.y, s.size * 6, 0, Math.PI * 2); ctx.fill();
-        if (s.big && a > 0.5){
-          ctx.globalAlpha = a * 0.6;
-          ctx.strokeStyle = "rgba(200,220,255,.7)";
-          ctx.lineWidth = 0.8;
-          const L = s.size * 4;
-          ctx.beginPath();
-          ctx.moveTo(s.x - L, s.y); ctx.lineTo(s.x + L, s.y);
-          ctx.moveTo(s.x, s.y - L); ctx.lineTo(s.x, s.y + L);
-          ctx.stroke();
-        }
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.size*6, 0, Math.PI*2); ctx.fill();
       }
     } else {
       for (const p of bgParticles){
         p.x += p.vx; p.y += p.vy;
-        if (p.x < -20) p.x = W + 20; if (p.x > W + 20) p.x = -20;
-        if (p.y < -20) p.y = H + 20; if (p.y > H + 20) p.y = -20;
+        if (p.x < -20) p.x = W+20; if (p.x > W+20) p.x = -20;
+        if (p.y < -20) p.y = H+20; if (p.y > H+20) p.y = -20;
         const a = p.alpha * (0.6 + 0.4 * Math.sin(t + p.pulse));
-        ctx.globalAlpha = a;
-        ctx.fillStyle = p.color;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
-        ctx.globalAlpha = a * 0.3;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = a; ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+        ctx.globalAlpha = a*0.3;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size*3, 0, Math.PI*2); ctx.fill();
       }
     }
     ctx.globalAlpha = 1;
@@ -752,9 +810,7 @@ function fatal(t,e){ $("loader").style.display="block";
 async function goMenu(){
   if (renderIntervalId) { clearInterval(renderIntervalId); renderIntervalId = null; }
   unsubscribeFromPet();
-  pet = null; me = null; cooldowns = {}; isOwner = false;
-  petId = null;
-  if (lottieAnim) { try { lottieAnim.destroy(); } catch(e){} lottieAnim = null; }
+  pet = null; me = null; cooldowns = {}; isOwner = false; petId = null;
   if (bgSetMode) bgSetMode("particles");
   try { history.replaceState({}, "", location.pathname); } catch(e){}
   $("petView").style.display = "none";
@@ -775,6 +831,10 @@ function renderWeather(){
   const s = SEASONS[seasonFor(d)];
   const w = weatherFor(d);
   $("weatherEl").innerHTML = s.emoji + " " + s.name + " · <b>" + w + "</b>";
+}
+function emojiImg(cp, size){
+  const sz = size || 32;
+  return `<img src="${noto(cp)}" style="width:${sz}px;height:${sz}px;" onerror="this.style.display='none'" />`;
 }
 
 /* ============================================================
@@ -819,13 +879,13 @@ async function initMenu(){
     listEl.innerHTML = list.map(p => {
       const lvl = Math.min(30, Math.floor((p.xp||0)/XP_PER_LEVEL)+1);
       const st = stageFromLevel(lvl);
-      const stages = stagesFor(p.skin);
+      const cps = cpsFor(p.skin);
       const names = stageNamesFor(p.skin);
       const isOwn = Number(p.owner_id) === Number(userId);
       const dead = p.dead ? " 💀" : "";
       const own = isOwn ? `<span class="owned"> · твой</span>` : "";
       return `<div class="pet-list-item ${p.dead?'dead':''}" data-pet="${p.id}">
-        <div class="ic">${stages[st] || stages[0]}</div>
+        <div class="ic">${emojiImg(cps[st] || cps[0], 40)}</div>
         <div class="info">
           <div class="nm">${esc(p.name)}${dead}</div>
           <div class="st">Ур. ${lvl} · ${names[st]}${own}</div>
@@ -859,24 +919,19 @@ async function openPet(id){
     const res = await api("/api/open", { pet_id: id });
     pet = res.pet;
     me = res.me;
-
     if (!pet) { toast("Питомец не найден"); await goMenu(); return; }
-
     if (bgSetMode) bgSetMode(pet.skin === "space" ? "stars" : "particles");
-
     if (me) {
       for (const k of Object.keys(ACTIONS)) {
         const t = me["last_" + k + "_at"];
         if (t) cooldowns[k] = new Date(t).getTime() + ACTIONS[k].cd * 1000;
       }
     }
-
     $("loader").style.display = "none";
     $("petView").style.display = "block";
     $("petView").classList.remove("fade-in");
     void $("petView").offsetWidth;
     $("petView").classList.add("fade-in");
-
     if (pet.dead) {
       await renderDead();
     } else {
@@ -884,12 +939,10 @@ async function openPet(id){
       $("aliveContent").style.display = "block";
       await Promise.all([loadLeaderboard(), loadEvents()]);
     }
-
     bindCommonOnce();
     render();
     if (renderIntervalId) clearInterval(renderIntervalId);
     renderIntervalId = setInterval(render, 1000);
-
     subscribeToPet();
   } catch(e) {
     console.error(e);
@@ -918,8 +971,9 @@ async function createPet(){
 async function renderDead(){
   $("aliveContent").style.display = "none";
   $("deadCard").style.display = "block";
-  $("petEl").textContent = "💀";
-  $("petEl").style.filter = "grayscale(1)";
+  $("petBodyImg").src = noto("1f480");
+  $("petBodyImg").style.filter = "grayscale(.4)";
+  ["accHead","accEyes","accNeck"].forEach(id=>$(id).classList.add("hidden"));
   $("nameEl").textContent = pet.name;
   $("stageEl").textContent = "Умер";
   $("moodEl").textContent = "Умер…";
@@ -940,6 +994,7 @@ async function renderDead(){
   $("deleteDeadBtn").style.display = isOwner ? "block" : "none";
   $("cardBtn").style.display = "none";
   $("skinBtn").style.display = "none";
+  $("accBtn").style.display = "none";
   $("renameBtn").style.display = "none";
   $("deleteBtn").style.display = "none";
   $("leaveBtn").style.display = isOwner ? "none" : "block";
@@ -977,9 +1032,7 @@ async function loadLeaderboard(){
       "<div class='name "+cls+"'>"+name+"</div>"+
       "<div class='pts'>"+m.score+"</div></div>";
   }).join("");
-  el.classList.remove("stagger");
-  void el.offsetWidth;
-  el.classList.add("stagger");
+  el.classList.remove("stagger"); void el.offsetWidth; el.classList.add("stagger");
 }
 
 async function loadGlobalRating(){
@@ -991,33 +1044,26 @@ async function loadGlobalRating(){
   const petIds = pets.map(p => p.id);
   const {data: members} = await sb.from("members")
     .select("pet_id,user_id,first_name,username").in("pet_id", petIds);
-
   function ownerName(p){
     const m = (members||[]).find(x => x.pet_id === p.id && Number(x.user_id) === Number(p.owner_id));
-    if(m){
-      if(m.username) return "@" + m.username;
-      return m.first_name || ("#" + p.owner_id);
-    }
+    if(m){ if(m.username) return "@" + m.username; return m.first_name || ("#" + p.owner_id); }
     return "#" + p.owner_id;
   }
   const medals = ["🥇","🥈","🥉","4.","5.","6.","7.","8.","9.","10."];
   el.innerHTML = pets.map((p,i)=>{
     const lvl = Math.min(30, Math.floor((p.xp||0)/XP_PER_LEVEL)+1);
     const st = stageFromLevel(lvl);
-    const stages = stagesFor(p.skin);
+    const cps = cpsFor(p.skin);
     const names = stageNamesFor(p.skin);
-    const emoji = stages[st] || stages[0];
     const isMe = p.id === petId;
     return "<div class='pet-row "+(isMe?"me":"")+"'>"+
       "<div class='place "+(i<3?["g","s","b"][i]:"")+"'>"+(medals[i]||(i+1))+"</div>"+
-      "<div class='ic'>"+emoji+"</div>"+
+      "<div class='ic'>"+emojiImg(cps[st] || cps[0], 32)+"</div>"+
       "<div class='pn'><div class='pname'>"+esc(p.name)+(isMe?" · твой":"")+"</div>"+
       "<div class='psub'>Ур. "+lvl+" · "+names[st]+" · 👤 <span class='owner'>"+esc(ownerName(p))+"</span></div></div>"+
       "<div class='xp'>"+ (p.xp||0) +"</div></div>";
   }).join("");
-  el.classList.remove("stagger");
-  void el.offsetWidth;
-  el.classList.add("stagger");
+  el.classList.remove("stagger"); void el.offsetWidth; el.classList.add("stagger");
 }
 
 async function loadEvents(){
@@ -1037,37 +1083,35 @@ async function loadEvents(){
   }).join("");
 }
 
+function renderAccessories(){
+  const eq = pet.accessories_equipped || {};
+  const slots = { head: "accHead", eyes: "accEyes", neck: "accNeck" };
+  for (const [slot, elId] of Object.entries(slots)){
+    const el = $(elId);
+    const img = el.querySelector("img");
+    const accId = eq[slot];
+    const cp = accId && ACC_CP[accId];
+    if (cp){
+      img.src = noto(cp);
+      el.classList.remove("hidden");
+    } else {
+      el.classList.add("hidden");
+    }
+  }
+}
+
 function render(){
   if(!pet) return;
   if (pet.dead) return;
 
   const lvl = levelFromXp(pet.xp);
   const st = stageFromLevel(lvl);
-  const stages = stagesFor(pet.skin);
+  const cps = cpsFor(pet.skin);
   const names = stageNamesFor(pet.skin);
-  const petEl = $("petEl");
-  const lottieContainer = $("lottieContainer");
 
-  const nftStages = [6, 7];
-  const skinData = SKINS[pet.skin] || SKINS.classic;
-  const useLottie = skinData.nftUrl && nftStages.includes(st);
-  if (useLottie) {
-    petEl.style.display = "none";
-    lottieContainer.style.display = "block";
-    if (!lottieAnim || lottieAnim._skinKey !== pet.skin || lottieAnim._stage !== st) {
-      if (lottieAnim) lottieAnim.destroy();
-      lottieAnim = lottie.loadAnimation({
-        container: lottieContainer, renderer: 'svg', loop: true, autoplay: true,
-        path: skinData.nftUrl
-      });
-      lottieAnim._skinKey = pet.skin; lottieAnim._stage = st;
-    }
-  } else {
-    petEl.style.display = "flex";
-    lottieContainer.style.display = "none";
-    if (lottieAnim) { lottieAnim.destroy(); lottieAnim = null; }
-    petEl.textContent = stages[st] || stages[0];
-  }
+  $("petBodyImg").style.filter = "";
+  $("petBodyImg").src = noto(cps[st] || cps[0]);
+  renderAccessories();
 
   $("nameEl").textContent = pet.name;
   $("petIdEl").textContent = "ID: " + pet.id;
@@ -1075,6 +1119,7 @@ function render(){
   isOwner = Number(pet.owner_id) === Number(userId);
   $("cardBtn").style.display = "inline-block";
   $("skinBtn").style.display = isOwner ? "inline-block" : "none";
+  $("accBtn").style.display = isOwner ? "inline-block" : "none";
   $("renameBtn").style.display = isOwner ? "inline-block" : "none";
   $("deleteBtn").style.display = isOwner ? "inline-block" : "none";
   $("leaveBtn").style.display = isOwner ? "none" : "block";
@@ -1135,30 +1180,24 @@ async function doAction(act){
   if(cfg.cost && me.score<cfg.cost){ toast("Не хватает очков"); return; }
 
   const oldSt = stageFromLevel(levelFromXp(pet.xp));
-
   cooldowns[act] = now + cfg.cd*1000;
 
   try {
     const res = await api("/api/action", { pet_id: petId, action: act });
-    pet = res.pet;
-    me = res.me;
-
+    pet = res.pet; me = res.me;
     if (me && me["last_"+act+"_at"]) {
       cooldowns[act] = new Date(me["last_"+act+"_at"]).getTime() + cfg.cd*1000;
     }
-
-    $("petEl").classList.add("pulse");
-    setTimeout(()=>$("petEl").classList.remove("pulse"), 220);
+    $("petFig").classList.add("pulse");
+    setTimeout(()=>$("petFig").classList.remove("pulse"), 220);
     toast(cfg.emoji+" "+cfg.msg);
     haptic(res.evolved ? "success" : "light");
-
     if (res.evolved) {
-      $("petEl").classList.add("mega");
-      setTimeout(()=>$("petEl").classList.remove("mega"), 700);
+      $("petFig").classList.add("mega");
+      setTimeout(()=>$("petFig").classList.remove("mega"), 700);
       const newSt = stageFromLevel(levelFromXp(pet.xp));
       setTimeout(()=>toast("✨ "+stageNamesFor(pet.skin)[newSt]+"!", true), 500);
     }
-
     render();
     loadLeaderboard(); loadEvents();
   } catch(e) {
@@ -1166,89 +1205,6 @@ async function doAction(act){
     if (e.status === 429) toast("Ещё рано ⌛");
     else toast("Ошибка: " + (e.message || e));
   }
-}
-
-async function makeCard(){
-  if (!pet) return;
-  const canvas = document.createElement("canvas");
-  const W = 720, H = 1000;
-  canvas.width = W; canvas.height = H;
-  const ctx = canvas.getContext("2d");
-
-  const grad = ctx.createLinearGradient(0, 0, W, H);
-  grad.addColorStop(0, "#151515");
-  grad.addColorStop(1, "#0a0a0a");
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
-
-  ctx.strokeStyle = "rgba(255,255,255,.06)";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(20, 20, W-40, H-40);
-
-  ctx.fillStyle = "#ffb347";
-  ctx.font = "bold 26px -apple-system,sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText("🐾 ПИТОМЕЦ ЧАТА", W/2, 90);
-
-  const lvl = levelFromXp(pet.xp);
-  const st = stageFromLevel(lvl);
-  const stages = stagesFor(pet.skin);
-  const names = stageNamesFor(pet.skin);
-  ctx.font = "240px serif";
-  ctx.fillText(stages[st] || stages[0], W/2, 400);
-
-  ctx.fillStyle = "#fff";
-  ctx.font = "bold 52px -apple-system,sans-serif";
-  ctx.fillText(pet.name, W/2, 500);
-
-  ctx.fillStyle = "#7d8b99";
-  ctx.font = "28px -apple-system,sans-serif";
-  ctx.fillText(names[st] + " · Ур. " + lvl, W/2, 550);
-
-  const stats = [
-    { ic:"🍖", v:pet.hunger, c:"#ff9f43" },
-    { ic:"😊", v:pet.mood,   c:"#ffd23f" },
-    { ic:"⚡", v:pet.energy, c:"#54a0ff" },
-    { ic:"🧼", v:pet.clean,  c:"#48dbfb" },
-    { ic:"❤️", v:pet.health, c:"#ff6b7a" },
-  ];
-  const startY = 610, rowH = 56;
-  stats.forEach((s, i) => {
-    const y = startY + i * rowH;
-    ctx.fillStyle = "#9ba5ae";
-    ctx.font = "24px -apple-system,sans-serif";
-    ctx.textAlign = "left";
-    ctx.fillText(s.ic, 60, y);
-    ctx.fillStyle = "rgba(255,255,255,.06)";
-    ctx.fillRect(110, y-14, 480, 16);
-    ctx.fillStyle = s.c;
-    ctx.fillRect(110, y-14, 480 * (s.v/100), 16);
-    ctx.fillStyle = "#fff";
-    ctx.textAlign = "right";
-    ctx.fillText(s.v + "%", 660, y);
-  });
-
-  ctx.fillStyle = "#5a6470";
-  ctx.font = "20px -apple-system,sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText("t.me/" + BOT_USERNAME, W/2, 940);
-
-  canvas.toBlob(blob => {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = pet.name + "-card.png";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
-    toast("📸 Карточка сохранена", true);
-    haptic("success");
-    if (navigator.share && navigator.canShare) {
-      const file = new File([blob], pet.name + ".png", { type: "image/png" });
-      if (navigator.canShare({ files: [file] })) {
-        navigator.share({ files: [file], title: pet.name, text: "Мой питомец!" }).catch(()=>{});
-      }
-    }
-  }, "image/png");
 }
 
 function bindCommonOnce(){
@@ -1277,9 +1233,8 @@ function bindCommonOnce(){
   document.querySelectorAll(".action[data-act]").forEach(b=>{
     b.addEventListener("click", ()=>doAction(b.dataset.act));
   });
-  $("petEl").addEventListener("click", ()=>doAction("pet"));
+  $("petFig").addEventListener("click", ()=>doAction("pet"));
   $("dailyBtn").addEventListener("click", claimDaily);
-  $("cardBtn").addEventListener("click", makeCard);
   $("reviveBtn").addEventListener("click", revivePet);
   $("deleteDeadBtn").addEventListener("click", () => {
     if (!pet) return;
@@ -1324,6 +1279,17 @@ function bindCommonOnce(){
 
   $("skinBtn").addEventListener("click", openSkinModal);
   $("skinCancel").addEventListener("click", ()=>$("skinModal").classList.remove("show"));
+
+  $("accBtn").addEventListener("click", openAccModal);
+  $("accCancel").addEventListener("click", ()=>$("accModal").classList.remove("show"));
+  document.querySelectorAll("#accTabs .acc-tab").forEach(t=>{
+    t.addEventListener("click", ()=>{
+      document.querySelectorAll("#accTabs .acc-tab").forEach(x=>x.classList.remove("active"));
+      t.classList.add("active");
+      accTabSlot = t.dataset.slot;
+      renderAccGrid();
+    });
+  });
 
   let topupAmount = 1;
   $("topupBtn").addEventListener("click", ()=>{
@@ -1398,8 +1364,7 @@ async function claimDaily(){
   if(!me) return;
   try {
     const res = await api("/api/daily", { pet_id: petId });
-    me.score = res.score;
-    me.streak = res.streak;
+    me.score = res.score; me.streak = res.streak;
     me.last_daily_at = new Date().toISOString();
     toast("🎁 +"+res.bonus+" очков!", true);
     haptic("success");
@@ -1417,10 +1382,10 @@ async function openSkinModal(){
   grid.innerHTML = Object.entries(SKINS).map(([key, s])=>{
     const isActive = pet.skin === key;
     const cls = "skin-opt" + (isActive?" active":"") + (isActive?" owned":"");
-    const preview = s.stages[4] || s.stages[0];
+    const previewCp = s.cps[4] || s.cps[0];
     const priceLabel = isActive ? "✓ выбрано" : (SKIN_PRICE + " ⭐");
     return "<div class='"+cls+"' data-skin='"+key+"'>"+
-      "<div class='em'>"+preview+"</div>"+
+      "<div class='em'>"+emojiImg(previewCp, 44)+"</div>"+
       "<div class='nm'>"+s.name+"</div>"+
       "<div class='pr'>"+priceLabel+"</div></div>";
   }).join("");
@@ -1441,41 +1406,128 @@ async function changeSkin(newSkin){
   if (pet.skin === newSkin) { toast("Уже выбран"); return; }
   if (!me || me.score < SKIN_PRICE) { toast("Нужно "+SKIN_PRICE+" очков"); return; }
 
-  const petEl = $("petEl");
-  const lottieContainer = $("lottieContainer");
-  petEl.classList.add("skin-dissolve");
-  if (lottieContainer && lottieContainer.style.display !== "none"){
-    lottieContainer.style.animation = "skinDissolve .8s cubic-bezier(.2,.9,.3,1) both";
-  }
-
+  const fig = $("petFig");
+  fig.classList.add("skin-dissolve");
   const flash = document.createElement("div");
   flash.className = "skin-flash";
   document.body.appendChild(flash);
   setTimeout(() => flash.remove(), 1000);
-
   haptic("success");
 
   try {
     const res = await api("/api/skin", { pet_id: petId, skin: newSkin });
-    pet.skin = res.skin;
-    me.score = res.score;
-
+    pet.skin = res.skin; me.score = res.score;
     if (bgSetMode) bgSetMode(newSkin === "space" ? "stars" : "particles");
-
-    if (lottieAnim) { lottieAnim.destroy(); lottieAnim = null; }
-    setTimeout(() => {
-      render();
-      petEl.classList.remove("skin-dissolve");
-      if (lottieContainer) lottieContainer.style.animation = "";
-    }, 400);
-
+    setTimeout(() => { render(); fig.classList.remove("skin-dissolve"); }, 400);
     toast("🎨 Скин «"+SKINS[newSkin].name+"»", true);
     loadLeaderboard();
     setTimeout(openSkinModal, 500);
   } catch(e) {
-    petEl.classList.remove("skin-dissolve");
-    if (lottieContainer) lottieContainer.style.animation = "";
+    fig.classList.remove("skin-dissolve");
     toast("Ошибка: " + (e.message || e));
+  }
+}
+
+/* ============================================================
+   АКСЕССУАРЫ
+============================================================ */
+async function openAccModal(){
+  if(!pet || !isOwner) { toast("Только владелец"); return; }
+  $("accPid").textContent = "ID: " + petId;
+  $("accModal").classList.add("show");
+  $("accGrid").innerHTML = "<div class='acc-empty'>Загрузка…</div>";
+  try {
+    const res = await api("/api/acc/list", { pet_id: petId });
+    accCatalog = res.items || [];
+    renderAccGrid();
+  } catch(e){
+    $("accGrid").innerHTML = "<div class='acc-empty'>Ошибка загрузки</div>";
+  }
+}
+
+function renderAccGrid(){
+  const grid = $("accGrid");
+  const owned = new Set(pet?.accessories_owned || []);
+  const equipped = pet?.accessories_equipped || {};
+  const items = accCatalog.filter(x => x.slot === accTabSlot);
+  if (!items.length){ grid.innerHTML = "<div class='acc-empty'>Тут пусто</div>"; return; }
+  grid.innerHTML = items.map(it => {
+    const isOwned = owned.has(it.id);
+    const isEq = equipped[it.slot] === it.id;
+    let cls = "acc-opt";
+    if (isEq) cls += " equipped";
+    else if (isOwned) cls += " owned";
+    let priceTxt = "";
+    if (isEq) priceTxt = '<div class="pr equipped">надето</div>';
+    else if (isOwned) priceTxt = '<div class="pr owned">надеть</div>';
+    else priceTxt = '<div class="pr">' + it.price + ' ⭐</div>';
+    return `<div class="${cls}" data-acc="${it.id}" data-owned="${isOwned?1:0}">
+      ${isEq ? '<div class="badge">✓</div>' : ''}
+      <div class="em"><img src="${noto(ACC_CP[it.id] || '2728')}" alt="" /></div>
+      <div class="nm">${esc(it.name)}</div>
+      ${priceTxt}
+    </div>`;
+  }).join("");
+  grid.querySelectorAll(".acc-opt").forEach(el=>{
+    el.addEventListener("click", ()=>onAccClick(el.dataset.acc, el.dataset.owned === "1"));
+  });
+  $("accHint").textContent = "Надето: " + Object.values(equipped).length + " / 3 слота";
+}
+
+async function onAccClick(accId, owned){
+  if (!pet || !isOwner) return;
+  const equipped = pet.accessories_equipped || {};
+  const slot = accCatalog.find(x => x.id === accId)?.slot;
+  // если уже надет — снимаем
+  if (equipped[slot] === accId){
+    try {
+      const res = await api("/api/acc/unequip", { pet_id: petId, slot });
+      pet.accessories_equipped = res.equipped;
+      render(); renderAccGrid();
+      toast("Снято");
+    } catch(e){ toast("Ошибка: " + (e.message||e)); }
+    return;
+  }
+  // если куплен — надеваем
+  if (owned){
+    try {
+      const res = await api("/api/acc/equip", { pet_id: petId, accessory_id: accId });
+      pet.accessories_equipped = res.equipped;
+      render(); renderAccGrid();
+      haptic("success");
+      toast("Надето ✨");
+    } catch(e){ toast("Ошибка: " + (e.message||e)); }
+    return;
+  }
+  // не куплен — открываем Stars
+  try {
+    const res = await api("/api/acc/buy", { pet_id: petId, accessory_id: accId });
+    const url = res.invoice_url;
+    if (!url) { toast("Не удалось создать счёт"); return; }
+    if (tg?.openInvoice){
+      tg.openInvoice(url, (status) => {
+        if (status === "paid"){
+          toast("✨ Аксессуар куплен!", true);
+          haptic("success");
+          // перечитаем питомца через open — самый простой путь
+          setTimeout(async () => {
+            try {
+              const r = await api("/api/open", { pet_id: petId });
+              pet = r.pet; me = r.me;
+              render(); renderAccGrid();
+            } catch(e){}
+          }, 700);
+        } else if (status === "cancelled"){
+          toast("Отменено");
+        } else if (status === "failed"){
+          toast("Ошибка оплаты");
+        }
+      });
+    } else {
+      window.open(url, "_blank");
+    }
+  } catch(e){
+    toast("Ошибка: " + (e.message||e));
   }
 }
 
@@ -1484,11 +1536,8 @@ async function changeSkin(newSkin){
 ============================================================ */
 (async ()=>{
   try {
-    if (petId) {
-      await openPet(petId);
-    } else {
-      await initMenu();
-    }
+    if (petId) await openPet(petId);
+    else await initMenu();
 
     setTimeout(()=>{
       const sp = document.getElementById("splash");
