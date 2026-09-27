@@ -587,6 +587,7 @@ const initial = n => (n||"?").trim().charAt(0).toUpperCase();
 let pet=null, me=null, cooldowns={}, isOwner=false, lottieAnim=null;
 let renderIntervalId = null;
 let handlersBound = false;
+let realtimeChannel = null;
 
 const $ = id => document.getElementById(id);
 const clamp = (v,mn=0,mx=100) => Math.max(mn, Math.min(mx, Math.round(v)));
@@ -594,6 +595,45 @@ const levelFromXp = xp => Math.min(MAX_LEVEL, Math.floor(xp/XP_PER_LEVEL)+1);
 const xpForLevel = lvl => (lvl-1)*XP_PER_LEVEL;
 const stageFromLevel = l => l>=28?7 : l>=24?6 : l>=20?5 : l>=16?4 : l>=12?3 : l>=8?2 : l>=4?1 : 0;
 const esc = s => String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ============================================================
+   REALTIME — подписка на изменения питомца, событий, участников
+============================================================ */
+function unsubscribeFromPet(){
+  if (realtimeChannel) {
+    try { sb.removeChannel(realtimeChannel); } catch(e){}
+    realtimeChannel = null;
+  }
+}
+
+function subscribeToPet(){
+  unsubscribeFromPet();
+  if (!petId) return;
+
+  realtimeChannel = sb.channel("pet-" + petId)
+    .on("postgres_changes",
+        { event: "UPDATE", schema: "public", table: "pets", filter: "id=eq." + petId },
+        (payload) => {
+          const newPet = payload.new;
+          if (!newPet) return;
+          // если локальный тик свежее — не откатываем оптимистичный UI
+          const localTick = pet?.last_tick_at ? new Date(pet.last_tick_at).getTime() : 0;
+          const remoteTick = newPet.last_tick_at ? new Date(newPet.last_tick_at).getTime() : 0;
+          if (remoteTick < localTick) return;
+          const wasDead = !!(pet && pet.dead);
+          pet = { ...pet, ...newPet };
+          if (pet.dead && !wasDead) { renderDead(); return; }
+          if (!pet.dead && wasDead) { openPet(petId); return; }
+          if (!pet.dead && $("petView").style.display !== "none") render();
+        })
+    .on("postgres_changes",
+        { event: "INSERT", schema: "public", table: "events", filter: "pet_id=eq." + petId },
+        () => { loadEvents(); })
+    .on("postgres_changes",
+        { event: "*", schema: "public", table: "members", filter: "pet_id=eq." + petId },
+        () => { loadLeaderboard(); })
+    .subscribe();
+}
 
 /* ============================================================
    ЖИВОЙ ФОН
@@ -711,6 +751,7 @@ function fatal(t,e){ $("loader").style.display="block";
 
 async function goMenu(){
   if (renderIntervalId) { clearInterval(renderIntervalId); renderIntervalId = null; }
+  unsubscribeFromPet();
   pet = null; me = null; cooldowns = {}; isOwner = false;
   petId = null;
   if (lottieAnim) { try { lottieAnim.destroy(); } catch(e){} lottieAnim = null; }
@@ -815,7 +856,6 @@ async function openPet(id){
   pet = null; me = null; cooldowns = {}; isOwner = false;
 
   try {
-    // ОДИН запрос: pet + me + join (если надо) + tick — всё внутри
     const res = await api("/api/open", { pet_id: id });
     pet = res.pet;
     me = res.me;
@@ -849,6 +889,8 @@ async function openPet(id){
     render();
     if (renderIntervalId) clearInterval(renderIntervalId);
     renderIntervalId = setInterval(render, 1000);
+
+    subscribeToPet();
   } catch(e) {
     console.error(e);
     if (e.status === 404) { toast("Питомец не найден"); await goMenu(); return; }
@@ -1094,7 +1136,6 @@ async function doAction(act){
 
   const oldSt = stageFromLevel(levelFromXp(pet.xp));
 
-  // оптимистично ставим кулдаун, чтобы юзер не спамил
   cooldowns[act] = now + cfg.cd*1000;
 
   try {
